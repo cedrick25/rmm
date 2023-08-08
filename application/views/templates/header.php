@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <head>
 
-    <title>AMS</title>
+    <title>Remote Monitoring Management (RMM)</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -14,7 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta name="description" content="Empire Bootstrap admin template made using Bootstrap 4, it has tons of ready made feature, UI components, pages which completely fulfills any dashboard needs." />
     <meta name="keywords" content="Empire, bootstrap admin template, bootstrap admin panel, bootstrap 4 admin template, admin template">
     <meta name="author" content="Srthemesvilla" />
-    <link rel="icon" type="image/x-icon" href="assets/img/amslogo.png">
+    <!-- <link rel="icon" type="image/x-icon" href="assets/img/amslogo.png"> -->
 
     <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">

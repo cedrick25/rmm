@@ -25,9 +25,9 @@ $.ws = (function() {
     }
 
     var ___ctx = '';
-    /*var ___ctx = 'http://cmis.probation.gov.ph';
+    /*var ___ctx = 'http://rmm.probation.gov.ph';
     if(___production == true){
-         ___ctx = "http://cmis.probation.gov.ph/api";
+         ___ctx = "http://rmm.probation.gov.ph/api";
     }*/
 
 

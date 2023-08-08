@@ -10,12 +10,12 @@
         <div class="container">
             <div class="login-content">
                 <div class="login-logo">
-                    <span style="font-size: 60px;"><b>AMS</b></span><br>
-                    <span>Asset Management System</span>
+                    <span style="font-size: 60px;"><b>RMM</b></span><br>
+                    <span>Remote Monitoring Management</span>
                 </div>
                 <div class="login-form">
                     <div style="margin-bottom: 30px; text-align: center;">
-                        <img class="align-content" src="images/amslogo.png" alt="" style="max-width: 32%;">
+                        <!-- <img class="align-content" src="images/amslogo.png" alt="" style="max-width: 32%;"> -->
                     </div>
                     <div class="prompt" role="alert" id="prompt">
                     </div>

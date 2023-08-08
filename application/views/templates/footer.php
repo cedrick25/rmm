@@ -30,8 +30,8 @@
     <script src="assets/js/demo.js"></script><script src="assets/js/analytics.js"></script>
     <script src="assets/js/pages/dashboards_index.js"></script>
     <script src="assets/js/ajax_main.js"></script>
-    <script src="assets/js/jquery.cookie.js"></script>
-    <script src="assets/js/cookie.js"></script>
+    <!-- <script src="assets/js/jquery.cookie.js"></script> -->
+    <!-- <script src="assets/js/cookie.js"></script> -->
     <script src="assets/js/viewer.min.js"></script>
     <!-- <script src="assets/js/mxgraph.js"></script> -->
 
