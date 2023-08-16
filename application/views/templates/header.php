@@ -24,6 +24,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link rel="stylesheet" href="vendors/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css">
     
     <!-- Icon fonts -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
+    <!-- <link rel="stylesheet" href="assets/fonts/fontawesome6_beta3_css_all.min"> -->
     <link rel="stylesheet" href="assets/fonts/fontawesome.css">
     <link rel="stylesheet" href="assets/fonts/ionicons.css">
     <link rel="stylesheet" href="assets/fonts/linearicons.css">

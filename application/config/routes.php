@@ -51,6 +51,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 // rmm start
 $route['cluster'] = "routes/cluster";
+$route['cluster_create'] = "routes/cluster_create";
+$route['cluster_update'] = "routes/cluster_update";
+$route['cluster_devices'] = "routes/cluster_devices";
 $route['tracking'] = "routes/tracking";
 $route['whitelisting'] = "routes/whitelisting";
 $route['notification'] = "routes/notification";

@@ -32,6 +32,18 @@ class routes extends CI_Controller {
 	{
 		$this->load->view('cluster');
 	}
+	public function cluster_create()
+	{
+		$this->load->view('cluster_create');
+	}
+	public function cluster_update()
+	{
+		$this->load->view('cluster_update');
+	}
+	public function cluster_devices()
+	{
+		$this->load->view('cluster_devices');
+	}
 	public function tracking()
 	{
 		$this->load->view('tracking');
