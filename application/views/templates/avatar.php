@@ -177,7 +177,6 @@
                     </div>
                 </nav>
 
-
     <script type="text/javascript">
         document.getElementById('profile').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent the default navigation behavior
