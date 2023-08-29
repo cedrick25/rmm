@@ -56,6 +56,66 @@ class routes extends CI_Controller {
 	{
 		$this->load->view('notification');
 	}
+	public function user_account()
+	{
+		$this->load->view('user_account');
+	}
+	public function user_account_create()
+	{
+		$this->load->view('user_account_create');
+	}
+	public function user_account_update()
+	{
+		$this->load->view('user_account_update');
+	}
+	public function department()
+	{
+		$this->load->view('department');
+	}
+	public function department_create()
+	{
+		$this->load->view('department_create');
+	}
+	public function department_update()
+	{
+		$this->load->view('department_update');
+	}
+	public function location()
+	{
+		$this->load->view('location');
+	}
+	public function location_create()
+	{
+		$this->load->view('location_create');
+	}
+	public function location_update()
+	{
+		$this->load->view('location_update');
+	}
+	public function permission()
+	{
+		$this->load->view('permission');
+	}
+	public function permission_create()
+	{
+		$this->load->view('permission_create');
+	}
+	public function permission_update()
+	{
+		$this->load->view('permission_update');
+	}
+	public function user_role()
+	{
+		$this->load->view('user_role');
+	}
+	public function user_role_create()
+	{
+		$this->load->view('user_role_create');
+	}
+	public function user_role_update()
+	{
+		$this->load->view('user_role_update');
+	}
 	// rmm end
 	
 }

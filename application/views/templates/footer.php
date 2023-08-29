@@ -38,7 +38,7 @@
 
     <script type="text/javascript">
     $(document).ready(function() {
-        cookie();
+        // cookie();
         $('.select2').select2({
             // dropdownParent: $('.modal'),
             width: '100%',

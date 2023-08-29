@@ -44,49 +44,37 @@
                     </li>
 
                     <!-- User Management -->
-                    <!-- <li class="sidenav-divider mb-1"></li> -->
-                    <!-- <li class="sidenav-header small font-weight-semibold">System Settings</li> -->
-                    <li class="sidenav-item userAccess" style="display:none;">
-                    <li class="sidenav-item systemDashboardPanel" style="display: none;">
-                        <a href="systemDashboard" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-settings"></i>
-                            <div>System Dashboard</div>
-                        </a>
-                    </li>
-                    <li class="sidenav-item userAccessPanel" style="display: none;">
-                        <a href="userAccess" class="sidenav-link">
+                    <li class="sidenav-divider mb-1"></li>
+                    <li class="sidenav-header small font-weight-semibold">System Settings</li>
+                    <li class="sidenav-item userAccess">
+                    <li class="sidenav-item userAccessPanel">
+                        <a href="permission" class="sidenav-link">
                             <i class="sidenav-icon feather icon-user-plus"></i>
-                            <div>User Access</div>
+                            <div>Permissions</div>
                         </a>
                     </li>
-                    <li class="sidenav-item userLevelsPanel" style="display: none;">
-                        <a href="userLevels" class="sidenav-link">
+                    <li class="sidenav-item userLevelsPanel">
+                        <a href="user_role" class="sidenav-link">
                             <i class="sidenav-icon lnr lnr-database"></i>
-                            <div>User Levels</div>
+                            <div>Roles</div>
                         </a>
                     </li>
-                    <li class="sidenav-item departmentPanel" style="display:none;">
-                        <a href="departments" class="sidenav-link">
+                    <li class="sidenav-item departmentPanel">
+                        <a href="department" class="sidenav-link">
                             <i class="sidenav-icon lnr lnr-apartment"></i>
                             <div>Departments</div>
                         </a>
                     </li>
-                    <li class="sidenav-item locationPanel" style="display: none;">
-                        <a href="locations" class="sidenav-link">
+                    <li class="sidenav-item locationPanel">
+                        <a href="location" class="sidenav-link">
                             <i class="sidenav-icon lnr lnr-location"></i>
                             <div>Locations</div>
                         </a>
                     </li>
-                    <li class="sidenav-item userAccountsPanel" style="display: none;">
-                        <a href="user_accounts" class="sidenav-link">
+                    <li class="sidenav-item userAccountsPanel">
+                        <a href="user_account" class="sidenav-link">
                             <i class="sidenav-icon lnr lnr-user"></i>
                             <div>User Accounts</div>
-                        </a>
-                    </li>
-                    <li class="sidenav-item orgChartPanel" style="display: none;">
-                        <a href="org_chart" class="sidenav-link">
-                            <i class="sidenav-icon lnr lnr-user"></i>
-                            <div>Organization Chart</div>
                         </a>
                     </li>
                 </ul>
