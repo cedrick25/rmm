@@ -46,7 +46,7 @@
     <script src="assets/js/jquery-3.2.0.min.js"></script>
     <script src="assets/js/ajax_main.js"></script>
     <script src="assets/js/jquery.cookie.js"></script>
-    <script src="assets/js/loginAMS.js"></script>
+    <script src="assets/js/login.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             login();

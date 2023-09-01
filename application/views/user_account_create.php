@@ -17,7 +17,7 @@
                                 <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="dashboard"><i class="feather icon-home"></i> Dashboard</a></li>
-                                        <li class="breadcrumb-item"><a href="user_accounts"><i class="feather icon-user"></i> User Accounts</a></li>
+                                        <li class="breadcrumb-item"><a href="user_account"><i class="feather icon-user"></i> User Accounts</a></li>
                                         <li class="breadcrumb-item"><a href="#"><i class="feather icon-user"></i> Create </a></li>
                                     </ol>
                                 </div>

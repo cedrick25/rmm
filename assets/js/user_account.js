@@ -6,9 +6,9 @@ var list = function(){
 
         // __executeExternalGet('8088/user?page=0&size=500').done(function (result){
         __executeExternalGet('8088/user/list').done(function (result) {
-            console.log("=====user=====")
-            console.log(result)
-            console.log("=====user=====")
+            // console.log("=====user=====")
+            // console.log(result)
+            // console.log("=====user=====")
 
             if (result.status != "ERROR") {
                 // var result = result.content;
@@ -22,21 +22,21 @@ var list = function(){
                             switch (data.isLocked) {
                             case true:
                                 status = "RESTRICTED"
-                                actions = "<button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-unlock'></i> Lift</button>";
+                                actions = "<button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"'><i class='fa fa-unlock'></i> Lift</button>";
                                 break;
                             case false:
                                 status = "ACTIVE"
-                                actions = "<button class='btn btn-sm btn-primary btn_update viewUser' type='submit' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-refresh'></i> View</button> <button class='btn btn-sm btn-success btn_activate userActivate' type='submit' data-toggle='modal' data-target='#activateModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-check'></i> Activate</button> <button class='btn btn-sm btn-danger btn_deact userDeactivate' type='submit' data-toggle='modal' data-target='#deactivateModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-ban'></i> Deactivate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-remove'></i> Remove</button> <button class='btn btn-sm btn-danger btn_restrict userRestrict' type='submit' data-toggle='modal' data-target='#restrictModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-lock'></i> Restrict</button> <button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-unlock'></i> Lift</button>";
+                                actions = "<button class='btn btn-sm btn-primary btn_update viewUser' type='submit' data-id='"+data.uuid+"'><i class='fa fa-refresh'></i> View</button> <button class='btn btn-sm btn-danger btn_deact userDeactivate' type='submit' data-toggle='modal' data-target='#deactivateModal' data-id='"+data.uuid+"'><i class='fa fa-ban'></i> Deactivate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"'><i class='fa fa-remove'></i> Remove</button> <button class='btn btn-sm btn-danger btn_restrict userRestrict' type='submit' data-toggle='modal' data-target='#restrictModal' data-id='"+data.uuid+"'><i class='fa fa-lock'></i> Restrict</button> <button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"'><i class='fa fa-unlock'></i> Lift</button>";
                                 break;
                             default:
                                 status = "ACTIVE"
-                                actions = "<button class='btn btn-sm btn-primary btn_update viewUser' type='submit' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-refresh'></i> View</button> <button class='btn btn-sm btn-success btn_activate userActivate' type='submit' data-toggle='modal' data-target='#activateModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-check'></i> Activate</button> <button class='btn btn-sm btn-danger btn_deact userDeactivate' type='submit' data-toggle='modal' data-target='#deactivateModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-ban'></i> Deactivate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-remove'></i> Remove</button> <button class='btn btn-sm btn-danger btn_restrict userRestrict' type='submit' data-toggle='modal' data-target='#restrictModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-lock'></i> Restrict</button> <button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-unlock'></i> Lift</button>";
+                                actions = "<button class='btn btn-sm btn-primary btn_update viewUser' type='submit' data-id='"+data.uuid+"'><i class='fa fa-refresh'></i> View</button> <button class='btn btn-sm btn-danger btn_deact userDeactivate' type='submit' data-toggle='modal' data-target='#deactivateModal' data-id='"+data.uuid+"'><i class='fa fa-ban'></i> Deactivate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"'><i class='fa fa-remove'></i> Remove</button> <button class='btn btn-sm btn-danger btn_restrict userRestrict' type='submit' data-toggle='modal' data-target='#restrictModal' data-id='"+data.uuid+"'><i class='fa fa-lock'></i> Restrict</button> <button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"'><i class='fa fa-unlock'></i> Lift</button>";
                                 break;
                             };
                         break;
                     case "INACTIVE":
                         status = "INACTIVE"
-                        actions = "<button class='btn btn-sm btn-success btn_activate userActivate' type='submit' data-toggle='modal' data-target='#activateModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-check'></i> Activate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-remove'></i> Remove</button>";
+                        actions = "<button class='btn btn-sm btn-success btn_activate userActivate' type='submit' data-toggle='modal' data-target='#activateModal' data-id='"+data.uuid+"'><i class='fa fa-check'></i> Activate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"'><i class='fa fa-remove'></i> Remove</button>";
                         break;
                     case "REMOVED":
                         status = "REMOVED"
@@ -44,17 +44,17 @@ var list = function(){
                         break;
                     default:
                         status = "ACTIVE"
-                        actions = "<button class='btn btn-sm btn-primary btn_update viewUser' type='submit' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-refresh'></i> View</button> <button class='btn btn-sm btn-success btn_activate userActivate' type='submit' data-toggle='modal' data-target='#activateModal' data-id='"+data.uuid+"'><i class='fa fa-check' style='display:none'></i> Activate</button> <button class='btn btn-sm btn-danger btn_deact userDeactivate' type='submit' data-toggle='modal' data-target='#deactivateModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-ban'></i> Deactivate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-remove'></i> Remove</button> <button class='btn btn-sm btn-danger btn_restrict userRestrict' type='submit' data-toggle='modal' data-target='#restrictModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-lock'></i> Restrict</button> <button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"' style='display:none'><i class='fa fa-unlock'></i> Lift</button>";
+                        actions = "<button class='btn btn-sm btn-primary btn_update viewUser' type='submit' data-id='"+data.uuid+"'><i class='fa fa-refresh'></i> View</button> <button class='btn btn-sm btn-danger btn_deact userDeactivate' type='submit' data-toggle='modal' data-target='#deactivateModal' data-id='"+data.uuid+"'><i class='fa fa-ban'></i> Deactivate</button> <button class='btn btn-sm btn-danger btn_remove removeUser' type='submit' data-toggle='modal' data-target='#removeModal' data-id='"+data.uuid+"'><i class='fa fa-remove'></i> Remove</button> <button class='btn btn-sm btn-danger btn_restrict userRestrict' type='submit' data-toggle='modal' data-target='#restrictModal' data-id='"+data.uuid+"'><i class='fa fa-lock'></i> Restrict</button> <button class='btn btn-sm btn-success btn_lift userLift' type='submit' data-toggle='modal' data-target='#liftModal' data-id='"+data.uuid+"'><i class='fa fa-unlock'></i> Lift</button>";
                         break;
                     };                                
-                    $('.table_body').append("<tr>"+
+                    $('.table_head').append("<tr>"+
                         "<td></td>"+
                         "<td>"+data.firstName+" "+data.middleName+" "+data.lastName+" "+data.suffix+"</td>"+
                         "<td>"+data.username+"</td>"+
                         "<td>"+data.email+"</td>"+
                         "<td value="+data.roleId+">"+data.roleName+"</td>"+
                         "<td>"+data.departmentName+"</td>"+
-                        "<td>"+data.managerName+"</td>"+
+                        // "<td>"+data.managerName+"</td>"+
                         "<td>"+status+"</td>"+
                         "<td align='center' class='actions'> "+actions+"")
                     });
@@ -66,9 +66,9 @@ var list = function(){
                             scrollX: true,
                             order: [[0, 'desc']],
                             // order: [[0, 'asc']],
-                            // "columnDefs": [
-                            //     { "width": "30%", "targets": 7 }
-                            // ]
+                            "columnDefs": [
+                                { "width": "30%", "targets": 7 }
+                            ]
                         //     drawCallback: function (settings) {
                         //     var data = JSON.parse(localStorage.getItem('permission'));
                         //     // console.log(permission);
@@ -99,7 +99,7 @@ var list = function(){
                         //     }
                         // }
                         });
-                        // $('.dataTables_length').addClass('bs-select');
+                        $('.dataTables_length').addClass('bs-select');
                     });
                 $(".btn_update").unbind("click").on("click", function(){
                     var userId = $(this).data("id");
