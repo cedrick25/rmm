@@ -25,9 +25,7 @@
                                         <table class="table card-table table_head" width="100%">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th>
-                                                        Cluster
-                                                    </th>
+                                                    <th>Cluster</th>
                                                     <th>Devices Name</th>
                                                     <th>Description</th>
                                                     <th>Status</th>
@@ -40,21 +38,21 @@
                                                     <td>Desktop Arabo</td>
                                                     <td>Arabian Desktop</td>
                                                     <td>True</td>
-                                                    <td></td>
+                                                    <td><a href="tracking_devices"><button class='btn btn-sm btn-info btn_view' type='submit'><i class='fa fa-eye'></i> View</button></a></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Cluster 2</td>
                                                     <td>Desktop Arabo</td>
                                                     <td>Arabian Desktop</td>
                                                     <td>True</td>
-                                                    <td></td>
+                                                    <td><button class='btn btn-sm btn-info btn_view' type='submit'><i class='fa fa-eye'></i> View</button></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Cluster 3</td>
                                                     <td>222222</td>
                                                     <td>3333333</td>
                                                     <td>True</td>
-                                                    <td></td>
+                                                    <td><button class='btn btn-sm btn-info btn_view' type='submit'><i class='fa fa-eye'></i> View</button></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -69,19 +67,20 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <!-- <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> -->
     <script type="text/javascript">
         $(document).ready(function() {
             $('.table_head thead th').each( function () {
                 var title = $(this).text();
-                $(this).html( title+'<br/><input type="text" placeholder="Search '+title+'" />' );
+                $(this).html( title+'<br/><input type="text" placeholder=" Search '+title+'" />' );
             } );
          
             // DataTable
             var table = $('.table_head').DataTable({
                 scrollX: true,
-                responsive: true // Enable responsive design if needed
+                responsive: true, // Enable responsive design if needed
+                paging: true,
             });
          
             // Apply the search

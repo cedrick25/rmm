@@ -23,11 +23,11 @@
                                         <strong>Update Cluster</strong>
                                     </div>
                                     <div class="card-body">
-                                        <div class="alert alert-dark-success alert-dismissible fade show" id="success" style="display:;">
+                                        <div class="alert alert-dark-success alert-dismissible fade show" id="success" style="display: none;">
                                             <button type="button" class="close" data-dismiss="alert">×</button>
                                             "Success! You have successfully updated a cluster."
                                         </div>
-                                        <div class="alert alert-dark-danger alert-dismissible fade show" id="success" style="display:;">
+                                        <div class="alert alert-dark-danger alert-dismissible fade show" id="failed" style="display: none;">
                                             <button type="button" class="close" data-dismiss="alert">×</button>
                                             "Oops! Something went wrong. Failed to update cluster."
                                         </div>
@@ -35,14 +35,21 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <label class="form-label">Name</label>
-                                                    <input type="text" class="form-control sernum" placeholder="Name">
+                                                    <input type="text" class="form-control name_update" placeholder="Name">
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label class="form-label">Project</label>
+                                                    <input type="text" class="form-control proj_update" placeholder="Project">
                                                     <div class="clearfix"></div>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <label class="form-label">Description</label>
-                                                    <input type="text" class="form-control rmks" placeholder="Description">
+                                                    <input type="text" class="form-control desc_update" placeholder="Description">
                                                     <div class="clearfix"></div>
                                                 </div>
                                             </div>
@@ -63,8 +70,10 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
+    <script src="assets/js/cluster.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            update();
         });
     </script>
 </body>

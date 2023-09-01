@@ -23,33 +23,19 @@
                                         <strong>Cluster Devices</strong>
                                     </div>
                                     <div class="card-body">
+                                        <h4 class="cluster_header"></h4><br>
                                         <table class="table card-table table_head" width="100%">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th>
-                                                        Devices
-                                                    </th>
+                                                    <th>Devices</th>
                                                     <th>Devices Name</th>
                                                     <th>Description</th>
+                                                    <th>Serial Number</th>
                                                     <th>Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="table_body">
-                                                <tr>
-                                                    <td><i class="fas fa-desktop" style="font-size: 26px;"></i></td>
-                                                    <td>Desktop Arabo</td>
-                                                    <td>Arabian Desktop</td>
-                                                    <td>True</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><i class="fas fa-desktop" style="font-size: 26px;"></i></td>
-                                                    <td>Desktop Arabo</td>
-                                                    <td>Arabian Desktop</td>
-                                                    <td>True</td>
-                                                    <td></td>
-                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -63,8 +49,10 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
+    <script src="assets/js/cluster.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            cluster_devices();
         });
     </script>
 </body>

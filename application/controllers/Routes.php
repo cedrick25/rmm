@@ -28,6 +28,7 @@ class routes extends CI_Controller {
 	}
 
 	// rmm start
+	// cluster start
 	public function cluster()
 	{
 		$this->load->view('cluster');
@@ -44,14 +45,35 @@ class routes extends CI_Controller {
 	{
 		$this->load->view('cluster_devices');
 	}
+	public function cluster_device_details()
+	{
+		$this->load->view('cluster_device_details');
+	}
+	// cluster end
+	// tracking start
 	public function tracking()
 	{
 		$this->load->view('tracking');
 	}
-	public function whitelisting()
+	public function tracking_devices()
 	{
-		$this->load->view('whitelisting');
+		$this->load->view('tracking_devices');
 	}
+	// tracking end
+	// app monitoring start
+	public function app_monitoring()
+	{
+		$this->load->view('app_monitoring');
+	}
+	public function app_monitoring_create()
+	{
+		$this->load->view('app_monitoring_create');
+	}
+	public function app_monitoring_update()
+	{
+		$this->load->view('app_monitoring_update');
+	}
+	// app monitoring end
 	public function notification()
 	{
 		$this->load->view('notification');

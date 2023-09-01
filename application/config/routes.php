@@ -50,26 +50,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 // rmm start
+
 $route['cluster'] = "routes/cluster";
 $route['cluster_create'] = "routes/cluster_create";
 $route['cluster_update'] = "routes/cluster_update";
 $route['cluster_devices'] = "routes/cluster_devices";
+$route['cluster_device_details'] = "routes/cluster_device_details";
+
 $route['tracking'] = "routes/tracking";
-$route['whitelisting'] = "routes/whitelisting";
+$route['tracking_devices'] = "routes/tracking_devices";
+
+$route['app_monitoring'] = "routes/app_monitoring";
+$route['app_monitoring_create'] = "routes/app_monitoring_create";
+$route['app_monitoring_update'] = "routes/app_monitoring_update";
+
 $route['notification'] = "routes/notification";
 $route['dashboard'] = "routes/dashboard";
+
 $route['user_account'] = "routes/user_account";
 $route['user_account_create'] = "routes/user_account_create";
 $route['user_account_update'] = "routes/user_account_update";
+
 $route['department'] = "routes/department";
 $route['department_create'] = "routes/department_create";
 $route['department_update'] = "routes/department_update";
+
 $route['location'] = "routes/location";
 $route['location_create'] = "routes/location_create";
 $route['location_update'] = "routes/location_update";
+
 $route['permission'] = "routes/permission";
 $route['permission_create'] = "routes/permission_create";
 $route['permission_update'] = "routes/permission_update";
+
 $route['user_role'] = "routes/user_role";
 $route['user_role_create'] = "routes/user_role_create";
 $route['user_role_update'] = "routes/user_role_update";

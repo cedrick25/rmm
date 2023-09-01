@@ -23,175 +23,7 @@
                                         <a href="cluster_create"> <button type="button" class="btn btn-info float-right newAssetbatch" style=""><span class="feather icon-plus-circle"></span>&nbsp;&nbsp;New Cluster</button></a>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-sm btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-sm btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-sm btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="card mb-4 bg-pattern-3-dark">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <a href="cluster_update" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                                    <div class="text-large">Name</div>
-                                                                </a>
-                                                                <div class="text-muted small">Description</div>
-                                                                <div style="margin-top: 5px;">
-                                                                    <a href="cluster_devices">
-                                                                        <button type="button" class="btn btn-sm btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="row" id="cluster_container">
                                         </div>
                                     </div>
                                 </div>
@@ -204,8 +36,10 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
+    <script src="assets/js/cluster.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            list();
         });
     </script>
 </body>

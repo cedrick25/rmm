@@ -24,27 +24,27 @@
                             <div>Cluster</div>
                         </a>
                     </li>
-                    <li class="sidenav-item trackingNav" style="display: ;">
+                    <!-- <li class="sidenav-item trackingNav" style="display: ;">
                         <a href="tracking" class="sidenav-link">
                             <i class="sidenav-icon feather icon-map-pin"></i>
                             <div>Tracking</div>
                         </a>
-                    </li>
+                    </li> -->
                     <li class="sidenav-item appNav" style="display: ;">
-                        <a href="whitelisting" class="sidenav-link">
+                        <a href="app_monitoring" class="sidenav-link">
                             <i class="sidenav-icon feather icon-slash"></i>
-                            <div>App Whitelisting</div>
+                            <div>App Monitoring</div>
                         </a>
                     </li>
-                    <li class="sidenav-item notificationNav" style="display: ;">
+                    <!-- <li class="sidenav-item notificationNav" style="display: ;">
                         <a href="notification" class="sidenav-link">
                             <i class="sidenav-icon feather icon-bell"></i>
                             <div>Notification</div>
                         </a>
-                    </li>
+                    </li> -->
 
                     <!-- User Management -->
-                    <li class="sidenav-divider mb-1"></li>
+                    <!-- <li class="sidenav-divider mb-1"></li>
                     <li class="sidenav-header small font-weight-semibold">System Settings</li>
                     <li class="sidenav-item userAccess">
                     <li class="sidenav-item userAccessPanel">
@@ -76,7 +76,7 @@
                             <i class="sidenav-icon lnr lnr-user"></i>
                             <div>User Accounts</div>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
 

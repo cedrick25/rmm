@@ -23,11 +23,11 @@
                                         <strong>Create New Cluster</strong>
                                     </div>
                                     <div class="card-body">
-                                        <div class="alert alert-dark-success alert-dismissible fade show" id="success" style="display:;">
+                                        <div class="alert alert-dark-success alert-dismissible fade show" id="success" style="display: none;">
                                             <button type="button" class="close" data-dismiss="alert">×</button>
                                             "Success! You have successfully created a new cluster."
                                         </div>
-                                        <div class="alert alert-dark-danger alert-dismissible fade show" id="success" style="display:;">
+                                        <div class="alert alert-dark-danger alert-dismissible fade show" id="failed" style="display: none;">
                                             <button type="button" class="close" data-dismiss="alert">×</button>
                                             "Oops! Something went wrong. Failed to create a new cluster."
                                         </div>
@@ -35,20 +35,27 @@
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <label class="form-label">Name</label>
-                                                    <input type="text" class="form-control sernum" placeholder="Name">
+                                                    <input type="text" class="form-control name" placeholder="Name">
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label class="form-label">Project</label>
+                                                    <input type="text" class="form-control proj" placeholder="Project">
                                                     <div class="clearfix"></div>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <label class="form-label">Description</label>
-                                                    <input type="text" class="form-control rmks" placeholder="Description">
+                                                    <input type="text" class="form-control desc" placeholder="Description">
                                                     <div class="clearfix"></div>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group col-md-12 demo-inline-spacing mt-3">
-                                                    <button type="submit" class="btn btn-info float-right btn_confirm_update">Create</button> 
+                                                    <button type="submit" class="btn btn-info float-right btn_confirm">Create</button> 
                                                 </div>
                                             </div>
                                         </div>
@@ -63,8 +70,10 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
+    <script src="assets/js/cluster.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            create();
         });
     </script>
 </body>
