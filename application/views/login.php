@@ -9,35 +9,37 @@
     <div class="sufee-login d-flex align-content-center flex-wrap">
         <div class="container">
             <div class="login-content">
-                <div class="login-logo">
-                    <span style="font-size: 60px;"><b>RMM</b></span><br>
-                    <span>Remote Monitoring Management</span>
-                </div>
-                <div class="login-form">
-                    <div style="margin-bottom: 30px; text-align: center;">
-                        <!-- <img class="align-content" src="images/amslogo.png" alt="" style="max-width: 32%;"> -->
+                <div class="login-form" style="margin-top: 90px;">
+                    <div style="margin-bottom: 0px; text-align: center;">
+                        <img class="align-content" src="images/rmmlogo.png" alt="" style="max-width: 32%;">
+                    </div>
+                    <div style="margin-bottom: 10px; text-align: center;">
+                    <span style="font-size: 25px; text-align: center;">Remote Monitoring Management</span>
                     </div>
                     <div class="prompt" role="alert" id="prompt">
                     </div>
                     <hr>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon"><i class="fa fa-user"></i></div>
-                            <input type="text" class="form-control email_username" placeholder="Email or Username">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label class="form-label">Email / Username</label>
+                            <input type="text" class="form-control email_username" placeholder="JohnDoe@gmail.com / JohnDoe20">
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control password" placeholder="********">
+                            <div class="clearfix"></div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-addon"><i class="fa fa-lock"></i></div>
                             <input type="password" class="form-control password" placeholder="********">
                         </div>
-                    </div>
-                    <a href="#!">
-                        <button type="submit" class="btn btn-success btn-flat m-b-30 m-t-30 btn-confirm">Sign in</button>
+                    </div> -->
+                    <a href="javascript:">
+                        <button type="submit" class="btn btn-info btn-flat m-b-30 m-t-30 btn-confirm">Log in</button>
                     </a>
-                    <div class="register-link m-t-15 text-center">
-                        <p>Don't have account ? <a href="#!" data-toggle="modal" data-target="#newUserModal"> Sign Up Here</a></p>
-                    </div>
                 </div>
             </div>
         </div>

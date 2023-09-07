@@ -56,6 +56,8 @@ $route['cluster_create'] = "routes/cluster_create";
 $route['cluster_update'] = "routes/cluster_update";
 $route['cluster_devices'] = "routes/cluster_devices";
 $route['cluster_device_details'] = "routes/cluster_device_details";
+$route['cluster_device_update'] = "routes/cluster_device_update";
+$route['cluster_move_device'] = "routes/cluster_move_device";
 
 $route['tracking'] = "routes/tracking";
 $route['tracking_devices'] = "routes/tracking_devices";

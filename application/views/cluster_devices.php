@@ -24,11 +24,22 @@
                                     </div>
                                     <div class="card-body">
                                         <h4 class="cluster_header"></h4><br>
+                                        <div class="row mb-2">
+                                            <div class="col-md-6">
+                                                <button class="btn btn-sm btn-info moveCluster" style="">Move to Cluster</button>
+                                            </div>
+                                        </div>
                                         <table class="table card-table table_head" width="100%">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th>Devices</th>
+                                                    <th>
+                                                        <label class="custom-control custom-checkbox m-0">
+                                                            <input type="checkbox" id="select-all" class="custom-control-input">All
+                                                            <span class="custom-control-label"></span>
+                                                        </label>
+                                                    </th>
                                                     <th>Devices Name</th>
+                                                    <th>Manufacturer</th>
                                                     <th>Description</th>
                                                     <th>Serial Number</th>
                                                     <th>Status</th>

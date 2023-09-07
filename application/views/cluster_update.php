@@ -29,20 +29,24 @@
                                         </div>
                                         <div class="alert alert-dark-danger alert-dismissible fade show" id="failed" style="display: none;">
                                             <button type="button" class="close" data-dismiss="alert">×</button>
-                                            "Oops! Something went wrong. Failed to update cluster."
+                                            "Oops! Something went wrong. Cluster Name already exist."
                                         </div>
                                         <div class="col-md-6" style="display:;">
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
-                                                    <label class="form-label">Name</label>
-                                                    <input type="text" class="form-control name_update" placeholder="Name">
-                                                    <div class="clearfix"></div>
+                                                    <label class="form-label">Cluster Name:</label>
+                                                    <span class="name"></span>
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label class="form-label">Description:</label>
+                                                    <span class="description"></span>
                                                 </div>
                                             </div>
+                                            <hr>
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
-                                                    <label class="form-label">Project</label>
-                                                    <input type="text" class="form-control proj_update" placeholder="Project">
+                                                    <label class="form-label">Cluster Name</label>
+                                                    <input type="text" class="form-control name_update" placeholder="Name">
                                                     <div class="clearfix"></div>
                                                 </div>
                                             </div>
@@ -54,8 +58,8 @@
                                                 </div>
                                             </div>
                                             <div class="form-row">
-                                                <div class="form-group col-md-12 demo-inline-spacing mt-3">
-                                                    <button type="submit" class="btn btn-info float-right btn_confirm_update">Update</button> 
+                                                <div class="form-group col-md-12">
+                                                    <button type="submit" class="btn btn-info btn-sm float-right btn_confirm_update">Update</button> 
                                                 </div>
                                             </div>
                                         </div>

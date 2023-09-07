@@ -2,7 +2,7 @@
                 <!-- Brand demo (see assets/css/demo/demo.css) -->
                 <div class="app-brand demo">
                 <span class="app-brand-logo demo">
-                    <!-- <img src="assets/img/amslogo.png" alt="Brand Logo" class="d-block ui-w-30 rounded-circle"> -->
+                    <img src="images/rmmlogo.png" alt="Brand Logo" class="d-block ui-w-30" style="width: 114px!important;">
                 </span>
                     <a href="dashboard" class="app-brand-text demo sidenav-text font-weight-normal ml-2">RMM</a>
                 </div>

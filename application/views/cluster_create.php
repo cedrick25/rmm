@@ -39,13 +39,13 @@
                                                     <div class="clearfix"></div>
                                                 </div>
                                             </div>
-                                            <div class="form-row">
+                                            <!-- <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <label class="form-label">Project</label>
                                                     <input type="text" class="form-control proj" placeholder="Project">
                                                     <div class="clearfix"></div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="form-row">
                                                 <div class="form-group col-md-12">
                                                     <label class="form-label">Description</label>
@@ -54,8 +54,8 @@
                                                 </div>
                                             </div>
                                             <div class="form-row">
-                                                <div class="form-group col-md-12 demo-inline-spacing mt-3">
-                                                    <button type="submit" class="btn btn-info float-right btn_confirm">Create</button> 
+                                                <div class="form-group col-md-12">
+                                                    <button type="submit" class="btn btn-info btn-sm float-right btn_confirm">Create</button> 
                                                 </div>
                                             </div>
                                         </div>

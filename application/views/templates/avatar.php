@@ -169,7 +169,7 @@
                                     <div class="dropdown-divider"></div> -->
                                     <a href="" id="profile" class="dropdown-item">
                                         <i class="feather icon-user"></i> &nbsp; Profile</a>
-                                    <a href="#!" class="dropdown-item btn_logout">
+                                    <a href="/rmm" class="dropdown-item btn_logout">
                                         <i class="feather icon-power text-danger"></i> &nbsp; Log Out</a>
                                 </div>
                             </div>

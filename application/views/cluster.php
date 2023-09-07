@@ -24,6 +24,25 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row" id="cluster_container">
+                                            <div class="col-md-4">
+                                                <div class="card mb-4 bg-pattern-3-dark">
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
+                                                            </div>
+                                                            <div class="ml-3">
+                                                                <div class="text-large" style="color: #878787;">Device Registration</div>
+                                                                <div class="text-muted small">Device Registration</div>
+                                                                <div style="margin-top: 5px;">
+                                                                    <a href="cluster_devices?clusterID=0&clusterName=Unregister">
+                                                                        <button type="button" class="btn btn-sm btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;Assign Devices to the cluster</button>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

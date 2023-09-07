@@ -377,7 +377,7 @@
 }
 
 .bg-dark {
-  background-color: rgba(24, 28, 33, 0.9) !important;
+  background-color: rgb(237 234 234 / 90%) !important;
 }
 
 a.bg-dark:hover, a.bg-dark:focus {
@@ -9169,7 +9169,7 @@ a.bg-linux-darker:hover, a.bg-linux-darker:focus {
 }
 
 .navbar.bg-dark {
-  background-color: #606c72 !important;
+  background-color: #3d80c5 !important;
   color: #dadcde;
 }
 .navbar.bg-dark .navbar-brand {
@@ -9444,7 +9444,7 @@ a.bg-linux-darker:hover, a.bg-linux-darker:focus {
 }
 .sidenav.logo-dark .app-brand {
   height: 70px;
-  background: #606c72;
+  background: #3d80c5;
 }
 .sidenav.logo-dark .app-brand .sidenav-link,
 .sidenav.logo-dark .app-brand .sidenav-text {
