@@ -2553,3 +2553,8 @@ input:checked + .slider:before {
 .mf_field dl dd {
 	font-size: 14px;
 }
+#memoryChart {
+    width: 1000px;
+    height: 300px;
+    display: block;  // Ensuring block can sometimes fix sizing issues too.
+}

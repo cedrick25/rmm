@@ -274,54 +274,27 @@ var cluster_device_details = function(){
                     var responseArray = result.response;
                     // Create a function to generate tab content
                     function generateTabContent(data) {
-                        var content = '<div class="tab-pane fade" id="' + data.type + '" role="tabpanel">';
+                        var content = `<div class="tab-pane fade" id="${data.type}" role="tabpanel">`;
 
                         if (data.type === "CS") {
-                            // Parse JSON data if needed
                             var beautifiedData = JSON.parse(data.jsonData);
 
                             content += '<div class="json-data">';
-                            content += '<h5>FIRMWARE</h5>';
-                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                            content += '<dt class="col-sm-3"><span>DESCRIPTION</span></dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.firmware.description + '</dd>';
-                            content += '<dt class="col-sm-3">MANUFACTURER</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.firmware.manufacturer + '</dd>';
-                            content += '<dt class="col-sm-3">RELEASE DATE</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.firmware.releaseDate + '</dd>';
-                            content += '<dt class="col-sm-3">NAME</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.firmware.name + '</dd>';
-                            content += '<dt class="col-sm-3">VERSION</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.firmware.version + '</dd>';
-                            content += '</dl>';
-                            content += '<h5>BASEBOARD</h5>';
-                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                            content += '<dt class="col-sm-3">MANUFACTURER</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.baseboard.manufacturer + '</dd>';
-                            content += '<dt class="col-sm-3">MODEL</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.baseboard.model + '</dd>';
-                            content += '<dt class="col-sm-3">SERIAL NUMBER</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.baseboard.serialNumber + '</dd>';
-                            content += '<dt class="col-sm-3">VERSION</dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedData.baseboard.version + '</dd>';
-                            content += '</dl>';
+                            content += generateKeyValuePairs(beautifiedData.firmware, 'FIRMWARE');
+                            content += generateKeyValuePairs(beautifiedData.baseboard, 'BASEBOARD');
                             content += '</div>';
-                        } else if(data.type === "PUBLIC_IP"){
+                        } else if (data.type === "PUBLIC_IP") {
                             var beautifiedDataPublicIp = JSON.parse(data.jsonData);
                             content += '<div class="json-data">';
-                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                            content += '<dt class="col-sm-3"><span>PUBLIC IP</span></dt>';
-                            content += '<dd class="col-sm-9">' + beautifiedDataPublicIp.ipAddress + '</dd>';
-                            content += '</dl>';
+                            content += generateKeyValuePair(beautifiedDataPublicIp, 'PUBLIC IP');
                             content += '</div>';
-                        } else if(data.type === "USB_DEVICES"){
+                        } else if (data.type === "USB_DEVICES") {
                             var beautifiedDataUSB = JSON.parse(data.jsonData);
                             content += generateUsbDevicesTable(beautifiedDataUSB);
-                        } else if(data.type === "GPU"){
+                        } else if (data.type === "GPU") {
                             var gpuData = JSON.parse(data.jsonData);
                             content += generateGPUContent(gpuData);
-                        } else if(data.type === "DISPLAYS"){
-                            // var data = JSON.parse(data.jsonData);
+                        } else if (data.type === "DISPLAYS") {
                             content += generateDisplayContent(data);
                         } else if (data.type === "NETWORK") {
                             content += generateNetworkContent(data);
@@ -334,88 +307,52 @@ var cluster_device_details = function(){
                         } else if (data.type === "SystemCpuLoadTicks") {
                             content += generateSystemCpuLoadTicksContent(data);
                         } else if (data.type === "STORAGE") {
-                            var storage = JSON.parse(data.jsonData);
+                            var storageArray = JSON.parse(data.jsonData);
                             content += '<div class="json-data">';
-                            content += '<div id="chartContainer" style="width: 100%; height: 350px;">';
-                            content += '<canvas id="storageChart"></canvas>';
+                            storageArray.forEach(storage => {
+                                content += generateStorageProgressBar(storage);
+                            });
                             content += '</div>';
-                            content += '<br>';
-                            content += '<h5>Storage Information</h5>';
-                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                            content += '<dt class="col-sm-3"><span>Total Size</span></dt>';
-                            content += '<dd class="col-sm-9">' + bytesToGB(storage.size) + ' GB</dd>';
-                            content += '<dt class="col-sm-3"><span>Model</span></dt>';
-                            content += '<dd class="col-sm-9">' + storage.model + '</dd>';
-                            content += '<dt class="col-sm-3"><span>Serial</span></dt>';
-                            content += '<dd class="col-sm-9">' + storage.serial + '</dd>';
-                            content += '</dl>';
-                            content += '</div>';
-                            // generateStorageChart(storage);
                         } else if (data.type === "MEMORY") {
-                            var memory = JSON.parse(data.id);
-                            var payload = {
-                                "startDate": "2023-09-04 09:59:00",
-                                "endDate": "2023-09-04 10:00:00"
-                            }
-                            __executeExternalPost('8090/deviceDetail/history/'+data.id,JSON.stringify(payload)).done(function (result) {
-
-                                if (result.status != "ERROR") {
-                                    $(document).ready(function() {
-
-                                        var responseArray = result.response;
-                                        console.log(responseArray)
-
-                                        content += '<div class="json-data">';
-                                        content += '<div id="chartContainer" style="width: 100%; height: 350px;">';
-                                        content += '<canvas id="memoryChart"></canvas>';
-                                        content += '</div>';
-                                        content += '<br>';
-                                        content += '<h5>Memory Information</h5>';
-                                        content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                                        content += '<dt class="col-sm-3"><span>Total Memory</span></dt>';
-                                        content += '<dd class="col-sm-9">' + bytesToGB(responseArray.total) + ' GB</dd>';
-                                        content += '<dt class="col-sm-3"><span>Available Memory</span></dt>';
-                                        content += '<dd class="col-sm-9">' + bytesToGB(responseArray.available) + ' GB</dd>';
-                                        content += '</dl>';
-                                        content += '</div>';
-                                        // content += generateMemoryContent(JSON.parse(data.jsonData));
-                                        // generateMemoryChart(data);
-
-
-                                        var memoryHistory = JSON.parse(data.historicalData);
-                                        var content = '<div class="json-data">';
-                                        content += '<h5>CPU Load Ticks</h5>';
-
-                                        for (var i = 0; i < memoryHistory.length; i++) {
-                                            var memory = memoryHistory[i];
-                                            content += '<div class="core-load">';
-                                            content += '<h6>Core ' + i + '</h6>';
-                                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-
-                                            // Define labels for CPU load metrics
-                                            var metricsLabels = ['User', 'Nice', 'System', 'Idle', 'I/O Wait', 'IRQ', 'Soft IRQ', 'Steal'];
-
-                                            for (var j = 0; j < metricsLabels.length; j++) {
-                                                content += '<dt class="col-sm-3"><span>' + metricsLabels[j] + '</span></dt>';
-                                                content += '<dd class="col-sm-9">' + coreLoad[j] + '</dd>';
-                                            }
-
-                                            content += '</dl>';
-                                            content += '</div>';
-                                        }
-                                    })
-                                }
-                            })
+                            content += '<div class="json-data">';
+                            content += '<div id="chartContainer">';
+                            content += '<canvas id="memoryChart"></canvas>';
+                            content += generateMemoryContent(JSON.parse(data.jsonData));
+                            content += '</div>';
+                            content += '</div>';
                         } else {
-                            content += '<pre class="json-data">' + JSON.stringify(data, null, 2) + '</pre>';
-                            console.log('false')
+                            content += `<pre class="json-data">${JSON.stringify(data, null, 2)}</pre>`;
+                            console.log('false');
                         }
 
                         content += '</div>';
                         return content;
                     }
+
+                    function generateKeyValuePair(data, title) {
+                        var content = '';
+                        content += `<h5>${title}</h5>`;
+                        content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
+                        for (var key in data) {
+                            content += `<dt class="col-sm-3"><span>${key}</span></dt>`;
+                            content += `<dd class="col-sm-9">${data[key]}</dd>`;
+                        }
+                        content += '</dl>';
+                        return content;
+                    }
+                    function generateKeyValuePairs(data, title) {
+                        var content = '';
+                        content += `<h5>${title}</h5>`;
+                        content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
+                        for (var key in data) {
+                            content += `<dt class="col-sm-3">${key}</dt>`;
+                            content += `<dd class="col-sm-9">${data[key]}</dd>`;
+                        }
+                        content += '</dl>';
+                        return content;
+                    }
                     function generateUsbDevicesTable(devices) {
-                        var table = `
+                        var content = `
                             <div class="json-data">
                                 <table id="usbDevicesTable" class="table table-hover table-sm">
                                     <thead>
@@ -429,10 +366,10 @@ var cluster_device_details = function(){
                                     </thead>
                                     <tbody>
                         `;
-                        
+
                         for (var i = 0; i < devices.length; i++) {
                             var device = devices[i];
-                            table += `
+                            content += `
                                 <tr>
                                     <td>${device.name || 'N/A'}</td>
                                     <td>${device.vendor || 'N/A'}</td>
@@ -442,40 +379,24 @@ var cluster_device_details = function(){
                                 </tr>
                             `;
                         }
-                        
-                        table += `
+
+                        content += `
                                     </tbody>
                                 </table>
                             </div>
                         `;
-                        
-                        return table;
+
+                        return content;
                     }
                     function generateGPUContent(gpus) {
                         var content = '<div class="json-data">';
-                        content += '<h5>GPU</h5>';
+                        // content += '<h5>GPU</h5>';
 
                         for (var i = 0; i < gpus.length; i++) {
                             var gpu = gpus[i];
                             content += '<div class="gpu-section">';
-                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                            content += '<dt class="col-sm-3"><span>Name</span></dt>';
-                            content += '<dd class="col-sm-9">' + (gpu.name || 'N/A') + '</dd>';
-                            content += '<dt class="col-sm-3">Device ID</dt>';
-                            content += '<dd class="col-sm-9">' + (gpu.deviceId || 'N/A') + '</dd>';
-                            content += '<dt class="col-sm-3">Vendor</dt>';
-                            content += '<dd class="col-sm-9">' + (gpu.vendor || 'N/A') + '</dd>';
-                            content += '<dt class="col-sm-3">Version Info</dt>';
-                            content += '<dd class="col-sm-9">' + (gpu.versionInfo || 'N/A') + '</dd>';
-                            content += '<dt class="col-sm-3">VRAM</dt>';
-                            content += '<dd class="col-sm-9">' + (gpu.vram ? computeBytesToGb(gpu.vram) + ' GB' : 'N/A') + '</dd>';
-                            content += '</dl>';
+                            content += generateKeyValuePair(gpu, 'GPU');
                             content += '</div>';
-                        }
-
-                        function computeBytesToGb(size) {
-                            const bytes = (((size / 1024) / 1024) / 1024);
-                            return bytes.toFixed(2);
                         }
 
                         content += '</div>';
@@ -539,49 +460,11 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
-                    function generateBatteryContent(batteryData) {
-
+                    function generateBatteryContent(data) {
                         var batteryData = JSON.parse(data.jsonData);
                         var content = '<div class="json-data">';
-                        content += '<h5>BATTERY</h5>';
-                        content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                        content += '<dt class="col-sm-3"><span>Name</span></dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].name + '</dd>';
-                        content += '<dt class="col-sm-3">Device Name</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].deviceName + '</dd>';
-                        content += '<dt class="col-sm-3">Remaining Capacity Percent</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].remainingCapacityPercent + '</dd>';
-                        content += '<dt class="col-sm-3">Time Remaining Estimated</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].timeRemainingEstimated + '</dd>';
-                        content += '<dt class="col-sm-3">Voltage</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].voltage + '</dd>';
-                        content += '<dt class="col-sm-3">Amperage</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].amperage + '</dd>';
-                        content += '<dt class="col-sm-3">Power On Line</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].powerOnLine + '</dd>';
-                        content += '<dt class="col-sm-3">Charging</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].charging + '</dd>';
-                        content += '<dt class="col-sm-3">Discharging</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].discharging + '</dd>';
-                        content += '<dt class="col-sm-3">Capacity Units</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].capacityUnits + '</dd>';
-                        content += '<dt class="col-sm-3">Current Capacity</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].currentCapacity + ' MWH</dd>';
-                        content += '<dt class="col-sm-3">Max Capacity</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].maxCapacity + ' MWH</dd>';
-                        content += '<dt class="col-sm-3">Design Capacity</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].designCapacity + ' MWH</dd>';
-                        content += '<dt class="col-sm-3">Cycle Count</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].cycleCount + '</dd>';
-                        content += '<dt class="col-sm-3">Chemistry</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].chemistry + '</dd>';
-                        content += '<dt class="col-sm-3">Manufacturer</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].manufacturer + '</dd>';
-                        content += '<dt class="col-sm-3">Serial Number</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].serialNumber + '</dd>';
-                        content += '<dt class="col-sm-3">Temperature</dt>';
-                        content += '<dd class="col-sm-9">' + batteryData[0].temperature + '</dd>';
-                        content += '</dl>';
+                        // content += '<h5>BATTERY</h5>';
+                        content += generateKeyValuePair(batteryData[0], 'BATTERY');
                         content += '</div>';
                         return content;
                     }
@@ -627,7 +510,7 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
-                    function generateCPULoadTicksContent(cpuLoadTicks) {
+                    function generateCPULoadTicksContent(data) {
                         var cpuLoadTicks = JSON.parse(data.jsonData);
                         var content = '<div class="json-data">';
                         content += '<h5>CPU Load Ticks</h5>';
@@ -638,7 +521,6 @@ var cluster_device_details = function(){
                             content += '<h6>Core ' + i + '</h6>';
                             content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
 
-                            // Define labels for CPU load metrics
                             var metricsLabels = ['User', 'Nice', 'System', 'Idle', 'I/O Wait', 'IRQ', 'Soft IRQ', 'Steal'];
 
                             for (var j = 0; j < metricsLabels.length; j++) {
@@ -653,13 +535,12 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
-                    function generateSystemCpuLoadTicksContent(systemCpuLoadTicks) {
+                    function generateSystemCpuLoadTicksContent(data) {
                         var systemCpuLoadTicks = JSON.parse(data.jsonData);
                         var content = '<div class="json-data">';
                         content += '<h5>System CPU Load Ticks</h5>';
                         content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
 
-                        // Define labels for CPU load metrics
                         var metricsLabels = ['User', 'Nice', 'System', 'Idle', 'I/O Wait', 'IRQ', 'Soft IRQ', 'Steal'];
 
                         for (var i = 0; i < metricsLabels.length; i++) {
@@ -671,94 +552,131 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
-                    function bytesToGB(bytes) {
+                    function computeBytesToGB(bytes) {
                         return (bytes / (1024 * 1024 * 1024)).toFixed(2);
                     }
-                    function generateMemoryChart(data) {
-                        $(document).ready(function () {
-                            // Set the desired width and height for the chart container
-                            var chartContainer = $("#memoryChart");
-                            chartContainer.css({ width: '10px', height: '10px' });
+                    function formatDate(date) {
+                        const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                        return date.toLocaleDateString(undefined, options);
+                    }
+                    function generateMemoryContent(memoryData) {
+                        var totalMemory = memoryData.total;
+                        var memoryInUse = totalMemory - memoryData.available;
+                        var content = '<div class="mem_info">';
+                        
+                        content += '<br><h5>Memory Information</h5><br>';
+                        content += '<p>Total Memory: ' + computeBytesToGB(totalMemory) + ' GB</p>';
+                        content += '<p>Memory in Use: ' + computeBytesToGB(memoryInUse) + ' GB</p>';
+                        content += '<p>Available Memory: ' + computeBytesToGB(memoryData.available) + ' GB</p><br>';
+                        content += '</div>';
+                        $(document).ready(function() {
+                            generateMemoryChart(memoryData);
+                        });
+                        
+                        return content;
+                    }
+                    function generateMemoryChart(memoryData) {
+                        // Set the desired width and height for the chart container
+                        var chartContainer = $("#chartContainer");
+                        chartContainer.css({ width: '1000px', height: '300px' });
 
-                            // Get the canvas element
-                            var canvas = $("#memoryChart")[0];
+                        // Get the canvas element
+                        var canvas = $("#memoryChart")[0];
 
-                            // Get memory data from the 'data' object by parsing the JSON data
-                            var memoryData = JSON.parse(data.jsonData);
+                        var totalMemory = memoryData.total; // Total memory in bytes
+                        var availableMemory = memoryData.available; // Available memory in bytes
+                        var memoryInUse = totalMemory - availableMemory;
+                        var memoryInUseGB = computeBytesToGB(memoryInUse);
 
-                            // Convert memory data to GB
-                            var availableMemoryGB = bytesToGB(memoryData.available);
-                            var virtualMemoryInUseGB = bytesToGB(memoryData.virtualMemory.virtualInUse);
-                            var totalMemory = bytesToGB(memoryData.total);
+                        // Initialize arrays to store data
+                        var labels = ["Initial Label"]; // You can set this to a more appropriate initial label
+                        var dataPoints = [memoryInUseGB];
 
-                            // Create a Chart.js chart
-                            var ctx = canvas.getContext("2d");
-                            var memoryChart = new Chart(ctx, {
-                                type: "line", // Choose the chart type (e.g., bar, line, pie)
-                                data: {
-                                    labels: ["Available Memory "+availableMemoryGB+" (GB)", "Virtual Memory In Use "+totalMemory+" (GB)"],
-                                    datasets: [
-                                        {
-                                            label: "Memory Usage",
-                                            data: [availableMemoryGB, totalMemory],
-                                            backgroundColor: "rgba(0, 123, 255, 0.2)", // Set the fill color
-                                            borderColor: "rgba(0, 123, 255, 1)", // Set the line color
-                                            borderWidth: 2, // Set the line width
-                                            fill: true, // Enable filling under the line
+                        // Create a Chart.js chart
+                        var ctx = canvas.getContext("2d");
+                        var memoryChart = new Chart(ctx, {
+                            type: "line",
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: "Memory Usage (GB)",
+                                        data: dataPoints,
+                                        backgroundColor: "rgba(0, 123, 255, 0.2)",
+                                        borderColor: "rgba(0, 123, 255, 1)",
+                                        borderWidth: 2,
+                                        fill: true,
+                                        stepped: 'before',
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function (value) {
+                                                return value + ' GB';
+                                            },
                                         },
-                                    ],
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
+                                    },
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Time',
                                         },
                                     },
                                 },
-                            });
+                            },
                         });
+
+                        var elapsedTime = 0; // Variable to keep track of how long the chart has been running in seconds
+                        var maxDuration = 3600; // 1 hour in seconds
+
+                        // Let's use an IIFE (Immediately Invoked Function Expression) to encapsulate our logic
+                        (function addDataPoint() {
+                            if (elapsedTime >= maxDuration) {
+                                return; // Stop the function if 1 hour has passed
+                            }
+
+                            var currentDate = new Date();
+                            var currentTime = formatDate(currentDate);
+
+                            labels.push(currentTime);
+                            dataPoints.push(computeBytesToGB(memoryInUse));
+
+                            var maxDataPoints = 10;
+                            if (labels.length > maxDataPoints) {
+                                labels.shift();
+                                dataPoints.shift();
+                            }
+
+                            memoryChart.update();
+
+                            elapsedTime += 1; // Increase the elapsed time by 1 second
+
+                            // Recursive setTimeout is generally safer than setInterval
+                            setTimeout(addDataPoint, 1000);
+                        })();
                     }
-                    // function generateStorageChart(storageData) {
-                    //     var storageData = JSON.parse(data.jsonData);
-                    //     console.log(storageData)
-                    //     var canvas = document.getElementById("storageChart");
-                    //     var ctx = canvas.getContext("2d");
 
-                    //     var storageChart = new Chart(ctx, {
-                    //         type: "line", // Choose the chart type (e.g., bar, line, pie)
-                    //         data: {
-                    //             labels: ["Total Size (GB)"],
-                    //             datasets: [
-                    //                 {
-                    //                     label: "Storage Size",
-                    //                     data: [bytesToGB(storageData.size)],
-                    //                     backgroundColor: "blue",
-                    //                     borderColor: "blue",
-                    //                     borderWidth: 2,
-                    //                 },
-                    //             ],
-                    //         },
-                    //         options: {
-                    //             responsive: true,
-                    //             scales: {
-                    //                 y: {
-                    //                     beginAtZero: true,
-                    //                 },
-                    //             },
-                    //         },
-                    //     });
-                    // }
+                    function generateStorageProgressBar(storage) {
+                        var totalSizeGB = (storage.size / (1024 * 1024 * 1024)).toFixed(2);
+                        var usedSizeGB = totalSizeGB - (storage.partitions.reduce((acc, partition) => acc + partition.size, 0) / (1024 * 1024 * 1024)).toFixed(2);
+                        var availableSizeGB = (totalSizeGB - usedSizeGB).toFixed(2);
+                        var usedPercentage = ((usedSizeGB / totalSizeGB) * 100).toFixed(2);
 
-                    $(document).ready(function() {
-                        // Initialize DataTables for the USB Devices table
-                        $('#usbDevicesTable').DataTable({
-                            lengthChange: false,
-                            searching: false,
-                        });
-                    });
-
+                        return `
+                            <h5>Model - ${storage.model}</h5>
+                            <div class="progress" style="height: 30px;">
+                                <div class="progress-bar progress-bar-striped bg-info" style="width: ${usedPercentage}%" aria-valuenow="${usedPercentage}" aria-valuemin="0" aria-valuemax="100">${usedPercentage}% Used</div>
+                            </div>
+                            <p>${availableSizeGB} GB FREE of ${totalSizeGB} GB</p>
+                        `;
+                    }
                     // Create tabs for each response data type
                     for (var i = 0; i < responseArray.length; i++) {
                         var data = responseArray[i];

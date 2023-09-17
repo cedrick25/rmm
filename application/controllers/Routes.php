@@ -26,6 +26,10 @@ class routes extends CI_Controller {
 	{
 		$this->load->view('dashboard');
 	}
+	public function chart()
+	{
+		$this->load->view('chart');
+	}
 
 	// rmm start
 	// cluster start
