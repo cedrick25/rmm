@@ -2554,7 +2554,17 @@ input:checked + .slider:before {
 	font-size: 14px;
 }
 #memoryChart {
-    width: 1000px;
-    height: 300px;
+    width: 100%!important;
+    height: 550px!important;
     display: block;  // Ensuring block can sometimes fix sizing issues too.
+}
+
+.json-data {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 10px;
+    overflow: auto;
+    max-height: 700px;
+    overflow-y: auto;
 }

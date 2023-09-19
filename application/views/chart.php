@@ -7,16 +7,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<div id="chartContainer" width="400" height="200">
+<div id="chartContainer" width="1800" height="200">
     <canvas id="memoryChart" width="400" height="200"></canvas>
 </div>
     <div class="mem_info"></div>
 
 <script>
     $(document).ready(() => {
-
-                        var chartContainer = $("#chartContainer");
-                        chartContainer.css({ width: '1000px', height: '300px' });
+        var chartContainer = $("#chartContainer");
+        chartContainer.css({ width: '1000px', height: '300px' });
         function computeBytesToGB(bytes) {
             return (bytes / (1024 * 1024 * 1024)).toFixed(2);
         }

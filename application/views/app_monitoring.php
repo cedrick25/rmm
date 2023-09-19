@@ -20,7 +20,6 @@
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <strong>Application List</strong>
-                                        <a href="app_monitoring_create"> <button type="button" class="btn btn-info float-right app_monitoring" style=""><span class="feather icon-plus-circle"></span>&nbsp;&nbsp;New App Monitoring</button></a>
                                     </div>
                                     <div class="card-body">
                                         <table class="table card-table table_head" width="100%">

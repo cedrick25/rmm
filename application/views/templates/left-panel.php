@@ -12,28 +12,22 @@
                 <ul class="sidenav-inner py-1">
 
                     <!-- Dashboards -->
-                    <li class="sidenav-item dashboardNav" style="display: ;">
-                        <a href="dashboard" class="sidenav-link">
+                    <li class="sidenav-item dashboardNav" style="">
+                        <a href="/rmm/dashboard" class="sidenav-link">
                             <i class="sidenav-icon feather icon-home"></i>
                             <div>Dashboards</div>
                         </a>
                     </li>
-                    <li class="sidenav-item clusterNav" style="display: ;">
-                        <a href="cluster" class="sidenav-link">
+                    <li class="sidenav-item clusterNav" style="">
+                        <a href="/rmm/cluster" class="sidenav-link">
                             <i class="sidenav-icon feather icon-users"></i>
                             <div>Cluster</div>
                         </a>
                     </li>
-                    <!-- <li class="sidenav-item trackingNav" style="display: ;">
-                        <a href="tracking" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-map-pin"></i>
-                            <div>Tracking</div>
-                        </a>
-                    </li> -->
-                    <li class="sidenav-item appNav" style="display: ;">
-                        <a href="app_monitoring" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-slash"></i>
-                            <div>App Monitoring</div>
+                    <li class="sidenav-item appNav" style="">
+                        <a href="/rmm/apps_and_services" class="sidenav-link">
+                            <i class="sidenav-icon feather icon-settings"></i>
+                            <div>Default apps and Services</div>
                         </a>
                     </li>
                     <!-- <li class="sidenav-item notificationNav" style="display: ;">
@@ -81,17 +75,17 @@
             </div>
 
             <script type="text/javascript">
-                const sidenavLinks = document.querySelectorAll(".sidenav-link");
-
-                // Loop through each link and add a click event listener
-                sidenavLinks.forEach(link => {
-                    link.addEventListener("click", function (event) {
-                        // Remove the "active" class from all links
-                        sidenavLinks.forEach(item => item.classList.remove("active"));
-                        // document.querySelector('.active')?.classList.remove('active');
-                        // Add the "active" class to the clicked link
-                        this.classList.add('active');
-                        console.log("clicked", this)
+                document.addEventListener("DOMContentLoaded", function() {
+                    const sidenavLinks = document.querySelectorAll(".sidenav-link");
+                    const currentPath = window.location.pathname;
+                    sidenavLinks.forEach(link => {
+                    console.log(link)
+                    console.log(link.getAttribute('href'))
+                        if (link.getAttribute('href') === currentPath) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
                     });
                 });
             </script>

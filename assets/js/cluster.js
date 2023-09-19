@@ -263,8 +263,7 @@ var cluster_device_details = function(){
     $('.device_header').html("Device Name: <span style='text-decoration: underline;'>" + deviceName + "</span>").css('font-weight', 'bold');
 
     var __table = function(){
-        $('.table_head').DataTable().destroy();
-        $('.table_body').empty();
+
         __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
             // console.log(result)
 
@@ -272,7 +271,6 @@ var cluster_device_details = function(){
                 $(document).ready(function() {
 
                     var responseArray = result.response;
-                    // Create a function to generate tab content
                     function generateTabContent(data) {
                         var content = `<div class="tab-pane fade" id="${data.type}" role="tabpanel">`;
 
@@ -301,11 +299,33 @@ var cluster_device_details = function(){
                         } else if (data.type === "BATTERY") {
                             content += generateBatteryContent(data);
                         } else if (data.type === "CPU") {
-                            content += generateCPUContent(data);
-                        } else if (data.type === "ProcessorCpuLoadTicks") {
-                            content += generateCPULoadTicksContent(data);
-                        } else if (data.type === "SystemCpuLoadTicks") {
-                            content += generateSystemCpuLoadTicksContent(data);
+                            content += '<div class="json-data">';
+                            content += '<div id="cpuChartContainer" class="row"></div>';
+                            content += '<div class="cpu_info"></div>';
+                            content += '</div>';
+
+                            try {
+                                $(document).ready(function() {
+                                    // Parsing the jsonData from the provided data
+                                    var cpuDetails = JSON.parse(data.jsonData);
+                                    // console.log("Parsed CPU Details:", cpuDetails);  // Log parsed data to console
+
+                                    // Extracting basic CPU information
+                                    var infoContent = '';
+                                    infoContent += '<br><h5>CPU Information</h5><br>';
+                                    infoContent += '<p><strong>CPU Name:</strong> ' + cpuDetails.processorIdentifier.name.trim() + '</p>';
+                                    infoContent += '<p><strong>CPU Model:</strong> ' + cpuDetails.processorIdentifier.model + '</p>';
+                                    infoContent += '<p><strong>Physical Processors:</strong> ' + cpuDetails.physicalProcessorCount + '</p>';
+                                    infoContent += '<p><strong>Logical Processors:</strong> ' + cpuDetails.logicalProcessorCount + '</p>';
+
+                                    $('.cpu_info').html(infoContent);
+                                    // console.log("Info Content:", infoContent);  // Log the constructed info content to console
+                                })
+                            } catch (error) {
+                                console.error("Error processing CPU data:", error);
+                            }
+
+                            historicalData(data.deviceId);
                         } else if (data.type === "STORAGE") {
                             var storageArray = JSON.parse(data.jsonData);
                             content += '<div class="json-data">';
@@ -317,9 +337,10 @@ var cluster_device_details = function(){
                             content += '<div class="json-data">';
                             content += '<div id="chartContainer">';
                             content += '<canvas id="memoryChart"></canvas>';
-                            content += generateMemoryContent(JSON.parse(data.jsonData));
                             content += '</div>';
+                            content += '<div class="mem_info"></div>';
                             content += '</div>';
+                            generateMemoryChart(JSON.parse(data.jsonData));
                         } else {
                             content += `<pre class="json-data">${JSON.stringify(data, null, 2)}</pre>`;
                             console.log('false');
@@ -328,7 +349,116 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
+                    function historicalData(deviceId){
+                        __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
+                            if (result.status != "ERROR") {
+                                // var responseArray = result.response;
+                                
+                                // var processorDataPoints = [];
+                                // var systemDataPoints = [];
+                                
+                                // responseArray.forEach(data => {
+                                //     if (data.type === "ProcessorCpuLoadTicks") {
+                                //         // Assuming data.jsonData is an array of numbers; adapt as needed
+                                //         processorDataPoints = JSON.parse(data.jsonData);
+                                //     }
+                                //     if (data.type === "SystemCpuLoadTicks") {
+                                //         systemDataPoints = JSON.parse(data.jsonData);
+                                //     }
+                                // });
+                                
+                                //     generateCharts(processorDataPoints, systemDataPoints);
+                                $(document).ready(function() {
+                                const canvasId = `cpuChart${i}`;
+                                let canvasWrapper = $('<div class="col-md-4"></div>');
+                                let canvas = $(`<canvas id="${canvasId}"></canvas>`);
 
+                                canvasWrapper.append(canvas);
+                                    let cpuCharts = [];
+
+                                    function generateCharts(cpuDetails) {
+                                        const numProcessors = cpuDetails.logicalProcessorCount;
+
+                                        // Clear any existing charts and canvases
+                                        $('#cpuChartContainer').empty();
+
+                                        if (cpuCharts.length > 0) {
+                                            cpuCharts.forEach(chart => chart.destroy());
+                                            cpuCharts = [];
+                                        }
+
+                                        for (let i = 0; i < numProcessors; i++) {
+                                            const canvasId = `cpuChart${i}`;
+                                            
+                                            // Wrap the canvas inside a grid column
+                                            let canvasWrapper = $('<div class="col-md-4"></div>');
+                                            let canvas = $(`<canvas id="${canvasId}"></canvas>`);
+
+                                            canvasWrapper.append(canvas);
+                                            $('#cpuChartContainer').append(canvasWrapper);
+
+                                            // Since canvas is already in DOM, we can access its context
+                                            const ctx = canvas[0].getContext('2d');
+
+                                            const chart = new Chart(ctx, {
+                                                type: 'line',
+                                                data: {
+                                                    labels: [],
+                                                    datasets: [{
+                                                        label: `Processor ${i + 1} Load`,
+                                                        data: [],
+                                                        borderColor: getRandomColor(),
+                                                        fill: true,
+                                                    }]
+                                                },
+                                                options: {
+                                                    scales: {
+                                                        x: {
+                                                            type: 'category',
+                                                            beginAtZero: true
+                                                        },
+                                                        y: {
+                                                            beginAtZero: true
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                            cpuCharts.push(chart);
+                                            
+                                            // Start the data update loop for this chart
+                                            setInterval(() => addDataToChart(chart), 2000);
+                                        }
+                                    }
+
+                                    function getRandomColor() {
+                                        return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+                                    }
+
+                                    function addDataToChart(chart) {
+                                        const currentTime = new Date().toLocaleTimeString();
+
+                                        chart.data.labels.push(currentTime);
+                                        chart.data.datasets[0].data.push(Math.random() * 100);
+
+                                        if (chart.data.labels.length > 20) {
+                                            chart.data.labels.shift();
+                                            chart.data.datasets[0].data.shift();
+                                        }
+
+                                        chart.update();
+                                    }
+
+                                    const sampleData = {
+                                        logicalProcessorCount: 12,  // Just a sample value, replace with actual count
+                                    };
+
+                                    generateCharts(sampleData);
+                                });
+
+                            }
+                        });
+                    }
                     function generateKeyValuePair(data, title) {
                         var content = '';
                         content += `<h5>${title}</h5>`;
@@ -468,73 +598,6 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
-                    function generateCPUContent(cpu) {
-                        var cpu = JSON.parse(data.jsonData);
-                        var content = '<div class="json-data">';
-                        content += '<h5>CPU</h5>';
-                        content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                        content += '<dt class="col-sm-3"><span>Model</span></dt>';
-                        content += '<dd class="col-sm-9">' + (cpu.processorIdentifier.name || 'N/A') + '</dd>';
-                        content += '<dt class="col-sm-3">Vendor</dt>';
-                        content += '<dd class="col-sm-9">' + (cpu.processorIdentifier.vendor || 'N/A') + '</dd>';
-                        content += '<dt class="col-sm-3">Architecture</dt>';
-                        content += '<dd class="col-sm-9">' + (cpu.processorIdentifier.cpu64bit ? '64-bit' : '32-bit') + '</dd>';
-                        content += '<dt class="col-sm-3">Cores</dt>';
-                        content += '<dd class="col-sm-9">' + (cpu.logicalProcessorCount || 'N/A') + '</dd>';
-                        content += '<dt class="col-sm-3">Threads</dt>';
-                        content += '<dd class="col-sm-9">' + (cpu.logicalProcessorCount * 2 || 'N/A') + '</dd>';
-                        content += '</dl>';
-                        
-                        // Display CPU Cache information
-                        var caches = cpu.processorCaches || [];
-                        for (var i = 0; i < caches.length; i++) {
-                            content += '<div class="cache-section">';
-                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                            
-                            // Change "Level 3 Cache" to "L3 Cache"
-                            var cacheLevelLabel = 'L' + caches[i].level + ' Cache';
-
-                            content += '<dt class="col-sm-3"><span>' + cacheLevelLabel + '</span></dt>';
-                            
-                            // Convert cache size to MB and KB
-                            var cacheSizeMB = (caches[i].cacheSize / 1024).toFixed(2); // Convert to MB
-                            var cacheSizeKB = caches[i].cacheSize; // Cache size in KB
-
-                            content += '<dd class="col-sm-9">Size: ' + cacheSizeMB + ' MB (' + cacheSizeKB + ' KB)</dd>';
-                            content += '<dd class="col-sm-9">Type: ' + caches[i].type + '</dd>';
-                            content += '</dl>';
-                            content += '</div>';
-                        }
-
-
-                        content += '</div>';
-                        return content;
-                    }
-                    function generateCPULoadTicksContent(data) {
-                        var cpuLoadTicks = JSON.parse(data.jsonData);
-                        var content = '<div class="json-data">';
-                        content += '<h5>CPU Load Ticks</h5>';
-
-                        for (var i = 0; i < cpuLoadTicks.length; i++) {
-                            var coreLoad = cpuLoadTicks[i];
-                            content += '<div class="core-load">';
-                            content += '<h6>Core ' + i + '</h6>';
-                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-
-                            var metricsLabels = ['User', 'Nice', 'System', 'Idle', 'I/O Wait', 'IRQ', 'Soft IRQ', 'Steal'];
-
-                            for (var j = 0; j < metricsLabels.length; j++) {
-                                content += '<dt class="col-sm-3"><span>' + metricsLabels[j] + '</span></dt>';
-                                content += '<dd class="col-sm-9">' + coreLoad[j] + '</dd>';
-                            }
-
-                            content += '</dl>';
-                            content += '</div>';
-                        }
-
-                        content += '</div>';
-                        return content;
-                    }
                     function generateSystemCpuLoadTicksContent(data) {
                         var systemCpuLoadTicks = JSON.parse(data.jsonData);
                         var content = '<div class="json-data">';
@@ -555,114 +618,95 @@ var cluster_device_details = function(){
                     function computeBytesToGB(bytes) {
                         return (bytes / (1024 * 1024 * 1024)).toFixed(2);
                     }
+                    function computeBytesToGBRoundoff(bytes) {
+                        return Math.round(bytes / (1024 * 1024 * 1024));
+                    }
                     function formatDate(date) {
                         const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
                         return date.toLocaleDateString(undefined, options);
                     }
-                    function generateMemoryContent(memoryData) {
-                        var totalMemory = memoryData.total;
-                        var memoryInUse = totalMemory - memoryData.available;
-                        var content = '<div class="mem_info">';
-                        
-                        content += '<br><h5>Memory Information</h5><br>';
-                        content += '<p>Total Memory: ' + computeBytesToGB(totalMemory) + ' GB</p>';
-                        content += '<p>Memory in Use: ' + computeBytesToGB(memoryInUse) + ' GB</p>';
-                        content += '<p>Available Memory: ' + computeBytesToGB(memoryData.available) + ' GB</p><br>';
-                        content += '</div>';
-                        $(document).ready(function() {
-                            generateMemoryChart(memoryData);
-                        });
-                        
-                        return content;
-                    }
                     function generateMemoryChart(memoryData) {
-                        // Set the desired width and height for the chart container
-                        var chartContainer = $("#chartContainer");
-                        chartContainer.css({ width: '1000px', height: '300px' });
+                        $(document).ready(() => {
+                            var chartContainer = $("#chartContainer");
+                            chartContainer.css({ width: '100%', height: '' });
+                            const totalMemory = memoryData.total;
+                            let availableMemory = memoryData.available;
+                            let memoryInUse = totalMemory - availableMemory;
 
-                        // Get the canvas element
-                        var canvas = $("#memoryChart")[0];
+                            function updateMemoryInfo() {
+                                var content = '<br><h5>Memory Information</h5><br>';
+                                content += '<p>Total Memory: ' + computeBytesToGBRoundoff(totalMemory) + ' GB</p>';
+                                content += '<p>Memory in Use: ' + computeBytesToGB(memoryInUse) + ' GB</p>';
+                                content += '<p>Available Memory: ' + computeBytesToGB(availableMemory) + ' GB</p><br>';
+                                $('.mem_info').html(content);
+                            }
 
-                        var totalMemory = memoryData.total; // Total memory in bytes
-                        var availableMemory = memoryData.available; // Available memory in bytes
-                        var memoryInUse = totalMemory - availableMemory;
-                        var memoryInUseGB = computeBytesToGB(memoryInUse);
-
-                        // Initialize arrays to store data
-                        var labels = ["Initial Label"]; // You can set this to a more appropriate initial label
-                        var dataPoints = [memoryInUseGB];
-
-                        // Create a Chart.js chart
-                        var ctx = canvas.getContext("2d");
-                        var memoryChart = new Chart(ctx, {
-                            type: "line",
-                            data: {
-                                labels: labels,
-                                datasets: [
-                                    {
-                                        label: "Memory Usage (GB)",
-                                        data: dataPoints,
-                                        backgroundColor: "rgba(0, 123, 255, 0.2)",
-                                        borderColor: "rgba(0, 123, 255, 1)",
-                                        borderWidth: 2,
-                                        fill: true,
-                                        stepped: 'before',
-                                    },
-                                ],
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        ticks: {
-                                            callback: function (value) {
-                                                return value + ' GB';
-                                            },
-                                        },
-                                    },
-                                    x: {
-                                        display: true,
-                                        title: {
-                                            display: true,
-                                            text: 'Time',
-                                        },
-                                    },
+                            const ctx = document.getElementById('memoryChart').getContext('2d');
+                            const memoryChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: [], // We'll dynamically populate this with timestamps
+                                    datasets: [{
+                                        // label: 'Available Memory',
+                                        // data: [],  // We'll dynamically populate this as well
+                                        // backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        // borderColor: '#36A2EB',
+                                        // borderWidth: 1,
+                                        // fill: true
+                                    // }, {
+                                        label: 'Used Memory',
+                                        data: [],  // We'll dynamically populate this as well
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: '#FF6384',
+                                        borderWidth: 1,
+                                        fill: true
+                                    }]
                                 },
-                            },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: computeBytesToGBRoundoff(totalMemory),  // Set the maximum value for Y-axis
+                                            ticks: {
+                                                // Callback to append "GB" to the label
+                                                callback: function(value, index, values) {
+                                                    return value + ' GB';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            function addMemoryData() {
+                                const currentTime = new Date().toLocaleTimeString(); // Get current time
+
+                                memoryChart.data.labels.push(currentTime);
+                                // memoryChart.data.datasets[0].data.push(computeBytesToGB(availableMemory));
+                                memoryChart.data.datasets[0].data.push(computeBytesToGB(memoryInUse));
+
+                                if (memoryChart.data.labels.length > 20) {
+                                    memoryChart.data.labels.shift();
+                                    // memoryChart.data.datasets[0].data.shift();
+                                    memoryChart.data.datasets[0].data.shift();
+                                }
+
+                                memoryChart.update();
+                            }
+
+                            function simulateRealTimeDataFetch() {
+                                const change = Math.floor(Math.random() * 500000000) * (Math.random() < 0.5 ? 1 : -1);
+                                availableMemory += change;
+                                memoryInUse = totalMemory - availableMemory;
+
+                                addMemoryData();
+                                updateMemoryInfo();
+                            }
+
+                            updateMemoryInfo();
+                            setInterval(simulateRealTimeDataFetch, 2000);
                         });
-
-                        var elapsedTime = 0; // Variable to keep track of how long the chart has been running in seconds
-                        var maxDuration = 3600; // 1 hour in seconds
-
-                        // Let's use an IIFE (Immediately Invoked Function Expression) to encapsulate our logic
-                        (function addDataPoint() {
-                            if (elapsedTime >= maxDuration) {
-                                return; // Stop the function if 1 hour has passed
-                            }
-
-                            var currentDate = new Date();
-                            var currentTime = formatDate(currentDate);
-
-                            labels.push(currentTime);
-                            dataPoints.push(computeBytesToGB(memoryInUse));
-
-                            var maxDataPoints = 10;
-                            if (labels.length > maxDataPoints) {
-                                labels.shift();
-                                dataPoints.shift();
-                            }
-
-                            memoryChart.update();
-
-                            elapsedTime += 1; // Increase the elapsed time by 1 second
-
-                            // Recursive setTimeout is generally safer than setInterval
-                            setTimeout(addDataPoint, 1000);
-                        })();
                     }
-
                     function generateStorageProgressBar(storage) {
                         var totalSizeGB = (storage.size / (1024 * 1024 * 1024)).toFixed(2);
                         var usedSizeGB = totalSizeGB - (storage.partitions.reduce((acc, partition) => acc + partition.size, 0) / (1024 * 1024 * 1024)).toFixed(2);
@@ -677,9 +721,13 @@ var cluster_device_details = function(){
                             <p>${availableSizeGB} GB FREE of ${totalSizeGB} GB</p>
                         `;
                     }
-                    // Create tabs for each response data type
                     for (var i = 0; i < responseArray.length; i++) {
                         var data = responseArray[i];
+                        
+                        // Skip SystemCpuLoadTicks and ProcessorCpuLoadTicks
+                        if (data.type === "SystemCpuLoadTicks" || data.type === "ProcessorCpuLoadTicks") {
+                            continue;
+                        }
 
                         // Create tab element
                         var tabElement = '<li class="nav-item">';
@@ -693,15 +741,102 @@ var cluster_device_details = function(){
                         var tabContent = generateTabContent(data);
                         $('#myTabsContent').append(tabContent);
                     }
-
-                    // Activate the first tab by default
-                    $('.nav-tabs a:first').tab('show');
-
+                           
+                    $('#myTabs a:first').tab('show');
                 })
             }
         })
     }
     __table();
+    $(document).ready(function() {
+        // Load running apps when the page is loaded
+        loadRunningApps();
+
+        // Function to load running apps
+        function loadRunningApps() {
+            __executeExternalGet('8090/device/process/list').done(function(result) {
+                if (result.status != "ERROR") {
+                    var content = `
+                        <div class="json-data">
+                            <table id="servicesTable" class="table table-hover table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    result.response.forEach(function(data) {
+                        content += `
+                            <tr>
+                                <td>${data.name || 'N/A'}</td>
+                                <td>${data.status || 'N/A'}</td>
+                            </tr>
+                        `;
+                    });
+                    content += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    // Populate the content inside the placeholder
+                    $('#runningAppsContainer').html(content);
+                } else {
+                    console.log("failed fetching Cluster Name");
+                }
+            }).fail(function() {
+                console.log("Error occurred while fetching data.");
+            });
+        }
+    });
+    var __service = function() {
+        __executeExternalGet('8090/device/service/list').done(function(result) {
+            if (result.status != "ERROR") {
+                var content = `
+                    <div class="json-data">
+                        <table id="servicesTable" class="table table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Process ID</th>
+                                    <th>State</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                result.response.forEach(function(data) {
+                    content += `
+                        <tr>
+                            <td>${data.name || 'N/A'}</td>
+                            <td>${data.processId || 'N/A'}</td>
+                            <td>${data.state || 'N/A'}</td>
+                            <td>${data.status || 'N/A'}</td>
+                        </tr>
+                    `;
+                });
+                content += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                // Populate the content inside the placeholder
+                $('#servicesContainer').html(content);
+            } else {
+                console.log("Failed fetching service details.");
+            }
+        }).fail(function() {
+            console.log("Error occurred while fetching service data.");
+        });
+    }
+
+    $(document).ready(function() {
+        __service();
+    });
+
 }
 
 var cluster_move_device = function(){

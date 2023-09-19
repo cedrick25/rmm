@@ -87,7 +87,7 @@
             console.log("logout");
             removeAllCookies();
             localStorage.clear();
-            window.location.href = 'http://localhost/ams';
+            // window.location.href = 'http://localhost/ams';
         })
     });
     </script>
