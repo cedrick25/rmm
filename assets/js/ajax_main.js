@@ -1,7 +1,32 @@
+let ipAddress = null;
 
-localStorage.setItem('api', 'http://localhost:');
+function getLocalIP(callback) {
+    const peerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+    const pc = new peerConnection({iceServers: []});
+
+    // Create a data channel to initiate the connection process
+    pc.createDataChannel("");
+    pc.createOffer(pc.setLocalDescription.bind(pc), function(){});
+
+    pc.onicecandidate = function(ice) {
+        if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+
+        const fields = ice.candidate.candidate.split(' ');
+        const ip = fields[4];
+        if (fields[7] === 'host') {
+            ipAddress = ip;
+            callback(ip);
+        }
+    };
+}
+
+getLocalIP(function(ip) {
+    localStorage.removeItem('api');
+    localStorage.setItem('api', 'http://' + ipAddress + ':');
+    // localStorage.setItem('api', 'http://localhost:');
+});
+
 var api = localStorage.getItem('api');
-
 var ___ctx = api;
 console.log(___ctx)
 

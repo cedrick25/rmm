@@ -79,8 +79,8 @@
                     const sidenavLinks = document.querySelectorAll(".sidenav-link");
                     const currentPath = window.location.pathname;
                     sidenavLinks.forEach(link => {
-                    console.log(link)
-                    console.log(link.getAttribute('href'))
+                    // console.log(link)
+                    // console.log(link.getAttribute('href'))
                         if (link.getAttribute('href') === currentPath) {
                             link.classList.add('active');
                         } else {
