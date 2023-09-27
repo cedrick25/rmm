@@ -335,12 +335,20 @@ var cluster_device_details = function(){
                             content += '</div>';
                         } else if (data.type === "MEMORY") {
                             content += '<div class="json-data">';
+                            content += '<form class="form-inline">';
+                            content += '<label class="form-label mr-sm-2">Usage</label>';
+                            content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="usageSelect">';
+                            content += '<option value="realtime" selected>Get Realtime</option>';
+                            content += '<option value="weekly">Get Weekly</option>';
+                            content += '<option value="monthly">Get Monthly</option>';
+                            content += '</select>';
+                            content += '</form>';
                             content += '<div id="chartContainer">';
                             content += '<canvas id="memoryChart"></canvas>';
                             content += '</div>';
                             content += '<div class="mem_info"></div>';
                             content += '</div>';
-                            generateMemoryChart(JSON.parse(data.jsonData));
+                            generateMemoryChart(data.deviceId);
                         } else {
                             content += `<pre class="json-data">${JSON.stringify(data, null, 2)}</pre>`;
                             console.log('false');
@@ -625,86 +633,133 @@ var cluster_device_details = function(){
                         const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
                         return date.toLocaleDateString(undefined, options);
                     }
-                    function generateMemoryChart(memoryData) {
+                    function generateMemoryChart(deviceId) {
                         $(document).ready(() => {
+                            // console.log(deviceId)
                             var chartContainer = $("#chartContainer");
                             chartContainer.css({ width: '100%', height: '' });
-                            const totalMemory = memoryData.total;
-                            let availableMemory = memoryData.available;
-                            let memoryInUse = totalMemory - availableMemory;
 
-                            function updateMemoryInfo() {
-                                var content = '<br><h5>Memory Information</h5><br>';
-                                content += '<p>Total Memory: ' + computeBytesToGBRoundoff(totalMemory) + ' GB</p>';
-                                content += '<p>Memory in Use: ' + computeBytesToGB(memoryInUse) + ' GB</p>';
-                                content += '<p>Available Memory: ' + computeBytesToGB(availableMemory) + ' GB</p><br>';
-                                $('.mem_info').html(content);
-                            }
+                            var usageSelect = document.querySelector('#usageSelect');
+                            var intervalId;
+                            var changeEvent = new Event('change');
+                            usageSelect.dispatchEvent(changeEvent);
+                            usageSelect.addEventListener('change', function() {
+                                var currentDate = new Date();
+                                var startDate, endDate;
 
-                            const ctx = document.getElementById('memoryChart').getContext('2d');
-                            const memoryChart = new Chart(ctx, {
-                                type: 'line',
-                                data: {
-                                    labels: [], // We'll dynamically populate this with timestamps
-                                    datasets: [{
-                                        // label: 'Available Memory',
-                                        // data: [],  // We'll dynamically populate this as well
-                                        // backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                        // borderColor: '#36A2EB',
-                                        // borderWidth: 1,
-                                        // fill: true
-                                    // }, {
-                                        label: 'Used Memory',
-                                        data: [],  // We'll dynamically populate this as well
-                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                        borderColor: '#FF6384',
-                                        borderWidth: 1,
-                                        fill: true
-                                    }]
-                                },
-                                options: {
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            max: computeBytesToGBRoundoff(totalMemory),  // Set the maximum value for Y-axis
-                                            ticks: {
-                                                // Callback to append "GB" to the label
-                                                callback: function(value, index, values) {
-                                                    return value + ' GB';
+                                // Clear any existing interval
+                                if (intervalId) clearInterval(intervalId);
+
+                                // Define Constants
+                                const REALTIME_INTERVAL = 2000; // 5 seconds
+                                const API_URL = '8090/deviceDetail/history/';
+
+                                function fetchData(deviceId, payload, callback) {
+                                    __executeExternalPost(API_URL + deviceId, JSON.stringify(payload))
+                                        .done(function (result) {
+                                            if (result.status === "SUCCESS") {
+                                                const json = JSON.parse(result.response.jsonData);
+                                                callback(json);
+                                            } else if (result.status === "ERROR") {
+                                                console.error('Error fetching data:', result);
+                                            }
+                                        });
+                                }
+
+                                function initializeChart(totalMemory) {
+                                    const ctx = document.getElementById('memoryChart').getContext('2d');
+                                    return new Chart(ctx, {
+                                        type: 'line',
+                                        data: {
+                                            labels: [],
+                                            datasets: [{
+                                                label: 'Used Memory',
+                                                data: [],
+                                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                                borderColor: '#FF6384',
+                                                borderWidth: 1,
+                                                fill: true
+                                            }]
+                                        },
+                                        options: {
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true,
+                                                    max: computeBytesToGBRoundoff(totalMemory),
+                                                    ticks: {
+                                                        callback: function (value) {
+                                                            return value + ' GB';
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
+                                    });
+                                }
+
+                                function updateChartAndInfo(memoryChart, totalMemory, availableMemory) {
+                                    const memoryInUse = totalMemory - availableMemory;
+
+                                    // Update Chart
+                                    const currentTime = new Date().toLocaleTimeString();
+                                    memoryChart.data.labels.push(currentTime);
+                                    memoryChart.data.datasets[0].data.push(computeBytesToGB(memoryInUse));
+                                    if (memoryChart.data.labels.length > 20) {
+                                        memoryChart.data.labels.shift();
+                                        memoryChart.data.datasets[0].data.shift();
                                     }
+                                    memoryChart.update();
+
+                                    // Update Memory Info
+                                    let content = '<br><h5>Memory Information</h5><br>';
+                                    content += `<p>Total Memory: ${computeBytesToGBRoundoff(totalMemory)} GB</p>`;
+                                    content += `<p>Memory in Use: ${computeBytesToGB(memoryInUse)} GB</p>`;
+                                    content += `<p>Available Memory: ${computeBytesToGB(availableMemory)} GB</p><br>`;
+                                    $('.mem_info').html(content);
+                                }
+
+                                if (usageSelect.value === 'realtime') {
+                                    const currentDate = new Date();
+                                    const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0));
+                                    const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
+                                    const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59));
+                                    const endDate = endOfDay.toISOString().replace('T', ' ').split('.')[0];
+
+                                    const payload = {
+                                        "startDate": startDate,
+                                        "endDate": endDate
+                                    };
+
+                                    fetchData(deviceId, payload, function (data) {
+                                        const totalMemory = data.total;
+                                        const availableMemory = data.available;
+                                        const memoryChart = initializeChart(totalMemory);
+
+                                        updateChartAndInfo(memoryChart, totalMemory, availableMemory);
+
+                                        intervalId = setInterval(function () {
+                                            fetchData(deviceId, payload, function (data) {
+                                                updateChartAndInfo(memoryChart, data.total, data.available);
+                                            });
+                                        }, REALTIME_INTERVAL);
+                                    });
+                                } else {
+                                    if (this.value === 'weekly') {
+                                        startDate = new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
+                                        endDate = currentDate.toISOString().split('T')[0] + " 23:59:59";
+                                    } else if (this.value === 'monthly') {
+                                        startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
+                                        endDate = currentDate.toISOString().split('T')[0] + " 23:59:59";
+                                    }
+
+                                    var payload = {
+                                        "startDate": startDate,
+                                        "endDate": endDate
+                                    };
+                                    console.log(payload);
                                 }
                             });
-
-                            function addMemoryData() {
-                                const currentTime = new Date().toLocaleTimeString(); // Get current time
-
-                                memoryChart.data.labels.push(currentTime);
-                                // memoryChart.data.datasets[0].data.push(computeBytesToGB(availableMemory));
-                                memoryChart.data.datasets[0].data.push(computeBytesToGB(memoryInUse));
-
-                                if (memoryChart.data.labels.length > 20) {
-                                    memoryChart.data.labels.shift();
-                                    // memoryChart.data.datasets[0].data.shift();
-                                    memoryChart.data.datasets[0].data.shift();
-                                }
-
-                                memoryChart.update();
-                            }
-
-                            function simulateRealTimeDataFetch() {
-                                const change = Math.floor(Math.random() * 500000000) * (Math.random() < 0.5 ? 1 : -1);
-                                availableMemory += change;
-                                memoryInUse = totalMemory - availableMemory;
-
-                                addMemoryData();
-                                updateMemoryInfo();
-                            }
-
-                            updateMemoryInfo();
-                            setInterval(simulateRealTimeDataFetch, 2000);
+                            usageSelect.dispatchEvent(changeEvent);
                         });
                     }
                     function generateStorageProgressBar(storage) {

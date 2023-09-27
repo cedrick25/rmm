@@ -21,9 +21,10 @@ function getLocalIP(callback) {
 }
 
 getLocalIP(function(ip) {
+    console.log('Local IP address:', ip);
     localStorage.removeItem('api');
-    localStorage.setItem('api', 'http://' + ipAddress + ':');
-    // localStorage.setItem('api', 'http://localhost:');
+    // localStorage.setItem('api', 'http://' + ipAddress + ':');
+    localStorage.setItem('api', 'http://localhost:');
 });
 
 var api = localStorage.getItem('api');
