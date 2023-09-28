@@ -25,16 +25,19 @@
 
                                         <ul class="nav nav-tabs" id="mainTabs" role="tablist">
                                             <li class="nav-item">
-                                                <a class="nav-link active" id="software-tab" data-toggle="tab" href="#software" role="tab" aria-controls="software" aria-selected="true">Software</a>
+                                                <a class="nav-link active" id="hardware-tab" data-toggle="tab" href="#hardware" role="tab" aria-controls="hardware" aria-selected="false">Hardware</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" id="hardware-tab" data-toggle="tab" href="#hardware" role="tab" aria-controls="hardware" aria-selected="false">Hardware</a>
+                                                <a class="nav-link" id="software-tab" data-toggle="tab" href="#software" role="tab" aria-controls="software" aria-selected="true">Software</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="networking-tab" data-toggle="tab" href="#networking" role="tab" aria-controls="networking" aria-selected="false">Networking</a>
                                             </li>
                                         </ul>
 
                                         <div class="tab-content" id="mainTabsContent">
                                             <!-- Software tab content -->
-                                            <div class="tab-pane fade show active" id="software" role="tabpanel" aria-labelledby="software-tab">
+                                            <div class="tab-pane fade  show active" id="hardware" role="tabpanel" aria-labelledby="hardware-tab">
                                                 <ul class="nav nav-tabs mt-3" id="myTabs" role="tablist">
                                                 </ul>
                                                 <div class="tab-content" id="myTabsContent">
@@ -42,10 +45,10 @@
                                             </div>
                                             
                                             <!-- Hardware tab content -->
-                                            <div class="tab-pane fade" id="hardware" role="tabpanel" aria-labelledby="hardware-tab">
+                                            <div class="tab-pane fade" id="software" role="tabpanel" aria-labelledby="software-tab">
                                                 
                                                 <!-- Sub tabs under Hardware -->
-                                                <ul class="nav nav-tabs mt-3" id="hardwareSubTabs" role="tablist">
+                                                <ul class="nav nav-tabs mt-3" id="softwareSubTabs" role="tablist">
                                                     <li class="nav-item">
                                                         <a class="nav-link active" id="apps-tab" data-toggle="tab" href="#apps" role="tab" aria-controls="apps" aria-selected="true">Running Apps</a>
                                                     </li>
@@ -62,6 +65,31 @@
                                                     </div>
                                                     <div class="tab-pane fade" id="services">
                                                         <div id="servicesContainer">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Networking tab content -->
+                                            <div class="tab-pane fade" id="networking" role="tabpanel" aria-labelledby="networking-tab">
+                                                
+                                                <!-- Sub tabs under Networking -->
+                                                <ul class="nav nav-tabs mt-3" id="networkingSubTabs" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" id="public-tab" data-toggle="tab" href="#public" role="tab" aria-controls="public" aria-selected="true">Public IP</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="network-tab" data-toggle="tab" href="#network" role="tab" aria-controls="network" aria-selected="false">Network</a>
+                                                    </li>
+                                                </ul>
+
+                                                <!-- Networking sub-tab content -->
+                                                <div class="tab-content mt-3">
+                                                    <div class="tab-pane fade show active" id="public">
+                                                        <div id="publicContainer">
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="network">
+                                                        <div id="networkContainer">
                                                         </div>
                                                     </div>
                                                 </div>

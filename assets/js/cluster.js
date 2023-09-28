@@ -281,11 +281,6 @@ var cluster_device_details = function(){
                             content += generateKeyValuePairs(beautifiedData.firmware, 'FIRMWARE');
                             content += generateKeyValuePairs(beautifiedData.baseboard, 'BASEBOARD');
                             content += '</div>';
-                        } else if (data.type === "PUBLIC_IP") {
-                            var beautifiedDataPublicIp = JSON.parse(data.jsonData);
-                            content += '<div class="json-data">';
-                            content += generateKeyValuePair(beautifiedDataPublicIp, 'PUBLIC IP');
-                            content += '</div>';
                         } else if (data.type === "USB_DEVICES") {
                             var beautifiedDataUSB = JSON.parse(data.jsonData);
                             content += generateUsbDevicesTable(beautifiedDataUSB);
@@ -294,8 +289,6 @@ var cluster_device_details = function(){
                             content += generateGPUContent(gpuData);
                         } else if (data.type === "DISPLAYS") {
                             content += generateDisplayContent(data);
-                        } else if (data.type === "NETWORK") {
-                            content += generateNetworkContent(data);
                         } else if (data.type === "BATTERY") {
                             content += generateBatteryContent(data);
                         } else if (data.type === "CPU") {
@@ -360,22 +353,6 @@ var cluster_device_details = function(){
                     function historicalData(deviceId){
                         __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
                             if (result.status != "ERROR") {
-                                // var responseArray = result.response;
-                                
-                                // var processorDataPoints = [];
-                                // var systemDataPoints = [];
-                                
-                                // responseArray.forEach(data => {
-                                //     if (data.type === "ProcessorCpuLoadTicks") {
-                                //         // Assuming data.jsonData is an array of numbers; adapt as needed
-                                //         processorDataPoints = JSON.parse(data.jsonData);
-                                //     }
-                                //     if (data.type === "SystemCpuLoadTicks") {
-                                //         systemDataPoints = JSON.parse(data.jsonData);
-                                //     }
-                                // });
-                                
-                                //     generateCharts(processorDataPoints, systemDataPoints);
                                 $(document).ready(function() {
                                 const canvasId = `cpuChart${i}`;
                                 let canvasWrapper = $('<div class="col-md-4"></div>');
@@ -563,41 +540,6 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
-                    function generateNetworkContent(data) {
-                        var content = '<div class="json-data">';
-                        content += '<h5>Network</h5>';
-
-                        if (data.jsonData) {
-                            var networkInfo = JSON.parse(data.jsonData);
-
-                            for (var i = 0; i < networkInfo.length; i++) {
-                                var network = networkInfo[i];
-                                content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
-                                content += '<dt class="col-sm-3"><span>Name</span></dt>';
-                                content += '<dd class="col-sm-9">' + network.name + '</dd>';
-                                content += '<dt class="col-sm-3">Display Name</dt>';
-                                content += '<dd class="col-sm-9">' + network.displayName + '</dd>';
-                                content += '<dt class="col-sm-3">Index</dt>';
-                                content += '<dd class="col-sm-9">' + network.index + '</dd>';
-                                content += '<dt class="col-sm-3">MTU</dt>';
-                                content += '<dd class="col-sm-9">' + network.mtu + '</dd>';
-                                content += '<dt class="col-sm-3">IPv4 Address</dt>';
-                                content += '<dd class="col-sm-9">' + (network.ipv4addr[0] || 'N/A') + '</dd>';
-                                content += '<dt class="col-sm-3">IPv6 Address</dt>';
-                                content += '<dd class="col-sm-9">' + (network.ipv6addr[0] || 'N/A') + '</dd>';
-                                content += '<dt class="col-sm-3">MAC Address</dt>';
-                                content += '<dd class="col-sm-9">' + network.macaddr + '</dd>';
-                                content += '<dt class="col-sm-3">Operational Status</dt>';
-                                content += '<dd class="col-sm-9">' + network.ifOperStatus + '</dd>';
-                                content += '</dl>';
-                            }
-                        } else {
-                            content += '<p>No network information available.</p>';
-                        }
-
-                        content += '</div>';
-                        return content;
-                    }
                     function generateBatteryContent(data) {
                         var batteryData = JSON.parse(data.jsonData);
                         var content = '<div class="json-data">';
@@ -778,12 +720,10 @@ var cluster_device_details = function(){
                     }
                     for (var i = 0; i < responseArray.length; i++) {
                         var data = responseArray[i];
-                        
-                        // Skip SystemCpuLoadTicks and ProcessorCpuLoadTicks
-                        if (data.type === "SystemCpuLoadTicks" || data.type === "ProcessorCpuLoadTicks") {
+                        // console.log(data.type)
+                        if (data.type === "SystemCpuLoadTicks" || data.type === "ProcessorCpuLoadTicks" || data.type === "PUBLIC_IP" || data.type === "NETWORK") {
                             continue;
                         }
-
                         // Create tab element
                         var tabElement = '<li class="nav-item">';
                         tabElement += '<a class="nav-link" id="tab-' + data.type + '-tab" data-toggle="tab" href="#' + data.type + '" role="tab" aria-controls="' + data.type + '" aria-selected="false">' + (data.type === "CS" ? "Motherboard + Firmware" : data.type) + '</a>';
@@ -803,6 +743,7 @@ var cluster_device_details = function(){
         })
     }
     __table();
+
     $(document).ready(function() {
         // Load running apps when the page is loaded
         loadRunningApps();
@@ -887,9 +828,79 @@ var cluster_device_details = function(){
             console.log("Error occurred while fetching service data.");
         });
     }
+    var __networking = function() {
+        console.log("test")
+        __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
+            if (result.status != "ERROR") {
+                result.response.forEach(function(data) {
+                // console.log(data.type)
+                    if (data.type === "NETWORK") {
+                        console.log(data.type)
+                        var content = '<div class="json-data">';
+                        content += '<h5>Network</h5>';
+                        if (data.jsonData) {
+                            var networkInfo = JSON.parse(data.jsonData);
 
+                            for (var i = 0; i < networkInfo.length; i++) {
+                                var network = networkInfo[i];
+                                content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
+                                content += '<dt class="col-sm-3"><span>Name</span></dt>';
+                                content += '<dd class="col-sm-9">' + network.name + '</dd>';
+                                content += '<dt class="col-sm-3">Display Name</dt>';
+                                content += '<dd class="col-sm-9">' + network.displayName + '</dd>';
+                                content += '<dt class="col-sm-3">Index</dt>';
+                                content += '<dd class="col-sm-9">' + network.index + '</dd>';
+                                content += '<dt class="col-sm-3">MTU</dt>';
+                                content += '<dd class="col-sm-9">' + network.mtu + '</dd>';
+                                content += '<dt class="col-sm-3">IPv4 Address</dt>';
+                                content += '<dd class="col-sm-9">' + (network.ipv4addr[0] || 'N/A') + '</dd>';
+                                content += '<dt class="col-sm-3">IPv6 Address</dt>';
+                                content += '<dd class="col-sm-9">' + (network.ipv6addr[0] || 'N/A') + '</dd>';
+                                content += '<dt class="col-sm-3">MAC Address</dt>';
+                                content += '<dd class="col-sm-9">' + network.macaddr + '</dd>';
+                                content += '<dt class="col-sm-3">Operational Status</dt>';
+                                content += '<dd class="col-sm-9">' + network.ifOperStatus + '</dd>';
+                                content += '</dl>';
+                                $('#networkContainer').html(content);
+                            }
+                        } else {
+                            content += '<p>No network information available.</p>';
+                        }
+
+                        content += '</div>';
+                        return content;
+                    } else if (data.type === "PUBLIC_IP") {
+                        var beautifiedDataPublicIp = JSON.parse(data.jsonData);
+                        
+                        var content = '<div class="json-data">';
+                        content += generateKeyValuePair(beautifiedDataPublicIp, 'PUBLIC IP');
+                        content += '</div>';
+
+                        function generateKeyValuePair(data, title) {
+                            var content = '';
+                            content += `<h5>${title}</h5>`;
+                            content += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">';
+                            for (var key in data) {
+                                content += `<dt class="col-sm-3"><span>${key}</span></dt>`;
+                                content += `<dd class="col-sm-9">${data[key]}</dd>`;
+                            }
+                            content += '</dl>';
+                            return content;
+                        }
+                        
+                        $('#publicContainer').html(content);
+                    }
+                });
+            } else {
+                console.log("Failed fetching Networking.");
+            }
+        }).fail(function() {
+            console.log("Error occurred while fetching Networking.");
+        });
+    }
     $(document).ready(function() {
         __service();
+        __networking();
     });
 
 }

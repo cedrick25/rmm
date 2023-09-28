@@ -546,7 +546,7 @@ var update = function(){
                     "username"      : $(".username").val(),
                     "password"      : $(".password").val(),
                     "departmentId"  : $(".department").val(),
-                    "managerId"     : $(".manager").val(),
+                    "managerId"     : "",
                     "uuid"          : "",
                     "roleId"        : $(".user_roles").val()
                 }
