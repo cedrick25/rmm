@@ -6,7 +6,7 @@ var apps_services = function(){
 
         // Function to load running apps
         function loadRunningApps() {
-            __executeExternalGet('8090/device/process/list').done(function(result) {
+            __executeExternalGet(rmm_server+'/device/process/list').done(function(result) {
                 if (result.status != "ERROR") {
                     var content = `
                         <div class="json-data">
@@ -44,7 +44,7 @@ var apps_services = function(){
         }
     });
     var __service = function() {
-        __executeExternalGet('8090/device/service/list').done(function(result) {
+        __executeExternalGet(rmm_server+'/device/service/list').done(function(result) {
             if (result.status != "ERROR") {
                 var content = `
                     <div class="json-data">

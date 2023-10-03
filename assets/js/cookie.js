@@ -1,6 +1,6 @@
 var cookie = function(){
     if ($.cookie("uuid") != undefined) {
-        __executeExternalGet('8088/user/'+$.cookie("uuid")).done(function (result) {
+        __executeExternalGet(uam+'/user/'+$.cookie("uuid")).done(function (result) {
             if (result.status != "ERROR") {
                 console.log("====this is user logged in=====");
                 console.log(result);
@@ -10,8 +10,6 @@ var cookie = function(){
                 $.cookie("departmentId", result.departmentId);
                 $.cookie("departmentName", result.departmentName);
                 $.cookie("name", result.firstName+" "+result.middleName+" "+result.lastName+" "+result.suffix);
-                $.cookie("managerId", result.managerId);
-
 
             }
         })

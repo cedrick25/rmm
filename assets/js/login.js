@@ -12,7 +12,7 @@ var login = function(){
             password    : password
         }
         // console.log(payload);
-        __executeExternalPost('8088/authenticate',JSON.stringify(payload)).done(function (result) {
+        __executeExternalPost(uam+'/authenticate',JSON.stringify(payload)).done(function (result) {
             console.log(result);
             $(".btn-confirm").prop("disabled", false);
             if (result.status != "ERROR") {
@@ -23,18 +23,7 @@ var login = function(){
                         $('.prompt').html('<div class="alert alert-dark-success alert-dismissible" role="alert"> <i class="fa fa-check-circle"></i> Login Successfully </div>');
                         var uuid = result.uuid
                         $.cookie("uuid", uuid);
-                        // var roleid = result.role.roleId
-                        // $.cookie("roleid", roleid);
                         
-                        // check if localstorage is clear
-                        // var data = JSON.parse(localStorage.getItem('permission'));
-                        // console.log(data)
-
-                        var permission_role = result.rolePermission
-                        localStorage.setItem('permission', JSON.stringify(permission_role));
-
-                        // var data = JSON.parse(localStorage.getItem('permission'));
-                        // console.log(data)
                         setTimeout(function () {
                             window.location.href="dashboard"
                         },1000);

@@ -1,7 +1,7 @@
 var list = function(){
 
     var __table = function(){
-        __executeExternalGet('8090/cluster/list').done(function (result) {
+        __executeExternalGet(rmm_server+'/cluster/list').done(function (result) {
             // console.log("=====user=====")
             // console.log(result)
             // console.log("=====user=====")
@@ -39,7 +39,7 @@ var list = function(){
                 $(".btn_update").unbind("click").on("click", function(){
                     var userId = $(this).data("id");
                     // console.log(data_id)
-                    window.location.href = 'http://localhost/rmm/user_account_update?userId='+userId;
+                    window.location.href = anyhost+'/rmm/user_account_update?userId='+userId;
                 });
             }
         })
@@ -77,7 +77,7 @@ var create = function(){
                     "status"        : true,
                 }
             console.log(payload);
-            __executeExternalPost('8090/cluster/new',JSON.stringify(payload)).done(function (result) {
+            __executeExternalPost(rmm_server+'/cluster/new',JSON.stringify(payload)).done(function (result) {
                 console.log(result);
                 if (result.status != "ERROR") {
                     if (result.status === "SUCCESS") {
@@ -109,7 +109,7 @@ var update = function(){
     console.log("attached events")
 
     var clusterID = getUrlParameter('clusterID');
-    __executeExternalGet('8090/cluster/'+clusterID).done(function (result) {
+    __executeExternalGet(rmm_server+'/cluster/'+clusterID).done(function (result) {
         console.log(result)
         if (result.status != "ERROR") {
             $(".name").html(result.response.name)
@@ -143,7 +143,7 @@ var update = function(){
                             "status"        : true,
                         }
                     console.log(payload);
-                    __executeExternalPost('8090/cluster/edit/'+clusterID,JSON.stringify(payload)).done(function (result) {
+                    __executeExternalPost(rmm_server+'/cluster/edit/'+clusterID,JSON.stringify(payload)).done(function (result) {
                         console.log(result);
                         if (result.status != "ERROR") {
                             if (result.status === "SUCCESS") {
@@ -188,7 +188,7 @@ var cluster_devices = function(){
     var __table = function(){
         $('.table_head').DataTable().destroy();
         $('.table_body').empty();
-        __executeExternalGet('8090/device/list/'+clusterID).done(function (result) {
+        __executeExternalGet(rmm_server+'/device/list/'+clusterID).done(function (result) {
             // console.log(result)
 
             if (result.status != "ERROR") {
@@ -264,7 +264,7 @@ var cluster_device_details = function(){
 
     var __table = function(){
 
-        __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
+        __executeExternalGet(rmm_server+'/deviceDetail/'+deviceId).done(function (result) {
             // console.log(result)
 
             if (result.status != "ERROR") {
@@ -362,7 +362,7 @@ var cluster_device_details = function(){
                         return content;
                     }
                     function historicalData(deviceId){
-                        __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
+                        __executeExternalGet(rmm_server+'/deviceDetail/'+deviceId).done(function (result) {
                             if (result.status != "ERROR") {
                                 $(document).ready(function() {
                                 const canvasId = `cpuChart${i}`;
@@ -608,7 +608,7 @@ var cluster_device_details = function(){
 
                                 // Define Constants
                                 const REALTIME_INTERVAL = 2000; // 5 seconds
-                                const API_URL = '8090/deviceDetail/history/';
+                                const API_URL = rmm_server+'/deviceDetail/history/';
 
                                 function fetchData(deviceId, payload, callback) {
                                     __executeExternalPost(API_URL + deviceId, JSON.stringify(payload))
@@ -773,7 +773,7 @@ var cluster_device_details = function(){
                         });
                     }
                     function storageDataHandler(storage_id, period) {
-                        const storage_API_URL = '8090/deviceDetail/history/';
+                        const storage_API_URL = rmm_server+'/deviceDetail/history/';
                         var storage_payload = {
                             "startDate": getStartDate(period),
                             "endDate": getEndDate(period)
@@ -875,7 +875,7 @@ var cluster_device_details = function(){
 
         // Function to load running apps
         function loadRunningApps() {
-            __executeExternalGet('8090/device/process/list').done(function(result) {
+            __executeExternalGet(rmm_server+'/device/process/list').done(function(result) {
                 if (result.status != "ERROR") {
                     var content = `
                         <div class="json-data">
@@ -913,7 +913,7 @@ var cluster_device_details = function(){
         }
     });
     var __service = function() {
-        __executeExternalGet('8090/device/service/list').done(function(result) {
+        __executeExternalGet(rmm_server+'/device/service/list').done(function(result) {
             if (result.status != "ERROR") {
                 var content = `
                     <div class="json-data">
@@ -954,7 +954,7 @@ var cluster_device_details = function(){
         });
     }
     var __networking = function() {
-        __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
+        __executeExternalGet(rmm_server+'/deviceDetail/'+deviceId).done(function (result) {
             if (result.status != "ERROR") {
                 result.response.forEach(function(data) {
                 // console.log(data.type)
@@ -1054,7 +1054,7 @@ var cluster_move_device = function(){
             $('.cluster_move').empty();
 
             $('.cluster_move').append("<option selected disabled> - - Select Cluster Name - - </option>");
-            __executeExternalGet('8090/cluster/list').done(function (result) {
+            __executeExternalGet(rmm_server+'/cluster/list').done(function (result) {
                 // console.log(result)
                 if (result.status != "ERROR") {
                     result.response.forEach(function(data){
@@ -1071,7 +1071,7 @@ var cluster_move_device = function(){
             $(this).prop('disabled', true);
             var payload = devID
             console.log(payload);
-            __executeExternalPost('8090/device/moveCluster/'+$('.cluster_move').val(),JSON.stringify(payload)).done(function (result) {
+            __executeExternalPost(rmm_server+'/device/moveCluster/'+$('.cluster_move').val(),JSON.stringify(payload)).done(function (result) {
                 console.log(result);
                 if (result.status != "ERROR") {
                     if (result.status === "SUCCESS") {
@@ -1106,7 +1106,7 @@ var cluster_move_device = function(){
 var cluster_devices_update = function(){
     var device = getUrlParameter('device');
 
-    __executeExternalGet('8090/device/'+device).done(function (result) {
+    __executeExternalGet(rmm_server+'/device/'+device).done(function (result) {
         console.log(result)
         if (result.status != "ERROR") {
             $(".devName").html(result.response.deviceName)
@@ -1127,7 +1127,7 @@ var cluster_devices_update = function(){
                     updatedBy   : "1",
                 }
                 console.log(payload);
-                __executeExternalPost('8090/device/edit/'+device,JSON.stringify(payload)).done(function (result) {
+                __executeExternalPost(rmm_server+'/device/edit/'+device,JSON.stringify(payload)).done(function (result) {
                     console.log(result);
                     if (result.status != "ERROR") {
                         if (result.status === "SUCCESS") {

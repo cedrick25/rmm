@@ -1,34 +1,12 @@
-let ipAddress = null;
+// localStorage.removeItem('anyhost');
 
-function getLocalIP(callback) {
-    const peerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-    const pc = new peerConnection({iceServers: []});
+const hostname = window.location.hostname;
+const anyhost     = 'http://'+hostname+':';
+const rmm_server  = '8090';
+const uam         = '8088';
+const docrepo     = '8080';
 
-    // Create a data channel to initiate the connection process
-    pc.createDataChannel("");
-    pc.createOffer(pc.setLocalDescription.bind(pc), function(){});
-
-    pc.onicecandidate = function(ice) {
-        if (!ice || !ice.candidate || !ice.candidate.candidate) return;
-
-        const fields = ice.candidate.candidate.split(' ');
-        const ip = fields[4];
-        if (fields[7] === 'host') {
-            ipAddress = ip;
-            callback(ip);
-        }
-    };
-}
-
-getLocalIP(function(ip) {
-    console.log('Local IP address:', ip);
-    localStorage.removeItem('api');
-    // localStorage.setItem('api', 'http://' + ipAddress + ':');
-    localStorage.setItem('api', 'http://localhost:');
-});
-
-var api = localStorage.getItem('api');
-var ___ctx = api;
+var ___ctx = anyhost;
 console.log(___ctx)
 
 var __setContext = function(newctx) {
