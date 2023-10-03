@@ -320,12 +320,23 @@ var cluster_device_details = function(){
 
                             historicalData(data.deviceId);
                         } else if (data.type === "STORAGE") {
-                            var storageArray = JSON.parse(data.jsonData);
                             content += '<div class="json-data">';
-                            storageArray.forEach(storage => {
-                                content += generateStorageProgressBar(storage);
-                            });
+                            content += '<form class="form-inline">';
+                            content += '<label class="form-label mr-sm-2">Usage</label>';
+                            content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="StorageUsageSelect">';
+                            content += '<option value="realtime" selected>Get Realtime</option>';
+                            content += '<option value="weekly">Get Weekly</option>';
+                            content += '<option value="monthly">Get Monthly</option>';
+                            content += '</select>';
+                            content += '</form>';
+                            content += '<div id="storageBarsContainer"></div>';
                             content += '</div>';
+
+                            // Assuming you have an element with the ID `contentContainer` where you want to add the content.
+                            $('#contentContainer').html(content);
+
+                            // Now that the content has been added to the DOM, you can call the storageDataHandler.
+                            storageDataHandler(data.id, 'realtime');
                         } else if (data.type === "MEMORY") {
                             content += '<div class="json-data">';
                             content += '<form class="form-inline">';
@@ -576,8 +587,11 @@ var cluster_device_details = function(){
                         return date.toLocaleDateString(undefined, options);
                     }
                     function generateMemoryChart(deviceId) {
+
                         $(document).ready(() => {
                             // console.log(deviceId)
+
+                            var memoryChart;  // Declare at the top level of your function
                             var chartContainer = $("#chartContainer");
                             chartContainer.css({ width: '100%', height: '' });
 
@@ -599,18 +613,21 @@ var cluster_device_details = function(){
                                 function fetchData(deviceId, payload, callback) {
                                     __executeExternalPost(API_URL + deviceId, JSON.stringify(payload))
                                         .done(function (result) {
-                                            if (result.status === "SUCCESS") {
-                                                const json = JSON.parse(result.response.jsonData);
-                                                callback(json);
-                                            } else if (result.status === "ERROR") {
-                                                console.error('Error fetching data:', result);
-                                            }
-                                        });
+                                        if (result.status === "SUCCESS") {
+                                            const json = JSON.parse(result.response.jsonData);
+                                            callback(json);
+                                        } else if (result.status === "ERROR") {
+                                            console.error('Error fetching data:', result);
+                                        }
+                                    });
                                 }
-
                                 function initializeChart(totalMemory) {
+
+                                    if (memoryChart && typeof memoryChart.destroy === 'function') {
+                                        memoryChart.destroy();
+                                    }
                                     const ctx = document.getElementById('memoryChart').getContext('2d');
-                                    return new Chart(ctx, {
+                                    memoryChart = new Chart(ctx, {
                                         type: 'line',
                                         data: {
                                             labels: [],
@@ -637,8 +654,9 @@ var cluster_device_details = function(){
                                             }
                                         }
                                     });
-                                }
 
+                                    return memoryChart;
+                                }
                                 function updateChartAndInfo(memoryChart, totalMemory, availableMemory) {
                                     const memoryInUse = totalMemory - availableMemory;
 
@@ -685,38 +703,145 @@ var cluster_device_details = function(){
                                             });
                                         }, REALTIME_INTERVAL);
                                     });
-                                } else {
+                                }else {
                                     if (this.value === 'weekly') {
                                         startDate = new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
                                         endDate = currentDate.toISOString().split('T')[0] + " 23:59:59";
+
+                                        var payload = {
+                                            "startDate": startDate,
+                                            "endDate": endDate
+                                        };
+                                        console.log(payload);
+
+
+                                        fetchData(deviceId, payload, function(data) {
+                                            if (memoryChart && typeof memoryChart.destroy === 'function') {
+                                                memoryChart.destroy();
+                                            }
+
+                                            const totalMemory = data.total;
+                                            const availableMemory = data.available;
+
+                                            memoryChart = initializeChart(totalMemory);
+                                            updateChartAndInfo(memoryChart, totalMemory, availableMemory);
+
+                                            // Assuming the API returns data for each day in the week
+                                            data.history.forEach(item => {
+                                                // Assuming 'time' and 'usedMemory' are fields in the item
+                                                memoryChart.data.labels.push(item.time);
+                                                memoryChart.data.datasets[0].data.push(computeBytesToGB(item.usedMemory));
+                                            });
+
+                                            memoryChart.update();
+                                        });
+
                                     } else if (this.value === 'monthly') {
                                         startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                                         endDate = currentDate.toISOString().split('T')[0] + " 23:59:59";
-                                    }
 
-                                    var payload = {
-                                        "startDate": startDate,
-                                        "endDate": endDate
-                                    };
-                                    console.log(payload);
+                                        var payload = {
+                                            "startDate": startDate,
+                                            "endDate": endDate
+                                        };
+                                        console.log(payload);
+
+                                        fetchData(deviceId, payload, function(data) {
+                                            if (memoryChart && typeof memoryChart.destroy === 'function') {
+                                                memoryChart.destroy();
+                                            }
+
+                                            const totalMemory = data.total;
+                                            const availableMemory = data.available;
+
+                                            memoryChart = initializeChart(totalMemory);
+                                            updateChartAndInfo(memoryChart, totalMemory, availableMemory);
+
+                                            // Assuming the API returns data for each day in the week
+                                            data.history.forEach(item => {
+                                                // Assuming 'time' and 'usedMemory' are fields in the item
+                                                memoryChart.data.labels.push(item.time);
+                                                memoryChart.data.datasets[0].data.push(computeBytesToGB(item.usedMemory));
+                                            });
+
+                                            memoryChart.update();
+                                        });
+                                    }
                                 }
                             });
                             usageSelect.dispatchEvent(changeEvent);
                         });
                     }
-                    function generateStorageProgressBar(storage) {
-                        var totalSizeGB = (storage.size / (1024 * 1024 * 1024)).toFixed(2);
-                        var usedSizeGB = totalSizeGB - (storage.partitions.reduce((acc, partition) => acc + partition.size, 0) / (1024 * 1024 * 1024)).toFixed(2);
-                        var availableSizeGB = (totalSizeGB - usedSizeGB).toFixed(2);
-                        var usedPercentage = ((usedSizeGB / totalSizeGB) * 100).toFixed(2);
+                    function storageDataHandler(storage_id, period) {
+                        const storage_API_URL = '8090/deviceDetail/history/';
+                        var storage_payload = {
+                            "startDate": getStartDate(period),
+                            "endDate": getEndDate(period)
+                        };
 
-                        return `
-                            <h5>Model - ${storage.model}</h5>
-                            <div class="progress" style="height: 30px;">
-                                <div class="progress-bar progress-bar-striped bg-info" style="width: ${usedPercentage}%" aria-valuenow="${usedPercentage}" aria-valuemin="0" aria-valuemax="100">${usedPercentage}% Used</div>
-                            </div>
-                            <p>${availableSizeGB} GB FREE of ${totalSizeGB} GB</p>
-                        `;
+                        function fetchDataStorage(storage_id, storage_payload) {
+                            __executeExternalPost(storage_API_URL + storage_id, JSON.stringify(storage_payload))
+                                .done(function(result) {
+                                console.log("API Response:", result);
+                                if (result.status === "SUCCESS") {
+                                    let storageArray = JSON.parse(result.response.jsonData);
+                                    let content = '';
+                                    storageArray.forEach(storage => {
+                                        content += generateStorageProgressBar(storage);
+                                    });
+                                    $('#storageBarsContainer').html(content);
+                                } else if (result.status === "ERROR") {
+                                    console.error('Error fetching data:', result);
+                                }
+                            }).fail(function(jqXHR, textStatus) {
+                                console.error("API Request Failed:", textStatus, jqXHR.responseText);
+                            });
+                        }
+
+                        function generateStorageProgressBar(storage) {
+                            let totalSizeGB = (storage.size / (1024 * 1024 * 1024)).toFixed(2);
+                            let usedSizeGB = totalSizeGB - (storage.partitions.reduce((acc, partition) => acc + partition.size, 0) / (1024 * 1024 * 1024)).toFixed(2);
+                            let availableSizeGB = (totalSizeGB - usedSizeGB).toFixed(2);
+                            let usedPercentage = ((usedSizeGB / totalSizeGB) * 100).toFixed(2);
+
+                            let progressBar = '';
+                            progressBar += '<br><h5>Model - ' + storage.model + '</h5>';
+                            progressBar += '<div class="progress" style="height: 30px;">';
+                            progressBar += '<div class="progress-bar progress-bar-striped bg-info" style="width: ' + usedPercentage + '%" aria-valuenow="' + usedPercentage + '" aria-valuemin="0" aria-valuemax="100">' + usedPercentage + '% Used</div>';
+                            progressBar += '</div>';
+                            progressBar += '<p>' + availableSizeGB + ' GB FREE of ' + totalSizeGB + ' GB</p>';
+
+                            return progressBar;
+                        }
+
+                        function getStartDate(period) {
+                            let currentDate = new Date();
+                            if (period === 'weekly') {
+                                return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
+                                console.log(new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00")
+                            } else if (period === 'monthly') {
+                                return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
+                            } else { // realtime
+                                return currentDate.toISOString().split('T')[0] + " 00:00:00";
+                            }
+                        }
+
+                        function getEndDate(period) {
+                            let currentDate = new Date();
+                            return currentDate.toISOString().split('T')[0] + " 23:59:59";
+                        }
+                        fetchDataStorage(storage_id, storage_payload);
+
+                        $(document).on('change', '#StorageUsageSelect', function() {
+                            console.log("Dropdown value changed to:", $(this).val());
+                            let newPeriod = $(this).val();
+                            let newPayload = {
+                                "startDate": getStartDate(newPeriod),
+                                "endDate": getEndDate(newPeriod)
+                            };
+                            console.log(newPayload);
+                            fetchDataStorage(storage_id, newPayload);
+                        });
                     }
                     for (var i = 0; i < responseArray.length; i++) {
                         var data = responseArray[i];
@@ -829,13 +954,12 @@ var cluster_device_details = function(){
         });
     }
     var __networking = function() {
-        console.log("test")
         __executeExternalGet('8090/deviceDetail/'+deviceId).done(function (result) {
             if (result.status != "ERROR") {
                 result.response.forEach(function(data) {
                 // console.log(data.type)
                     if (data.type === "NETWORK") {
-                        console.log(data.type)
+                        // console.log(data.type)
                         var content = '<div class="json-data">';
                         content += '<h5>Network</h5>';
                         if (data.jsonData) {
