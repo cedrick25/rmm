@@ -1,6 +1,6 @@
 var cookie = function(){
     if ($.cookie("uuid") != undefined) {
-        __executeExternalGet(uam+'/user/'+$.cookie("uuid")).done(function (result) {
+        __executeExternalGet('/rmm-uam/user/'+$.cookie("uuid")).done(function (result) {
             if (result.status != "ERROR") {
                 console.log("====this is user logged in=====");
                 console.log(result);

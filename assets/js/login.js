@@ -12,7 +12,7 @@ var login = function(){
             password    : password
         }
         // console.log(payload);
-        __executeExternalPost(uam+'/authenticate',JSON.stringify(payload)).done(function (result) {
+        __executeExternalPost('/rmm-uam/authenticate',JSON.stringify(payload)).done(function (result) {
             console.log(result);
             $(".btn-confirm").prop("disabled", false);
             if (result.status != "ERROR") {
@@ -23,7 +23,7 @@ var login = function(){
                         $('.prompt').html('<div class="alert alert-dark-success alert-dismissible" role="alert"> <i class="fa fa-check-circle"></i> Login Successfully </div>');
                         var uuid = result.uuid
                         $.cookie("uuid", uuid);
-                        
+
                         setTimeout(function () {
                             window.location.href="dashboard"
                         },1000);
