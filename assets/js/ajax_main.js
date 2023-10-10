@@ -1,7 +1,7 @@
 // localStorage.removeItem('anyhost');
 
 const hostname    = window.location.hostname;
-const anyhost     = 'http://'+hostname+':';
+const anyhost     = 'http://'+hostname+'';
 // const rmm_server  = '8090';
 // const uam         = '8088';
 // const docrepo     = '8080';
