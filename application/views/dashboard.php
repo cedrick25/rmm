@@ -21,7 +21,7 @@
                                         <li class="breadcrumb-item"><a href="#"><i class="feather icon-home"></i> Dashboard</a></li>
                                     </ol>
                                 </div>
-                                <div class="row analytics">
+                                <!-- <div class="row analytics">
                                     <div class="col-md-3">
                                         <div class="card mb-4">
                                             <div class="card-body">
@@ -256,7 +256,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>                
                 </div>
@@ -269,7 +269,7 @@
     <script src="assets/js/dashboard_main.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
-        dashboard();
+        // dashboard();
     });
     </script>
 </body>
