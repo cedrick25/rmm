@@ -21,22 +21,18 @@
                     <hr>
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label class="form-label">Email / Username</label>
-                            <input type="text" class="form-control email_username" placeholder="JohnDoe@gmail.com / JohnDoe20">
-                            <div class="clearfix"></div>
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                <input type="text" class="form-control email_username" placeholder="Email or Username">
+                            </div>
                         </div>
                         <div class="form-group col-md-12">
-                            <label class="form-label">Password</label>
-                            <input type="password" class="form-control password" placeholder="********">
-                            <div class="clearfix"></div>
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="fa fa-lock"></i></div>
+                                <input type="password" class="form-control password" placeholder="********">
+                            </div>
                         </div>
                     </div>
-                    <!-- <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon"><i class="fa fa-lock"></i></div>
-                            <input type="password" class="form-control password" placeholder="********">
-                        </div>
-                    </div> -->
                     <a href="javascript:">
                         <button type="submit" class="btn btn-info btn-flat m-b-30 m-t-30 btn-confirm">Log in</button>
                     </a>
