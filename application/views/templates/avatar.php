@@ -167,8 +167,8 @@
                                     <a href="javascript:" class="dropdown-item">
                                         <i class="feather icon-settings text-muted"></i> &nbsp; Account settings</a>
                                     <div class="dropdown-divider"></div> -->
-                                    <a href="" id="profile" class="dropdown-item">
-                                        <i class="feather icon-user"></i> &nbsp; Profile</a>
+                                    <!-- <a href="" id="profile" class="dropdown-item">
+                                        <i class="feather icon-user"></i> &nbsp; Profile</a> -->
                                     <a href="/rmm" class="dropdown-item btn_logout">
                                         <i class="feather icon-power text-danger"></i> &nbsp; Log Out</a>
                                 </div>
@@ -178,9 +178,9 @@
                 </nav>
 
     <script type="text/javascript">
-        document.getElementById('profile').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent the default navigation behavior
-            var uuid = $.cookie("uuid");
-            window.location.href = 'http://localhost/ams/user_update?userId='+uuid;
-        });
+        // document.getElementById('profile').addEventListener('click', function(event) {
+        //     event.preventDefault(); // Prevent the default navigation behavior
+        //     var uuid = $.cookie("uuid");
+        //     window.location.href = 'http://localhost/ams/user_update?userId='+uuid;
+        // });
     </script>

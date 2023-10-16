@@ -362,7 +362,7 @@ var cluster_device_details = function(){
                         return content;
                     }
                     function historicalData(deviceId){
-                        __executeExternalGet('/rmm-server/deviceDetail/'+deviceId).done(function (result) {
+                        __executeExternalGet('/rmm-server/deviceDetail/history/'+deviceId).done(function (result) {
                             if (result.status != "ERROR") {
                                 $(document).ready(function() {
                                 const canvasId = `cpuChart${i}`;
@@ -435,7 +435,7 @@ var cluster_device_details = function(){
                                         const currentTime = new Date().toLocaleTimeString();
 
                                         chart.data.labels.push(currentTime);
-                                        chart.data.datasets[0].data.push(Math.random() * 100);
+                                        chart.data.datasets[0].data;
 
                                         if (chart.data.labels.length > 20) {
                                             chart.data.labels.shift();
@@ -700,6 +700,7 @@ var cluster_device_details = function(){
                                         intervalId = setInterval(function () {
                                             fetchData(deviceId, payload, function (data) {
                                                 updateChartAndInfo(memoryChart, data.total, data.available);
+                                                console.log("Memory realtime")
                                             });
                                         }, REALTIME_INTERVAL);
                                     });
@@ -731,6 +732,7 @@ var cluster_device_details = function(){
                                                 // Assuming 'time' and 'usedMemory' are fields in the item
                                                 memoryChart.data.labels.push(item.time);
                                                 memoryChart.data.datasets[0].data.push(computeBytesToGB(item.usedMemory));
+                                                console.log("Memory weekly")
                                             });
 
                                             memoryChart.update();
@@ -762,6 +764,7 @@ var cluster_device_details = function(){
                                                 // Assuming 'time' and 'usedMemory' are fields in the item
                                                 memoryChart.data.labels.push(item.time);
                                                 memoryChart.data.datasets[0].data.push(computeBytesToGB(item.usedMemory));
+                                                console.log("Memory weekly")
                                             });
 
                                             memoryChart.update();
@@ -779,23 +782,25 @@ var cluster_device_details = function(){
                             "endDate": getEndDate(period)
                         };
 
+                        let intervalId; // Variable to store the interval ID for "Realtime" updates
+
                         function fetchDataStorage(storage_id, storage_payload) {
                             __executeExternalPost(storage_API_URL + storage_id, JSON.stringify(storage_payload))
-                                .done(function(result) {
-                                console.log("API Response:", result);
-                                if (result.status === "SUCCESS") {
-                                    let storageArray = JSON.parse(result.response.jsonData);
-                                    let content = '';
-                                    storageArray.forEach(storage => {
-                                        content += generateStorageProgressBar(storage);
-                                    });
-                                    $('#storageBarsContainer').html(content);
-                                } else if (result.status === "ERROR") {
-                                    console.error('Error fetching data:', result);
-                                }
-                            }).fail(function(jqXHR, textStatus) {
-                                console.error("API Request Failed:", textStatus, jqXHR.responseText);
-                            });
+                                .done(function (result) {
+                                    // console.log("API Response:", result);
+                                    if (result.status === "SUCCESS") {
+                                        let storageArray = JSON.parse(result.response.jsonData);
+                                        let content = '';
+                                        storageArray.forEach(storage => {
+                                            content += generateStorageProgressBar(storage);
+                                        });
+                                        $('#storageBarsContainer').html(content);
+                                    } else if (result.status === "ERROR") {
+                                        console.error('Error fetching data:', result);
+                                    }
+                                }).fail(function (jqXHR, textStatus) {
+                                    console.error("API Request Failed:", textStatus, jqXHR.responseText);
+                                });
                         }
 
                         function generateStorageProgressBar(storage) {
@@ -818,7 +823,6 @@ var cluster_device_details = function(){
                             let currentDate = new Date();
                             if (period === 'weekly') {
                                 return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
-                                console.log(new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00")
                             } else if (period === 'monthly') {
                                 return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                             } else { // realtime
@@ -830,17 +834,35 @@ var cluster_device_details = function(){
                             let currentDate = new Date();
                             return currentDate.toISOString().split('T')[0] + " 23:59:59";
                         }
+
+                        // Initial fetch based on the selected option
                         fetchDataStorage(storage_id, storage_payload);
 
-                        $(document).on('change', '#StorageUsageSelect', function() {
+                        // Event listener for the dropdown change
+                        $(document).on('change', '#StorageUsageSelect', function () {
                             console.log("Dropdown value changed to:", $(this).val());
                             let newPeriod = $(this).val();
                             let newPayload = {
                                 "startDate": getStartDate(newPeriod),
                                 "endDate": getEndDate(newPeriod)
                             };
-                            console.log(newPayload);
-                            fetchDataStorage(storage_id, newPayload);
+
+                            // Clear the previous interval if exists
+                            if (intervalId) {
+                                clearInterval(intervalId);
+                            }
+
+                            if (newPeriod === "realtime") {
+                                // For "Realtime," set an interval to periodically fetch data
+                                fetchDataStorage(storage_id, newPayload);
+                                intervalId = setInterval(function () {
+                                    console.log("Storage Realtime");
+                                    fetchDataStorage(storage_id, newPayload);
+                                }, 3000); // Adjust the interval as needed (e.g., every 3 seconds)
+                            } else {
+                                // For "Weekly" and "Monthly," fetch and display data once
+                                fetchDataStorage(storage_id, newPayload);
+                            }
                         });
                     }
                     for (var i = 0; i < responseArray.length; i++) {

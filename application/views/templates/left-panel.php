@@ -13,19 +13,19 @@
 
                     <!-- Dashboards -->
                     <li class="sidenav-item dashboardNav" style="">
-                        <a href="/dashboard" class="sidenav-link">
+                        <a href="/rmm/dashboard" class="sidenav-link">
                             <i class="sidenav-icon feather icon-home"></i>
                             <div>Dashboards</div>
                         </a>
                     </li>
                     <li class="sidenav-item clusterNav" style="">
-                        <a href="/cluster" class="sidenav-link">
+                        <a href="/rmm/cluster" class="sidenav-link">
                             <i class="sidenav-icon feather icon-users"></i>
                             <div>Cluster</div>
                         </a>
                     </li>
                     <li class="sidenav-item appNav" style="">
-                        <a href="/apps_and_services" class="sidenav-link">
+                        <a href="/rmm/apps_and_services" class="sidenav-link">
                             <i class="sidenav-icon feather icon-settings"></i>
                             <div>Default apps and Services</div>
                         </a>
