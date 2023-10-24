@@ -42,7 +42,6 @@
                                                     <th>Manufacturer</th>
                                                     <th>Description</th>
                                                     <th>Serial Number</th>
-                                                    <th>Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>

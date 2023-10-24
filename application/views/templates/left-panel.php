@@ -78,6 +78,7 @@
                 document.addEventListener("DOMContentLoaded", function() {
                     const sidenavLinks = document.querySelectorAll(".sidenav-link");
                     const currentPath = window.location.pathname;
+                    // console.log(currentPath)
                     sidenavLinks.forEach(link => {
                     // console.log(link)
                     // console.log(link.getAttribute('href'))
