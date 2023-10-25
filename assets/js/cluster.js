@@ -294,56 +294,100 @@ var cluster_device_details = function(){
                             content += generateDisplayContent(data);
                         } else if (data.type === "BATTERY") {
                             content += generateBatteryContent(data);
-                        } else if (data.type === "CPU") {
+                        } else if (data.type === "CPU" ) {
+                            console.log(data.type)
                             content += '<div class="json-data">';
                             content += '<form class="form-inline">';
                                 content += '<label class="form-label mr-sm-2">Usage</label>';
                                 content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="CPUusageSelect">';
-                                content += '<option value="realtime" selected>Get Realtime</option>';
-                                content += '<option value="weekly">Get Weekly</option>';
-                                content += '<option value="monthly">Get Monthly</option>';
+                                    content += '<option value="realtime" selected>Get Realtime</option>';
+                                    content += '<option value="weekly">Get Weekly</option>';
+                                    content += '<option value="monthly">Get Monthly</option>';
                                 content += '</select>';
                             content += '</form>';
                             content += '<br><div class="form-group">';
                                 content += '<div class="col-sm-10">';
                                     content += '<div class="custom-controls-stacked">';
                                         content += '<label class="custom-control custom-radio">';
-                                        content += '<input name="custom-radio-3" type="radio" class="custom-control-input" checked>';
-                                        content += '<span class="custom-control-label">Overall Utilization</span>';
+                                            content += '<input name="custom-radio-3" type="radio" class="custom-control-input" value="SystemCpuLoadTicks" checked>';
+                                            content += '<span class="custom-control-label">Overall Utilization</span>';
                                         content += '</label>';
                                         content += '<label class="custom-control custom-radio">';
-                                        content += '<input name="custom-radio-3" type="radio" class="custom-control-input">';
-                                        content += '<span class="custom-control-label">Logical Processors</span>';
+                                            content += '<input name="custom-radio-3" type="radio" class="custom-control-input" value="ProcessorCpuLoadTicks">';
+                                            content += '<span class="custom-control-label">Logical Processors</span>';
                                         content += '</label>';
                                     content += '</div>';
                                 content += '</div>';
                             content += '</div>';
-                            content += '<div id="cpuChartContainer" class="row"></div>';
+                            content += '<br><br><div id="cpuChartContainer" class="row"></div>';
                             content += '<div class="cpu_info"></div>';
                             content += '</div>';
 
-                            try {
-                                $(document).ready(function() {
-                                    // Parsing the jsonData from the provided data
-                                    var cpuDetails = JSON.parse(data.jsonData);
-                                    // console.log("Parsed CPU Details:", cpuDetails);  // Log parsed data to console
-
-                                    // Extracting basic CPU information
-                                    var infoContent = '';
-                                    infoContent += '<br><br><br><h5>CPU Information</h5><br>';
+                            $(document).ready(function() {
+                                var cpuDetails = JSON.parse(data.jsonData);
+                                displayCPUInfo();
+                                // Function to display CPU information and caches
+                                function displayCPUInfo() {
+                                    var infoContent = '<br><br><br><h5>CPU Information</h5><br>';
                                     infoContent += '<p><strong>CPU Name:</strong> ' + cpuDetails.processorIdentifier.name.trim() + '</p>';
                                     infoContent += '<p><strong>CPU Model:</strong> ' + cpuDetails.processorIdentifier.model + '</p>';
                                     infoContent += '<p><strong>Physical Processors:</strong> ' + cpuDetails.physicalProcessorCount + '</p>';
                                     infoContent += '<p><strong>Logical Processors:</strong> ' + cpuDetails.logicalProcessorCount + '</p>';
 
-                                    $('.cpu_info').html(infoContent);
-                                    // console.log("Info Content:", infoContent);  // Log the constructed info content to console
-                                })
-                            } catch (error) {
-                                console.error("Error processing CPU data:", error);
-                            }
+                                    var cacheContent = '';
+                                    if (cpuDetails.processorCaches) {
+                                        cacheContent += '<br><h5>CPU Caches</h5><br>';
+                                        cpuDetails.processorCaches.forEach(function(cache) {
+                                            cacheContent += '<p><strong>Level ' + cache.level + ' Cache:</strong> ';
+                                            cacheContent += 'Size: ' + cache.cacheSize + 'KB, ';
+                                            cacheContent += 'Type: ' + cache.type + ', ';
+                                            cacheContent += 'Associativity: ' + cache.associativity + ', ';
+                                            cacheContent += 'Line Size: ' + cache.lineSize + '</p>';
+                                        });
+                                    }
 
-                            historicalData(data.id, 'realtime');
+                                    $('.cpu_info').html(infoContent + cacheContent);
+                                }
+
+                                // Function to fetch and display data
+                                function fetchDataAndDisplayData(selectedDataType) {
+                                    // console.log(selectedDataType); // Logging data id
+                                    __executeExternalGet('/rmm-server/deviceDetail/' + deviceId).done(function(resultCPU) {
+                                        console.log(resultCPU)
+                                        var responseArrayCPU = resultCPU.response;
+                                        for (var i = 0; i < responseArrayCPU.length; i++) {
+                                            var dataCPU = responseArrayCPU[i];
+                                            // console.log(data.type); // Logging data id
+                                            if (dataCPU.type === selectedDataType) {
+
+                                                if (selectedDataType === "SystemCpuLoadTicks") {
+                                                    SystemCpuLoadTicks(dataCPU.id, 'realtime');
+                                                    console.log(dataCPU.id); // Logging data id
+                                                    console.log(selectedDataType); // Logging selected data type
+                                                }
+                                                if (selectedDataType === "ProcessorCpuLoadTicks") {
+                                                    ProcessorCpuLoadTicks(dataCPU.id, 'realtime');
+                                                    console.log(dataCPU.id); // Logging data id
+                                                    console.log(selectedDataType); // Logging selected data type
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                $(document).ready(function() {
+                                    // Get the initial value of the selected radio button
+                                    var selectedDataType = $('input[name="custom-radio-3"]:checked').val();
+                                    console.log(selectedDataType);
+                                    fetchDataAndDisplayData(selectedDataType);
+                                });
+                                // Event listener for the radio buttons
+                                $('input[name="custom-radio-3"]').on('change', function() {
+                                    // Get the value of the selected radio button
+                                    var selectedDataType = $('input[name="custom-radio-3"]:checked').val();
+                                    console.log(selectedDataType);
+                                    fetchDataAndDisplayData(selectedDataType);
+                                });
+                            });
                         } else if (data.type === "STORAGE") {
                             content += '<div class="json-data">';
                             content += '<form class="form-inline">';
@@ -388,35 +432,20 @@ var cluster_device_details = function(){
                         content += '</div>';
                         return content;
                     }
-                    function historicalData(deviceDetailId, period) {
+                    function SystemCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
                         const interval = 2000; // Update interval in milliseconds
-
-                        var CPU_payload = {
+                        const CPU_payload = {
                             "startDate": getStartDate(period),
                             "endDate": getEndDate(period)
                         };
+
                         function fetchDataCPU(deviceDetailId, CPU_payload) {
-                            __executeExternalPost(CPU_API_URL + 4, JSON.stringify(CPU_payload))
+                            __executeExternalPost(CPU_API_URL + deviceDetailId, JSON.stringify(CPU_payload))
                                 .done(function (result) {
                                     if (result.status === "SUCCESS") {
-                                        const processorCpuLoadTicksDetails ={
-                                            "status": "SUCCESS",
-                                            "message": null,
-                                            "response": {
-                                                "id": 4,
-                                                "createdBy": "SYSTEM",
-                                                "createdDate": "2023-09-19 02:17:42",
-                                                "status": true,
-                                                "deviceId": "1",
-                                                "deviceName": null,
-                                                "jsonData": "[[6130546,0,2168718,128204046,0,528015,623359,0],[1438156,0,1567687,134490484,0,39562,118562,0],[1403328,0,832062,135381203,0,13593,24250,0],[1602265,0,1149921,134818562,0,17125,66562,0],[3325562,0,2402500,131879953,0,40453,5984,0],[1730171,0,1674718,134223187,0,18468,7890,0],[3965281,0,4172531,129456578,0,53312,6734,0],[1750468,0,1711015,134174375,0,12828,5750,0],[2221656,0,1649812,133756312,0,16093,10562,0],[2356703,0,1091984,134184953,0,11421,9375,0],[2030062,0,808406,134788031,0,19718,8218,0],[905593,0,602468,136134671,0,6562,5140,0]]",
-                                                "type": "ProcessorCpuLoadTicks",
-                                                "historicalData": []
-                                            }
-                                        }
-                                        console.log(processorCpuLoadTicksDetails)
-                                        // generateCharts(processorCpuLoadTicksDetails);
+                                        const SystemCpuLoadTicksDetails = result.response;
+                                        generateCharts(SystemCpuLoadTicksDetails);
                                     } else if (result.status === "ERROR") {
                                         console.error('Error fetching CPU data:', result);
                                     }
@@ -441,56 +470,180 @@ var cluster_device_details = function(){
                             let currentDate = new Date();
                             return currentDate.toISOString().split('T')[0] + " 23:59:59";
                         }
-                        // function generateCharts(processorCpuLoadTicksDetails) {
-                        //     // const numProcessors = processorCpuLoadTicksDetails.length;
-                        //     // console.log(numProcessors)
-                        //     const container = $('#cpuChartContainer');
 
-                        //     // Clear any existing charts and canvases
-                        //     container.empty();
+                        function generateCharts(SystemCpuLoadTicksDetails) {
+                            const jsonData = JSON.parse(SystemCpuLoadTicksDetails.jsonData);
 
-                        //     const cpuCharts = [];
+                            // Create a single canvas element for the chart
+                            const canvas = document.createElement('canvas');
+                            const container = $('#cpuChartContainer');
+                            container.empty().append(canvas);
 
-                        //     for (let i = 0; i < numProcessors; i++) {
-                        //         const canvasId = `cpuChart${i}`;
-                        //         const canvasWrapper = $('<div class="col-md-4"></div>');
-                        //         const canvas = $(`<canvas id="${canvasId}"></canvas>`);
+                            const ctx = canvas.getContext('2d');
 
-                        //         canvasWrapper.append(canvas);
-                        //         container.append(canvasWrapper);
+                            const chart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: [],
+                                    datasets: [{
+                                        label: 'System CPU Load Ticks',
+                                        data: [],
+                                        borderColor: 'rgb(75, 192, 192)',
+                                        fill: false,
+                                    }],
+                                },
+                                options: {
+                                    scales: {
+                                        x: {
+                                            type: 'category',
+                                            beginAtZero: true,
+                                        },
+                                        y: {
+                                            beginAtZero: true,
+                                        },
+                                    }
+                                }
+                            });
 
-                        //         const ctx = canvas[0].getContext('2d');
+                            // Start the data update loop for this chart
+                            setInterval(() => addDataToChart(chart, jsonData), interval);
+                        }
 
-                        //         const chart = new Chart(ctx, {
-                        //             type: 'line',
-                        //             data: {
-                        //                 labels: [],
-                        //                 datasets: [{
-                        //                     label: `Processor ${i + 1} Load`,
-                        //                     data: [],
-                        //                     borderColor: getRandomColor(),
-                        //                     fill: true,
-                        //                 }]
-                        //             },
-                        //             options: {
-                        //                 scales: {
-                        //                     x: {
-                        //                         type: 'category',
-                        //                         beginAtZero: true,
-                        //                     },
-                        //                     y: {
-                        //                         beginAtZero: true,
-                        //                     }
-                        //                 }
-                        //             }
-                        //         });
+                        function addDataToChart(chart, jsonData) {
+                            const currentTime = new Date().toLocaleTimeString();
+                            chart.data.labels.push(currentTime);
+                            chart.data.datasets[0].data.push(jsonData.shift());
 
-                        //         cpuCharts.push(chart);
+                            if (chart.data.labels.length > 20) {
+                                chart.data.labels.shift();
+                                chart.data.datasets[0].data.shift();
+                            }
 
-                        //         // Start the data update loop for this chart
-                        //         setInterval(() => addDataToChart(chart), interval);
-                        //     }
-                        // }
+                            chart.update();
+                        }
+
+                        // Initial data fetch
+                        fetchDataCPU(deviceDetailId, CPU_payload);
+
+                        // Optionally, you can set up an interval to periodically fetch data.
+                        // setInterval(() => fetchDataCPU(deviceDetailId), interval);
+                    }
+                    function ProcessorCpuLoadTicks(deviceDetailId, period) {
+                        const CPU_API_URL = '/rmm-server/deviceDetail/history/';
+                        const interval = 2000; // Update interval in milliseconds
+
+                        var CPU_payload = {
+                            "startDate": getStartDate(period),
+                            "endDate": getEndDate(period)
+                        };
+                        function fetchDataCPU(deviceDetailId, CPU_payload) {
+                            __executeExternalPost(CPU_API_URL + deviceDetailId, JSON.stringify(CPU_payload))
+                                .done(function (result) {
+                                    console.log(result)
+                                    if (result.status === "SUCCESS") {
+                                        const processorCpuLoadTicksDetails = {
+                                            "status": "SUCCESS",
+                                            "message": null,
+                                            "response": {
+                                                "id": 4,
+                                                "createdBy": "SYSTEM",
+                                                "createdDate": "2023-09-19 02:17:42",
+                                                "status": true,
+                                                "deviceId": "1",
+                                                "deviceName": null,
+                                                "jsonData": "[[6130546,0,2168718,128204046,0,528015,623359,0],[1438156,0,1567687,134490484,0,39562,118562,0],[1403328,0,832062,135381203,0,13593,24250,0],[1602265,0,1149921,134818562,0,17125,66562,0],[3325562,0,2402500,131879953,0,40453,5984,0],[1730171,0,1674718,134223187,0,18468,7890,0],[3965281,0,4172531,129456578,0,53312,6734,0],[1750468,0,1711015,134174375,0,12828,5750,0],[2221656,0,1649812,133756312,0,16093,10562,0],[2356703,0,1091984,134184953,0,11421,9375,0],[2030062,0,808406,134788031,0,19718,8218,0],[905593,0,602468,136134671,0,6562,5140,0]]",
+                                                "type": "ProcessorCpuLoadTicks",
+                                                "historicalData": []
+                                            }
+                                        }
+                                        // console.log(processorCpuLoadTicksDetails)
+                                        generateCharts(processorCpuLoadTicksDetails);
+                                    } else if (result.status === "ERROR") {
+                                        console.error('Error fetching CPU data:', result);
+                                    }
+                                })
+                                .fail(function (jqXHR, textStatus) {
+                                    console.error("API Request Failed:", textStatus, jqXHR.responseText);
+                                });
+                        }
+
+                        function getStartDate(period) {
+                            let currentDate = new Date();
+                            if (period === 'weekly') {
+                                return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
+                            } else if (period === 'monthly') {
+                                return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
+                            } else { // realtime
+                                return currentDate.toISOString().split('T')[0] + " 00:00:00";
+                            }
+                        }
+
+                        function getEndDate(period) {
+                            let currentDate = new Date();
+                            return currentDate.toISOString().split('T')[0] + " 23:59:59";
+                        }
+                        function generateCharts(processorCpuLoadTicksDetails) {
+                            const jsonData = JSON.parse(processorCpuLoadTicksDetails.response.jsonData);
+                            const numProcessors = jsonData.length;
+
+                            const container = $('#cpuChartContainer');
+                            container.empty();
+
+                            const cpuCharts = [];
+
+                            for (let i = 0; i < numProcessors; i++) {
+                                const canvasId = `cpuChart${i}`;
+                                const canvasWrapper = $('<div class="col-md-4"></div>');
+                                const canvas = $(`<canvas id="${canvasId}"></canvas>`);
+
+                                canvasWrapper.append(canvas);
+                                container.append(canvasWrapper);
+
+                                const ctx = canvas[0].getContext('2d');
+
+                                const chart = new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: [],
+                                        datasets: [{
+                                            label: `Processor ${i + 1} Load`,
+                                            data: [],
+                                            borderColor: getRandomColor(),
+                                            fill: true,
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            x: {
+                                                type: 'category',
+                                                beginAtZero: true,
+                                            },
+                                            y: {
+                                                beginAtZero: true,
+                                            }
+                                        }
+                                    }
+                                });
+
+                                cpuCharts.push(chart);
+
+                                // Start the data update loop for this chart
+                                setInterval(() => addDataToChart(chart, jsonData[i]), interval);
+                            }
+                        }
+
+                        function addDataToChart(chart, processorData) {
+                            const currentTime = new Date().toLocaleTimeString();
+                            chart.data.labels.push(currentTime);
+                            chart.data.datasets[0].data.push(processorData);
+                            
+                            if (chart.data.labels.length > 20) {
+                                chart.data.labels.shift();
+                                chart.data.datasets[0].data.shift();
+                            }
+
+                            chart.update();
+                        }
 
                         function getRandomColor() {
                             return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
@@ -761,7 +914,7 @@ var cluster_device_details = function(){
                                         intervalId = setInterval(function () {
                                             fetchData(deviceId, payload, function (data) {
                                                 updateChartAndInfo(memoryChart, data.total, data.available);
-                                                console.log("Memory realtime")
+                                                // console.log("Memory realtime")
                                             });
                                         }, REALTIME_INTERVAL);
                                     });
@@ -865,8 +1018,9 @@ var cluster_device_details = function(){
                         }
 
                         function generateStorageProgressBar(storage) {
+                            // console.log(storage)
                             let totalSizeGB = (storage.size / (1024 * 1024 * 1024)).toFixed(2);
-                            let usedSizeGB = totalSizeGB - (storage.partitions.reduce((acc, partition) => acc + partition.size, 0) / (1024 * 1024 * 1024)).toFixed(2);
+                            let usedSizeGB = totalSizeGB - (storage.partitions.reduce((acc, partition) => acc + storage.writeBytes, 0) / (1024 * 1024 * 1024)).toFixed(2);
                             let availableSizeGB = (totalSizeGB - usedSizeGB).toFixed(2);
                             let usedPercentage = ((usedSizeGB / totalSizeGB) * 100).toFixed(2);
 
@@ -877,6 +1031,10 @@ var cluster_device_details = function(){
                             progressBar += '</div>';
                             progressBar += '<p>' + availableSizeGB + ' GB FREE of ' + totalSizeGB + ' GB</p>';
 
+                            progressBar += '<br><h5>Storage Information</h5><br>';
+                            progressBar += `<p>Used space: ${usedSizeGB} GB</p>`;
+                            progressBar += `<p>Free space: ${availableSizeGB} GB</p>`;
+                            progressBar += `<p>Capacity: ${totalSizeGB} GB</p><br>`;
                             return progressBar;
                         }
 
@@ -901,7 +1059,7 @@ var cluster_device_details = function(){
 
                         // Event listener for the dropdown change
                         $(document).on('change', '#StorageUsageSelect', function () {
-                            console.log("Dropdown value changed to:", $(this).val());
+                            // console.log("Dropdown value changed to:", $(this).val());
                             let newPeriod = $(this).val();
                             let newPayload = {
                                 "startDate": getStartDate(newPeriod),
@@ -917,7 +1075,7 @@ var cluster_device_details = function(){
                                 // For "Realtime," set an interval to periodically fetch data
                                 fetchDataStorage(storage_id, newPayload);
                                 intervalId = setInterval(function () {
-                                    console.log("Storage Realtime");
+                                    // console.log("Storage Realtime");
                                     fetchDataStorage(storage_id, newPayload);
                                 }, 2000); // Adjust the interval as needed (e.g., every 2 seconds)
                             } else {
