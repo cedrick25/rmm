@@ -39,7 +39,7 @@ var list = function(){
                 $(".btn_update").unbind("click").on("click", function(){
                     var userId = $(this).data("id");
                     // console.log(data_id)
-                    window.location.href = anyhost+'/rmm/user_account_update?userId='+userId;
+                    window.location.href = anyhost+'/user_account_update?userId='+userId;
                 });
             }
         })
@@ -250,7 +250,7 @@ var cluster_devices = function(){
                     });
 
                     localStorage.setItem('devices', JSON.stringify(devices));
-                    var url = '/rmm/cluster_move_device?';
+                    var url = '/cluster_move_device?';
                     window.location.href = url;
                 });
             }
@@ -541,21 +541,7 @@ var cluster_device_details = function(){
                                 .done(function (result) {
                                     console.log(result)
                                     if (result.status === "SUCCESS") {
-                                        const processorCpuLoadTicksDetails = {
-                                            "status": "SUCCESS",
-                                            "message": null,
-                                            "response": {
-                                                "id": 4,
-                                                "createdBy": "SYSTEM",
-                                                "createdDate": "2023-09-19 02:17:42",
-                                                "status": true,
-                                                "deviceId": "1",
-                                                "deviceName": null,
-                                                "jsonData": "[[6130546,0,2168718,128204046,0,528015,623359,0],[1438156,0,1567687,134490484,0,39562,118562,0],[1403328,0,832062,135381203,0,13593,24250,0],[1602265,0,1149921,134818562,0,17125,66562,0],[3325562,0,2402500,131879953,0,40453,5984,0],[1730171,0,1674718,134223187,0,18468,7890,0],[3965281,0,4172531,129456578,0,53312,6734,0],[1750468,0,1711015,134174375,0,12828,5750,0],[2221656,0,1649812,133756312,0,16093,10562,0],[2356703,0,1091984,134184953,0,11421,9375,0],[2030062,0,808406,134788031,0,19718,8218,0],[905593,0,602468,136134671,0,6562,5140,0]]",
-                                                "type": "ProcessorCpuLoadTicks",
-                                                "historicalData": []
-                                            }
-                                        }
+                                        const processorCpuLoadTicksDetails = result
                                         // console.log(processorCpuLoadTicksDetails)
                                         generateCharts(processorCpuLoadTicksDetails);
                                     } else if (result.status === "ERROR") {
@@ -633,6 +619,7 @@ var cluster_device_details = function(){
                         }
 
                         function addDataToChart(chart, processorData) {
+                            // console.log(processorData)
                             const currentTime = new Date().toLocaleTimeString();
                             chart.data.labels.push(currentTime);
                             chart.data.datasets[0].data.push(processorData);
@@ -649,19 +636,21 @@ var cluster_device_details = function(){
                             return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
                         }
 
-                        function addDataToChart(chart) {
-                            const currentTime = new Date().toLocaleTimeString();
+                        // function addDataToChart(chart) {
+                        //     console.log(chart)
+                        //     const currentTime = new Date().toLocaleTimeString();
 
-                            chart.data.labels.push(currentTime);
-                            chart.data.datasets[0].data.push(Math.random() * 100);
+                        //     chart.data.labels.push(currentTime);
+                        //     chart.data.datasets[0].data.push(Math.random() * 100);
+                        //     // chart.data.datasets[0].data.push(processorData);
 
-                            if (chart.data.labels.length > 20) {
-                                chart.data.labels.shift();
-                                chart.data.datasets[0].data.shift();
-                            }
+                        //     if (chart.data.labels.length > 20) {
+                        //         chart.data.labels.shift();
+                        //         chart.data.datasets[0].data.shift();
+                        //     }
 
-                            chart.update();
-                        }
+                        //     chart.update();
+                        // }
 
                         // Initial data fetch
                         fetchDataCPU(deviceDetailId, CPU_payload);
