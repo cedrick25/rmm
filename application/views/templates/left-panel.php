@@ -24,6 +24,12 @@
                             <div>Cluster</div>
                         </a>
                     </li>
+                    <li class="sidenav-item clusterNav" style="">
+                        <a href="/prohibited_apps" class="sidenav-link">
+                            <i class="sidenav-icon feather icon-slash"></i>
+                            <div>Prohibited Apps</div>
+                        </a>
+                    </li>
                     <li class="sidenav-item appNav" style="">
                         <a href="/apps_and_services" class="sidenav-link">
                             <i class="sidenav-icon feather icon-settings"></i>

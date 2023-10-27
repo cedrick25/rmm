@@ -23,7 +23,7 @@ var apps_services = function(){
                         content += `
                             <tr>
                                 <td>${data.name || 'N/A'}</td>
-                                <td>${data.status || 'N/A'}</td>
+                                <td>${data.status === true ? 'Installed' : 'N/A'}</td>
                             </tr>
                         `;
                     });
@@ -65,7 +65,7 @@ var apps_services = function(){
                             <td>${data.name || 'N/A'}</td>
                             <td>${data.processId || 'N/A'}</td>
                             <td>${data.state || 'N/A'}</td>
-                            <td>${data.status || 'N/A'}</td>
+                            <td>${data.status === true ? 'Installed' : 'N/A'}</td>
                         </tr>
                     `;
                 });

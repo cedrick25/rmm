@@ -353,7 +353,7 @@ var cluster_device_details = function(){
                                 function fetchDataAndDisplayData(selectedDataType) {
                                     // console.log(selectedDataType); // Logging data id
                                     __executeExternalGet('/rmm-server/deviceDetail/' + deviceId).done(function(resultCPU) {
-                                        console.log(resultCPU)
+                                        // console.log(resultCPU)
                                         var responseArrayCPU = resultCPU.response;
                                         for (var i = 0; i < responseArrayCPU.length; i++) {
                                             var dataCPU = responseArrayCPU[i];
@@ -362,13 +362,13 @@ var cluster_device_details = function(){
 
                                                 if (selectedDataType === "SystemCpuLoadTicks") {
                                                     SystemCpuLoadTicks(dataCPU.id, 'realtime');
-                                                    console.log(dataCPU.id); // Logging data id
-                                                    console.log(selectedDataType); // Logging selected data type
+                                                    // console.log(dataCPU.id); // Logging data id
+                                                    // console.log(selectedDataType); // Logging selected data type
                                                 }
                                                 if (selectedDataType === "ProcessorCpuLoadTicks") {
                                                     ProcessorCpuLoadTicks(dataCPU.id, 'realtime');
-                                                    console.log(dataCPU.id); // Logging data id
-                                                    console.log(selectedDataType); // Logging selected data type
+                                                    // console.log(dataCPU.id); // Logging data id
+                                                    // console.log(selectedDataType); // Logging selected data type
                                                 }
                                             }
                                         }
@@ -391,14 +391,15 @@ var cluster_device_details = function(){
                         } else if (data.type === "STORAGE") {
                             content += '<div class="json-data">';
                             content += '<form class="form-inline">';
-                            content += '<label class="form-label mr-sm-2">Usage</label>';
-                            content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="StorageUsageSelect">';
-                            content += '<option value="realtime" selected>Get Realtime</option>';
-                            content += '<option value="weekly">Get Weekly</option>';
-                            content += '<option value="monthly">Get Monthly</option>';
-                            content += '</select>';
+                                content += '<label class="form-label mr-sm-2">Usage</label>';
+                                content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="StorageUsageSelect">';
+                                    content += '<option value="realtime" selected>Get Realtime</option>';
+                                    content += '<option value="weekly">Get Weekly</option>';
+                                    content += '<option value="monthly">Get Monthly</option>';
+                                content += '</select>';
                             content += '</form>';
-                            content += '<div id="storageBarsContainer"></div>';
+                                content += '<div class="row" id="storageContainer">';
+                                content += '</div>';
                             content += '</div>';
 
                             // Assuming you have an element with the ID `contentContainer` where you want to add the content.
@@ -431,6 +432,153 @@ var cluster_device_details = function(){
 
                         content += '</div>';
                         return content;
+                    }
+                    function storageDataHandler(storage_id, period) {
+                        const storage_API_URL = '/rmm-server/deviceDetail/history/';
+                        var storage_payload = {
+                            "startDate": getStartDate(period),
+                            "endDate": getEndDate(period)
+                        };
+
+                        let intervalId; // Variable to store the interval ID for "Realtime" updates
+                        function fetchDataStorage(storage_id, storage_payload) {
+                            __executeExternalPost(storage_API_URL + storage_id, JSON.stringify(storage_payload))
+                                .done(function (result) {
+                                    // console.log("API Response:", result);
+                                if (result.status === "SUCCESS") {
+                                    let storageArray = JSON.parse(result.response.jsonData);
+                                    console.log(storageArray)
+                                    let content = '';
+                                    var partitionStorage = storageArray.partitions
+                                    storageArray.hwDiskStores.forEach(storage => {
+                                        content += generateStorageProgressBar(storage, partitionStorage);
+                                    });
+
+                                    $('#storageContainer').html(content);
+                                } else if (result.status === "ERROR") {
+                                    console.error('Error fetching data:', result);
+                                }
+                            }).fail(function (jqXHR, textStatus) {
+                                console.error("API Request Failed:", textStatus, jqXHR.responseText);
+                            });
+                        }
+
+                        function generateStorageProgressBar(storage, partitionStorage) {
+                            console.log(partitionStorage)
+
+                            let progressBar = '';
+                            progressBar += '<div class="col-md-12" style="border: 1px solid #dee2e6; margin-top:10px; padding-bottom:22px;">';
+                                progressBar += '<div class="col-md-12">';
+                                var name = storage.name
+                                var readBytes  = computeBytesToGB(storage.readBytes)
+                                var reads      = bytesToMB(storage.reads)
+                                var writeBytes = computeBytesToGB(storage.writeBytes)
+                                var writes     = bytesToMB(storage.writes)
+                                progressBar += '<br><h3>Storage Information</h3>';
+                                progressBar += '<div class="col-md-6">';
+                                    progressBar += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:15px">';
+                                        progressBar += `<dt class="col-sm-3"><span>Model:</span></dt>`;
+                                        progressBar += `<dd class="col-sm-9">${storage.model}</dd>`;
+                                        progressBar += `<dt class="col-sm-3"><span>Name:</span></dt>`;
+                                        progressBar += `<dd class="col-sm-9">${name}</dd>`;
+                                        progressBar += `<dt class="col-sm-3"><span>Serial:</span></dt>`;
+                                        progressBar += `<dd class="col-sm-9">${storage.serial}</dd>`;
+                                        progressBar += `<dt class="col-sm-3"><span>ReadBytes:</span></dt>`;
+                                        progressBar += `<dd class="col-sm-9">${readBytes} GB</dd>`;
+                                    progressBar += '</dl>';
+                                progressBar += '</div>';
+                                progressBar += '<div class="col-md-6">';
+                                    progressBar += '<dl class="row" style="margin-left:60px; margin-top: 10px; font-size:15px; margin-bottom: 10px;">';
+                                        progressBar += `<dt class="col-sm-3"><span>Reads:</span></dt>`;
+                                        progressBar += `<dd class="col-sm-9">${reads} MB</dd>`;
+                                        progressBar += `<dt class="col-sm-3"><span>WriteBytes:</span></dt>`;
+                                        progressBar += `<dd class="col-sm-9">${writeBytes} GB</dd>`;
+                                        progressBar += `<dt class="col-sm-3"><span>Writes:</span></dt>`;
+                                        progressBar += `<dd class="col-sm-9">${writes} MB</dd>`;
+                                    progressBar += '</dl>';
+                                progressBar += '</div>';
+                            progressBar += '</div>';
+                                progressBar += '<div class="col-lg-12">';
+                                    if (storage.partitions && storage.partitions.length > 0) {
+                                        progressBar += '<h3>Partitions</h3>';
+                                        storage.partitions.forEach(partition => {
+                                            console.log(partition)
+                                            progressBar += '<div class="col-sm-6">';
+                                                progressBar += '<div class="col-sm-12" style="border: 1px solid #dee2e6; padding-bottom: 18px; padding-left: 18px; padding-right: 18px;margin-top:10px;background: #fff; color: #111">';
+                                                progressBar += `<br><span>Identification: ${partition.identification}</span><br>`;
+                                                progressBar += `<span>Mount Point: ${partition.mountPoint}</span>`;
+
+                                                const matchedPartition = partitionStorage.find(part => part.partition === partition.mountPoint);
+                                                if (matchedPartition) {
+                                                    // Calculate the used percentage
+                                                    const totalSpace = parseInt(matchedPartition.totalSpace, 10);
+                                                    const availableSpace = parseInt(matchedPartition.availableSpace, 10);
+                                                    const usedSpace = parseInt(matchedPartition.usedSpace, 10);
+                                                    const usedPercentage = ((usedSpace / totalSpace) * 100).toFixed(2);
+
+                                                    progressBar += '<div class="progress" style="height: 30px;">';
+                                                    progressBar += `<div class="progress-bar progress-bar-striped bg-danger" style="width: ${usedPercentage}%;" aria-valuenow="${usedPercentage}" aria-valuemin="0" aria-valuemax="100">${usedPercentage}% Used</div>`;
+                                                    progressBar += '</div>';
+
+                                                    progressBar += `<span>Total Space: ${computeBytesToGB(matchedPartition.totalSpace)} GB</span><br>`;
+                                                    progressBar += `<span>Available Space: ${computeBytesToGB(matchedPartition.availableSpace)} GB</span><br>`;
+                                                    progressBar += `<span>Used Space: ${computeBytesToGB(matchedPartition.usedSpace)} GB</span><br>`;
+                                                }
+                                                progressBar += '</div>';
+                                            progressBar += '</div>';
+                                        });
+                                    }
+                                progressBar += '</div>';
+                            progressBar += '</div>';
+
+                            return progressBar;
+                        }
+
+                        function getStartDate(period) {
+                            let currentDate = new Date();
+                            if (period === 'weekly') {
+                                return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
+                            } else if (period === 'monthly') {
+                                return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
+                            } else { // realtime
+                                return currentDate.toISOString().split('T')[0] + " 00:00:00";
+                            }
+                        }
+
+                        function getEndDate(period) {
+                            let currentDate = new Date();
+                            return currentDate.toISOString().split('T')[0] + " 23:59:59";
+                        }
+
+                        // Initial fetch based on the selected option
+                        fetchDataStorage(storage_id, storage_payload);
+
+                        // Event listener for the dropdown change
+                        $(document).on('change', '#StorageUsageSelect', function () {
+                            // console.log("Dropdown value changed to:", $(this).val());
+                            let newPeriod = $(this).val();
+                            let newPayload = {
+                                "startDate": getStartDate(newPeriod),
+                                "endDate": getEndDate(newPeriod)
+                            };
+
+                            // Clear the previous interval if exists
+                            if (intervalId) {
+                                clearInterval(intervalId);
+                            }
+
+                            if (newPeriod === "realtime") {
+                                // For "Realtime," set an interval to periodically fetch data
+                                fetchDataStorage(storage_id, newPayload);
+                                // intervalId = setInterval(function () {
+                                //     // console.log("Storage Realtime");
+                                //     fetchDataStorage(storage_id, newPayload);
+                                // }, 2000); // Adjust the interval as needed (e.g., every 2 seconds)
+                            } else {
+                                // For "Weekly" and "Monthly," fetch and display data once
+                                fetchDataStorage(storage_id, newPayload);
+                            }
+                        });
                     }
                     function SystemCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
@@ -782,6 +930,9 @@ var cluster_device_details = function(){
                     function computeBytesToGB(bytes) {
                         return (bytes / (1024 * 1024 * 1024)).toFixed(2);
                     }
+                    function bytesToMB(bytes) {
+                        return (bytes / 1048576).toFixed(2); // 1 megabyte = 1,048,576 bytes
+                    }
                     function computeBytesToGBRoundoff(bytes) {
                         return Math.round(bytes / (1024 * 1024 * 1024));
                     }
@@ -874,7 +1025,7 @@ var cluster_device_details = function(){
                                     memoryChart.update();
 
                                     // Update Memory Info
-                                    let content = '<br><h5>Memory Information</h5><br>';
+                                    let content = '<br><h3>Memory Information</h3><br>';
                                     content += `<p>Total Memory: ${computeBytesToGBRoundoff(totalMemory)} GB</p>`;
                                     content += `<p>Memory in Use: ${computeBytesToGB(memoryInUse)} GB</p>`;
                                     content += `<p>Available Memory: ${computeBytesToGB(availableMemory)} GB</p><br>`;
@@ -976,101 +1127,6 @@ var cluster_device_details = function(){
                                 }
                             });
                             usageSelect.dispatchEvent(changeEvent);
-                        });
-                    }
-                    function storageDataHandler(storage_id, period) {
-                        const storage_API_URL = '/rmm-server/deviceDetail/history/';
-                        var storage_payload = {
-                            "startDate": getStartDate(period),
-                            "endDate": getEndDate(period)
-                        };
-
-                        let intervalId; // Variable to store the interval ID for "Realtime" updates
-
-                        function fetchDataStorage(storage_id, storage_payload) {
-                            __executeExternalPost(storage_API_URL + storage_id, JSON.stringify(storage_payload))
-                                .done(function (result) {
-                                    // console.log("API Response:", result);
-                                if (result.status === "SUCCESS") {
-                                    let storageArray = JSON.parse(result.response.jsonData);
-                                    let content = '';
-                                    storageArray.forEach(storage => {
-                                        content += generateStorageProgressBar(storage);
-                                    });
-                                    $('#storageBarsContainer').html(content);
-                                } else if (result.status === "ERROR") {
-                                    console.error('Error fetching data:', result);
-                                }
-                            }).fail(function (jqXHR, textStatus) {
-                                console.error("API Request Failed:", textStatus, jqXHR.responseText);
-                            });
-                        }
-
-                        function generateStorageProgressBar(storage) {
-                            // console.log(storage)
-                            let totalSizeGB = (storage.size / (1024 * 1024 * 1024)).toFixed(2);
-                            let usedSizeGB = totalSizeGB - (storage.partitions.reduce((acc, partition) => acc + storage.writeBytes, 0) / (1024 * 1024 * 1024)).toFixed(2);
-                            let availableSizeGB = (totalSizeGB - usedSizeGB).toFixed(2);
-                            let usedPercentage = ((usedSizeGB / totalSizeGB) * 100).toFixed(2);
-
-                            let progressBar = '';
-                            progressBar += '<br><h5>Model - ' + storage.model + '</h5>';
-                            progressBar += '<div class="progress" style="height: 30px;">';
-                            progressBar += '<div class="progress-bar progress-bar-striped bg-info" style="width: ' + usedPercentage + '%" aria-valuenow="' + usedPercentage + '" aria-valuemin="0" aria-valuemax="100">' + usedPercentage + '% Used</div>';
-                            progressBar += '</div>';
-                            progressBar += '<p>' + availableSizeGB + ' GB FREE of ' + totalSizeGB + ' GB</p>';
-
-                            progressBar += '<br><h5>Storage Information</h5><br>';
-                            progressBar += `<p>Used space: ${usedSizeGB} GB</p>`;
-                            progressBar += `<p>Free space: ${availableSizeGB} GB</p>`;
-                            progressBar += `<p>Capacity: ${totalSizeGB} GB</p><br>`;
-                            return progressBar;
-                        }
-
-                        function getStartDate(period) {
-                            let currentDate = new Date();
-                            if (period === 'weekly') {
-                                return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
-                            } else if (period === 'monthly') {
-                                return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
-                            } else { // realtime
-                                return currentDate.toISOString().split('T')[0] + " 00:00:00";
-                            }
-                        }
-
-                        function getEndDate(period) {
-                            let currentDate = new Date();
-                            return currentDate.toISOString().split('T')[0] + " 23:59:59";
-                        }
-
-                        // Initial fetch based on the selected option
-                        fetchDataStorage(storage_id, storage_payload);
-
-                        // Event listener for the dropdown change
-                        $(document).on('change', '#StorageUsageSelect', function () {
-                            // console.log("Dropdown value changed to:", $(this).val());
-                            let newPeriod = $(this).val();
-                            let newPayload = {
-                                "startDate": getStartDate(newPeriod),
-                                "endDate": getEndDate(newPeriod)
-                            };
-
-                            // Clear the previous interval if exists
-                            if (intervalId) {
-                                clearInterval(intervalId);
-                            }
-
-                            if (newPeriod === "realtime") {
-                                // For "Realtime," set an interval to periodically fetch data
-                                fetchDataStorage(storage_id, newPayload);
-                                intervalId = setInterval(function () {
-                                    // console.log("Storage Realtime");
-                                    fetchDataStorage(storage_id, newPayload);
-                                }, 2000); // Adjust the interval as needed (e.g., every 2 seconds)
-                            } else {
-                                // For "Weekly" and "Monthly," fetch and display data once
-                                fetchDataStorage(storage_id, newPayload);
-                            }
                         });
                     }
                     for (var i = 0; i < responseArray.length; i++) {

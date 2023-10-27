@@ -1,3 +1,18 @@
+
+    <nav class="layout-footer footer bg-white">
+        <div class="container-fluid d-flex flex-wrap justify-content-between text-center container-p-x pb-3">
+            <div class="pt-3">
+                <!-- <span class="footer-text font-weight-semibold">© <a href="https://srthemesvilla.com" class="footer-link" target="_blank">Srthemesvilla</a></span> -->
+            </div>
+            <div>
+                <a href="javascript:" class="footer-link pt-3">About Us</a>
+                <a href="javascript:" class="footer-link pt-3 ml-4">Help</a>
+                <a href="javascript:" class="footer-link pt-3 ml-4">Contact</a>
+                <a href="javascript:" class="footer-link pt-3 ml-4">Terms &amp; Conditions</a>
+            </div>
+        </div>
+    </nav>
+    
     <script src="assets/js/pace.js"></script>
     <!-- <script src="assets/js/jquery-3.3.1.min.js"></script> -->
     <script src="assets/js/jquery-3.2.0.min.js"></script>
@@ -30,7 +45,7 @@
     <script src="assets/js/demo.js"></script><script src="assets/js/analytics.js"></script>
     <script src="assets/js/pages/dashboards_index.js"></script>
     <script src="assets/js/ajax_main.js"></script>
-    <!-- <script src="assets/js/jquery.cookie.js"></script> -->
+    <script src="assets/js/jquery.cookie.js"></script>
     <!-- <script src="assets/js/cookie.js"></script> -->
     <script src="assets/js/viewer.min.js"></script>
     <!-- <script src="assets/js/mxgraph.js"></script> -->
@@ -44,15 +59,15 @@
             width: '100%',
         });
 
-        function removeAllCookies() {
-            var cookies = $.cookie();
+        // function removeAllCookies() {
+        //     var cookies = $.cookie();
           
-            for (var cookie in cookies) {
-                if (cookies.hasOwnProperty(cookie)) {
-                    $.removeCookie(cookie);
-            }
-          }
-        }
+        //     for (var cookie in cookies) {
+        //         if (cookies.hasOwnProperty(cookie)) {
+        //             $.removeCookie(cookie);
+        //     }
+        //   }
+        // }
 
         var data = JSON.parse(localStorage.getItem('permission'));
         // console.log(data)
