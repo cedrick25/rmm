@@ -70,7 +70,7 @@
             // Poll the API for value changes
             setInterval(function() {
                 __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
-                    console.log(result);
+                    // console.log(result);
                     var newValue = result.response;
                     
                     if (newValue !== previousValue) {
