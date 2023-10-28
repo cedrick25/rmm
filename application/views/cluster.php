@@ -23,6 +23,9 @@
                                         <a href="cluster_create"> <button type="button" class="btn btn-info float-right newAssetbatch" style=""><span class="feather icon-plus-circle"></span>&nbsp;&nbsp;New Cluster</button></a>
                                     </div>
                                     <div class="card-body">
+                                        <div class="alert alert-info" role="alert" style="font-weight: bolder; color: #3d80c5; display: none;" id="divLoading">
+                                            <i class="fas fa-spinner fa-pulse"></i> Loading...
+                                        </div>
                                         <div class="row" id="cluster_container">
                                             <div class="col-md-4">
                                                 <div class="card mb-4 bg-pattern-3-dark">

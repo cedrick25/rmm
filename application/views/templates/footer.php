@@ -58,45 +58,30 @@
             // dropdownParent: $('.modal'),
             width: '100%',
         });
-
-        // function removeAllCookies() {
-        //     var cookies = $.cookie();
-          
-        //     for (var cookie in cookies) {
-        //         if (cookies.hasOwnProperty(cookie)) {
-        //             $.removeCookie(cookie);
-        //     }
-        //   }
-        // }
-
-        var data = JSON.parse(localStorage.getItem('permission'));
-        // console.log(data)
-
-        if (data != null) {
-            data.forEach(function(data){
-                if (data.type == "ACTION") {
-                    // console.log(data.value)
-                    setTimeout(function() {
-                        if (!data.value) {
-                            var element = $('.' + data.detail);
-                            element.hide();
-                        }else{
-                            var element = $('.' + data.detail);
-                            element.show();
-                        }
-                    }, 1000);
-                }else if (data.type == "VIEW") {
-                    if (!data.value) {
-                        var element = $('.' + data.detail);
-                        element.hide();
-                    }else{
-                        var element = $('.' + data.detail);
-                        element.show();
-                    }
-                }else{
-                }
-            });
+        function getPreviousValue() {
+            return parseInt(localStorage.getItem('previousNotificationValue')) || 0;
         }
+
+        $(document).ready(function() {
+            // Initial value when the page loads
+            var previousValue = getPreviousValue();
+            $(".notificationCount").html(previousValue);
+
+            // Poll the API for value changes
+            setInterval(function() {
+                __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
+                    console.log(result);
+                    var newValue = result.response;
+                    
+                    if (newValue !== previousValue) {
+                        // Update the displayed value and save the new value
+                        $(".notificationCount").html(newValue);
+                        localStorage.setItem('previousNotificationValue', newValue);
+                        previousValue = newValue;
+                    }
+                });
+            }, 3000);
+        });
         
         $(".btn_logout").unbind('click').on('click', function(){
             console.log("logout");

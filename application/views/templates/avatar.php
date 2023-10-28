@@ -35,12 +35,12 @@
 
                         <div class="navbar-nav align-items-lg-center ml-auto">
                        <div class="demo-navbar-notifications nav-item dropdown mr-lg-3">
-                                <a class="nav-link dropdown-toggle hide-arrow" href="#" data-toggle="dropdown">
+                                <!-- <a class="nav-link dropdown-toggle hide-arrow" href="#" data-toggle="dropdown">
                                     <i class="feather icon-bell navbar-icon align-middle"></i>
                                     <span class="badge badge-danger badge-dot indicator"></span>
                                     <span class="d-lg-none align-middle">&nbsp; Notifications</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
+                                </a> -->
+                               <!--  <div class="dropdown-menu dropdown-menu-right">
                                     <div class="bg-primary text-center text-white font-weight-bold p-3">
                                         4 New Notifications
                                     </div>
@@ -90,8 +90,8 @@
                                             </div>
                                         </a>
                                     </div>
-                                    <a href="javascript:" class="d-block text-center text-light small p-2 my-1">Show all notifications</a>
-                                </div>
+                                    <a href="notification" class="d-block text-center text-light small p-2 my-1">Show all notifications</a>
+                                </div> -->
                             </div>
 
 <!--                        <div class="demo-navbar-messages nav-item dropdown mr-lg-3">
@@ -169,7 +169,7 @@
                                     <div class="dropdown-divider"></div> -->
                                     <!-- <a href="" id="profile" class="dropdown-item">
                                         <i class="feather icon-user"></i> &nbsp; Profile</a> -->
-                                    <a href="/rmm" class="dropdown-item btn_logout">
+                                    <a href="/" class="dropdown-item btn_logout">
                                         <i class="feather icon-power text-danger"></i> &nbsp; Log Out</a>
                                 </div>
                             </div>

@@ -23,6 +23,9 @@
                                         <strong>Cluster Devices</strong>
                                     </div>
                                     <div class="card-body">
+                                        <div class="alert alert-info" role="alert" style="font-weight: bolder; color: #3d80c5; display: none;" id="divLoading">
+                                            <i class="fas fa-spinner fa-pulse"></i> Loading...
+                                        </div>
                                         <h4 class="cluster_header"></h4><br>
                                         <div class="row mb-2">
                                             <div class="col-md-6">

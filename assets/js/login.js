@@ -24,6 +24,19 @@ var login = function(){
                         var uuid = result.uuid
                         $.cookie("uuid", uuid);
 
+
+                        $(document).ready(function() {
+
+                            __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
+                                console.log(result);
+                                var newValue = result.response;
+    
+                                if (newValue) {
+                                    localStorage.setItem('previousNotificationValue', newValue);
+                                    console.log(localStorage.getItem('previousNotificationValue'))
+                                }
+                            });
+                        });
                         setTimeout(function () {
                             window.location.href="dashboard"
                         },1000);

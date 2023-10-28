@@ -24,6 +24,12 @@
                             <div>Cluster</div>
                         </a>
                     </li>
+                    <li class="sidenav-item notificationNav" style="display: ;">
+                        <a href="/notification" class="sidenav-link">
+                            <i class="sidenav-icon feather icon-bell"></i>
+                            <div>Notification (<span class="notificationCount">0</span>)</div>
+                        </a>
+                    </li>
                     <li class="sidenav-item clusterNav" style="">
                         <a href="/prohibited_apps" class="sidenav-link">
                             <i class="sidenav-icon feather icon-slash"></i>
@@ -36,12 +42,6 @@
                             <div>Default apps and Services</div>
                         </a>
                     </li>
-                    <!-- <li class="sidenav-item notificationNav" style="display: ;">
-                        <a href="notification" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-bell"></i>
-                            <div>Notification</div>
-                        </a>
-                    </li> -->
 
                     <!-- User Management -->
                     <!-- <li class="sidenav-divider mb-1"></li>

@@ -1,50 +1,44 @@
 var list = function(){
+    $('#divLoading').show()
+    __executeExternalGet('/rmm-server/cluster/list').done(function (result) {
+        if (result.status != "ERROR") {
+            $('#divLoading').hide()
 
-    var __table = function(){
-        __executeExternalGet('/rmm-server/cluster/list').done(function (result) {
-            // console.log("=====user=====")
-            // console.log(result)
-            // console.log("=====user=====")
-
-            if (result.status != "ERROR") {
-
-                result.response.forEach(function(data){
-                    console.log(data)
-                    var cardHtml = `
-                        <div class="col-md-4">
-                            <div class="card mb-4 bg-pattern-3-dark">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
-                                        </div>
-                                        <div class="ml-3">
-                                            <a href="cluster_update?clusterID=${data.id}" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
-                                                <div class="text-large">${data.name}</div>
+            result.response.forEach(function(data){
+                console.log(data)
+                var cardHtml = `
+                    <div class="col-md-4">
+                        <div class="card mb-4 bg-pattern-3-dark">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="text-primary"><i class="fas fa-desktop" style="font-size: 26px;"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <a href="cluster_update?clusterID=${data.id}" data-toggle="tooltip" data-placement="top" title="Update Name and Description">
+                                            <div class="text-large">${data.name}</div>
+                                        </a>
+                                        <div class="text-muted small">${data.description}</div>
+                                        <div style="margin-top: 5px;">
+                                            <a href="cluster_devices?clusterID=${data.id}&clusterName=${data.name}">
+                                                <button type="button" class="btn btn-sm btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
                                             </a>
-                                            <div class="text-muted small">${data.description}</div>
-                                            <div style="margin-top: 5px;">
-                                                <a href="cluster_devices?clusterID=${data.id}&clusterName=${data.name}">
-                                                    <button type="button" class="btn btn-sm btn-primary"><span class="feather icon-eye"></span>&nbsp;&nbsp;View Devices</button>
-                                                </a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    `;
-                    
-                    $('#cluster_container').append(cardHtml);
-                });
-                $(".btn_update").unbind("click").on("click", function(){
-                    var userId = $(this).data("id");
-                    // console.log(data_id)
-                    window.location.href = anyhost+'/user_account_update?userId='+userId;
-                });
-            }
-        })
-    }
-    __table();
+                    </div>
+                `;
+                
+                $('#cluster_container').append(cardHtml);
+            });
+            $(".btn_update").unbind("click").on("click", function(){
+                var userId = $(this).data("id");
+                // console.log(data_id)
+                window.location.href = anyhost+'/user_account_update?userId='+userId;
+            });
+        }
+    })
 }
 
 var create = function(){
@@ -87,9 +81,6 @@ var create = function(){
                             $(".btn_confirm").prop('disabled', false);
                             $('#success').hide();
                             $(".form-control").val('');
-                                // setTimeout(function () {
-                                //     window.location.reload(true);
-                                // }, 500);
                         }, 2500);
                     }else{
                         $('#success').hide();
@@ -116,6 +107,8 @@ var update = function(){
         if (result.status != "ERROR") {
             $(".name").html(result.response.name)
             $(".description").html(result.response.description)
+            $(".name_update").val(result.response.name)
+            $(".desc_update").val(result.response.description)
             
             $(".btn_confirm_update").unbind("click").on("click", function(){
                 $(this).prop('disabled', true);
@@ -188,14 +181,15 @@ var cluster_devices = function(){
     } else {
         $('.cluster_header').html("Cluster Name: <span style='text-decoration: underline;'>" + clusterName + "</span>").css('font-weight', 'bold');
     }
-
+    $('#divLoading').show()
     var __table = function(){
         $('.table_head').DataTable().destroy();
         $('.table_body').empty();
         __executeExternalGet('/rmm-server/device/list/'+clusterID).done(function (result) {
-            // console.log(result)
+            console.log(result)
 
             if (result.status != "ERROR") {
+            $('#divLoading').hide()
 
                 result.response.forEach(function(data){
                     console.log(data)
@@ -266,12 +260,14 @@ var cluster_device_details = function(){
     $('.device_header').html("Device Name: <span style='text-decoration: underline;'>" + deviceName + "</span>").css('font-weight', 'bold');
 
     var __table = function(){
+        $('#divLoading').show()
 
         __executeExternalGet('/rmm-server/deviceDetail/'+deviceId).done(function (result) {
             // console.log(result)
 
             if (result.status != "ERROR") {
                 $(document).ready(function() {
+                    $('#divLoading').hide()
 
                     var responseArray = result.response;
                     function generateTabContent(data) {
@@ -301,8 +297,8 @@ var cluster_device_details = function(){
                                 content += '<label class="form-label mr-sm-2">Usage</label>';
                                 content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="CPUusageSelect">';
                                     content += '<option value="realtime" selected>Get Realtime</option>';
-                                    content += '<option value="weekly">Get Weekly</option>';
-                                    content += '<option value="monthly">Get Monthly</option>';
+                                    content += '<option value="weekly" disabled>Get Weekly</option>';
+                                    content += '<option value="monthly" disabled>Get Monthly</option>';
                                 content += '</select>';
                             content += '</form>';
                             content += '<br><div class="form-group">';
@@ -318,8 +314,11 @@ var cluster_device_details = function(){
                                         content += '</label>';
                                     content += '</div>';
                                 content += '</div>';
+                            content += '</div><br><br><br>';
+                            content += '<div class="alert alert-info" role="alert" style="font-weight: bolder; color: #3d80c5; display: none;" id="divLoadingCPU">';
+                            content += '<i class="fas fa-spinner fa-pulse"></i> Loading...';
                             content += '</div>';
-                            content += '<br><br><div id="cpuChartContainer" class="row"></div>';
+                            content += '<div id="cpuChartContainer" class="row cpuChartContainer"></div>';
                             content += '<div class="cpu_info"></div>';
                             content += '</div>';
 
@@ -328,7 +327,7 @@ var cluster_device_details = function(){
                                 displayCPUInfo();
                                 // Function to display CPU information and caches
                                 function displayCPUInfo() {
-                                    var infoContent = '<br><br><br><h5>CPU Information</h5><br>';
+                                    var infoContent = '<br><br><h5>CPU Information</h5><br>';
                                     infoContent += '<p><strong>CPU Name:</strong> ' + cpuDetails.processorIdentifier.name.trim() + '</p>';
                                     infoContent += '<p><strong>CPU Model:</strong> ' + cpuDetails.processorIdentifier.model + '</p>';
                                     infoContent += '<p><strong>Physical Processors:</strong> ' + cpuDetails.physicalProcessorCount + '</p>';
@@ -348,7 +347,6 @@ var cluster_device_details = function(){
 
                                     $('.cpu_info').html(infoContent + cacheContent);
                                 }
-
                                 // Function to fetch and display data
                                 function fetchDataAndDisplayData(selectedDataType) {
                                     // console.log(selectedDataType); // Logging data id
@@ -364,11 +362,13 @@ var cluster_device_details = function(){
                                                     SystemCpuLoadTicks(dataCPU.id, 'realtime');
                                                     // console.log(dataCPU.id); // Logging data id
                                                     // console.log(selectedDataType); // Logging selected data type
+                                                    $('#divLoadingCPU').show()
                                                 }
                                                 if (selectedDataType === "ProcessorCpuLoadTicks") {
                                                     ProcessorCpuLoadTicks(dataCPU.id, 'realtime');
                                                     // console.log(dataCPU.id); // Logging data id
                                                     // console.log(selectedDataType); // Logging selected data type
+                                                    $('#divLoadingCPU').show()
                                                 }
                                             }
                                         }
@@ -386,6 +386,8 @@ var cluster_device_details = function(){
                                     var selectedDataType = $('input[name="custom-radio-3"]:checked').val();
                                     console.log(selectedDataType);
                                     fetchDataAndDisplayData(selectedDataType);
+                                    const container1 = $('.cpuChartContainer');
+                                    container1.empty()
                                 });
                             });
                         } else if (data.type === "STORAGE") {
@@ -394,10 +396,15 @@ var cluster_device_details = function(){
                                 content += '<label class="form-label mr-sm-2">Usage</label>';
                                 content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="StorageUsageSelect">';
                                     content += '<option value="realtime" selected>Get Realtime</option>';
-                                    content += '<option value="weekly">Get Weekly</option>';
-                                    content += '<option value="monthly">Get Monthly</option>';
+                                    content += '<option value="weekly" disabled>Get Weekly</option>';
+                                    content += '<option value="monthly" disabled>Get Monthly</option>';
                                 content += '</select>';
                             content += '</form>';
+
+                            content += '<br><div class="alert alert-info divLoadingStorage" role="alert" style="font-weight: bolder; color: #3d80c5; display: ;" id="">';
+                            content += '<i class="fas fa-spinner fa-pulse"></i> Loading...';
+                            content += '</div>';
+
                                 content += '<div class="row" id="storageContainer">';
                                 content += '</div>';
                             content += '</div>';
@@ -412,12 +419,12 @@ var cluster_device_details = function(){
                         } else if (data.type === "MEMORY") {
                             content += '<div class="json-data">';
                             content += '<form class="form-inline">';
-                            content += '<label class="form-label mr-sm-2">Usage</label>';
-                            content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="usageSelect">';
-                            content += '<option value="realtime" selected>Get Realtime</option>';
-                            content += '<option value="weekly">Get Weekly</option>';
-                            content += '<option value="monthly">Get Monthly</option>';
-                            content += '</select>';
+                                content += '<label class="form-label mr-sm-2">Usage</label>';
+                                content += '<select class="custom-select mr-sm-2 mb-2 mb-sm-0 col-md-3" id="usageSelect">';
+                                    content += '<option value="realtime" selected>Get Realtime</option>';
+                                    content += '<option value="weekly" disabled>Get Weekly</option>';
+                                    content += '<option value="monthly" disabled>Get Monthly</option>';
+                                content += '</select>';
                             content += '</form>';
                             content += '<div id="chartContainer">';
                             content += '<canvas id="memoryChart"></canvas>';
@@ -434,6 +441,7 @@ var cluster_device_details = function(){
                         return content;
                     }
                     function storageDataHandler(storage_id, period) {
+                        $('.divLoadingStorage').show()
                         const storage_API_URL = '/rmm-server/deviceDetail/history/';
                         var storage_payload = {
                             "startDate": getStartDate(period),
@@ -454,6 +462,7 @@ var cluster_device_details = function(){
                                         content += generateStorageProgressBar(storage, partitionStorage);
                                     });
 
+                                    $('.divLoadingStorage').hide()
                                     $('#storageContainer').html(content);
                                 } else if (result.status === "ERROR") {
                                     console.error('Error fetching data:', result);
@@ -517,7 +526,7 @@ var cluster_device_details = function(){
                                                     const usedPercentage = ((usedSpace / totalSpace) * 100).toFixed(2);
 
                                                     progressBar += '<div class="progress" style="height: 30px;">';
-                                                    progressBar += `<div class="progress-bar progress-bar-striped bg-danger" style="width: ${usedPercentage}%;" aria-valuenow="${usedPercentage}" aria-valuemin="0" aria-valuemax="100">${usedPercentage}% Used</div>`;
+                                                    progressBar += `<div class="progress-bar progress-bar-striped bg-info" style="width: ${usedPercentage}%;" aria-valuenow="${usedPercentage}" aria-valuemin="0" aria-valuemax="100">${usedPercentage}% Used</div>`;
                                                     progressBar += '</div>';
 
                                                     progressBar += `<span>Total Space: ${computeBytesToGB(matchedPartition.totalSpace)} GB</span><br>`;
@@ -569,7 +578,7 @@ var cluster_device_details = function(){
 
                             if (newPeriod === "realtime") {
                                 // For "Realtime," set an interval to periodically fetch data
-                                fetchDataStorage(storage_id, newPayload);
+                                // fetchDataStorage(storage_id, newPayload);
                                 // intervalId = setInterval(function () {
                                 //     // console.log("Storage Realtime");
                                 //     fetchDataStorage(storage_id, newPayload);
@@ -620,6 +629,8 @@ var cluster_device_details = function(){
                         }
 
                         function generateCharts(SystemCpuLoadTicksDetails) {
+                            $('#divLoadingCPU').hide()
+
                             const jsonData = JSON.parse(SystemCpuLoadTicksDetails.jsonData);
 
                             // Create a single canvas element for the chart
@@ -691,7 +702,7 @@ var cluster_device_details = function(){
                                     if (result.status === "SUCCESS") {
                                         const processorCpuLoadTicksDetails = result
                                         // console.log(processorCpuLoadTicksDetails)
-                                        generateCharts(processorCpuLoadTicksDetails);
+                                        generateChartsProcessor(processorCpuLoadTicksDetails);
                                     } else if (result.status === "ERROR") {
                                         console.error('Error fetching CPU data:', result);
                                     }
@@ -716,7 +727,9 @@ var cluster_device_details = function(){
                             let currentDate = new Date();
                             return currentDate.toISOString().split('T')[0] + " 23:59:59";
                         }
-                        function generateCharts(processorCpuLoadTicksDetails) {
+                        function generateChartsProcessor(processorCpuLoadTicksDetails) {
+                            $('#divLoadingCPU').hide()
+
                             const jsonData = JSON.parse(processorCpuLoadTicksDetails.response.jsonData);
                             const numProcessors = jsonData.length;
 
@@ -764,6 +777,7 @@ var cluster_device_details = function(){
                                 // Start the data update loop for this chart
                                 setInterval(() => addDataToChart(chart, jsonData[i]), interval);
                             }
+
                         }
 
                         function addDataToChart(chart, processorData) {
@@ -1044,20 +1058,20 @@ var cluster_device_details = function(){
                                         "endDate": endDate
                                     };
 
-                                    fetchData(deviceId, payload, function (data) {
-                                        const totalMemory = data.total;
-                                        const availableMemory = data.available;
-                                        const memoryChart = initializeChart(totalMemory);
+                                    // fetchData(deviceId, payload, function (data) {
+                                    //     const totalMemory = data.total;
+                                    //     const availableMemory = data.available;
+                                    //     const memoryChart = initializeChart(totalMemory);
 
-                                        updateChartAndInfo(memoryChart, totalMemory, availableMemory);
+                                    //     updateChartAndInfo(memoryChart, totalMemory, availableMemory);
 
-                                        intervalId = setInterval(function () {
-                                            fetchData(deviceId, payload, function (data) {
-                                                updateChartAndInfo(memoryChart, data.total, data.available);
-                                                // console.log("Memory realtime")
-                                            });
-                                        }, REALTIME_INTERVAL);
-                                    });
+                                    //     intervalId = setInterval(function () {
+                                    //         fetchData(deviceId, payload, function (data) {
+                                    //             updateChartAndInfo(memoryChart, data.total, data.available);
+                                    //             // console.log("Memory realtime")
+                                    //         });
+                                    //     }, REALTIME_INTERVAL);
+                                    // });
                                 }else {
                                     if (this.value === 'weekly') {
                                         startDate = new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
@@ -1399,6 +1413,7 @@ var cluster_devices_update = function(){
             $(".manufacturer").html(result.response.manufacturer)
             $(".serialNumber").html(result.response.serialNumber)
             $(".desc").html(result.response.description)
+            $(".desc_update").val(result.response.description)
 
             $(".btn_confirm_update").unbind("click").on("click", function(){
                 $(this).prop('disabled', true);

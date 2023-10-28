@@ -72,7 +72,7 @@
     <script src="assets/js/dashboard_main.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
-        // dashboard();
+        dashboard();
     });
     </script>
 </body>

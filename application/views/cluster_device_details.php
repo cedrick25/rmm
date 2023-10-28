@@ -23,6 +23,9 @@
                                         <strong class="device_header"></strong>
                                     </div>
                                     <div class="card-body">
+                                        <div class="alert alert-info" role="alert" style="font-weight: bolder; color: #3d80c5; display: none;" id="divLoading">
+                                            <i class="fas fa-spinner fa-pulse"></i> Loading...
+                                        </div>
 
                                         <ul class="nav nav-tabs" id="mainTabs" role="tablist">
                                             <li class="nav-item">
