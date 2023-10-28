@@ -436,9 +436,9 @@ var cluster_device_details = function(){
                             content += '</div>';
                             content += '<div class="mem_info"></div>';
                             content += '</div>';
-                            console.log('memory tab')
-                            console.log(data.type)
-                            console.log(data.id)
+                            // console.log('memory tab')
+                            // console.log(data.type)
+                            // console.log(data.id)
                             generateMemoryChart(data.id);
                         } else {
                             content += `<pre class="json-data">${JSON.stringify(data, null, 2)}</pre>`;
@@ -466,11 +466,10 @@ var cluster_device_details = function(){
                                     // console.log(storageArray)
                                     let content = '';
                                     var partitionStorage = storageArray.partitions
-                                    // storageArray.hwDiskStores.forEach(storage => {
-                                    //     content += generateStorageProgressBar(storage, partitionStorage);
-                                    // });
+                                    storageArray.hwDiskStores.forEach(storage => {
+                                        content += generateStorageProgressBar(storage, partitionStorage);
+                                    });
 
-                                    $('.divLoadingStorage').hide()
                                     $('#storageContainer').html(content);
                                 } else if (result.status === "ERROR") {
                                     console.error('Error fetching data:', result);
@@ -482,6 +481,7 @@ var cluster_device_details = function(){
 
                         function generateStorageProgressBar(storage, partitionStorage) {
                             console.log(partitionStorage)
+                            $('.divLoadingStorage').hide()
 
                             let progressBar = '';
                             progressBar += '<div class="col-md-12" style="border: 1px solid #dee2e6; margin-top:10px; padding-bottom:22px;">';
@@ -586,11 +586,11 @@ var cluster_device_details = function(){
 
                             if (newPeriod === "realtime") {
                                 // For "Realtime," set an interval to periodically fetch data
-                                // fetchDataStorage(storage_id, newPayload);
-                                // intervalId = setInterval(function () {
-                                //     // console.log("Storage Realtime");
-                                //     fetchDataStorage(storage_id, newPayload);
-                                // }, 2000); // Adjust the interval as needed (e.g., every 2 seconds)
+                                fetchDataStorage(storage_id, newPayload);
+                                intervalId = setInterval(function () {
+                                    // console.log("Storage Realtime");
+                                    fetchDataStorage(storage_id, newPayload);
+                                }, 2000); // Adjust the interval as needed (e.g., every 2 seconds)
                             } else {
                                 // For "Weekly" and "Monthly," fetch and display data once
                                 fetchDataStorage(storage_id, newPayload);
@@ -966,7 +966,7 @@ var cluster_device_details = function(){
                         $('.divLoadingMemory').show()
 
                         $(document).ready(() => {
-                            console.log(deviceDetailId)
+                            // console.log(deviceDetailId)
 
                             var memoryChart;  // Declare at the top level of your function
                             var chartContainer = $("#chartContainer");
@@ -990,11 +990,11 @@ var cluster_device_details = function(){
                                 function fetchData(deviceDetailId, payload, callback) {
                                     __executeExternalPost(API_URL + deviceDetailId, JSON.stringify(payload))
                                         .done(function (result) {
-                                            console.log(result.response.type)
-                                            console.log(result.response.id)
+                                            // console.log(result.response.type)
+                                            // console.log(result.response.id)
                                         if (result.status === "SUCCESS") {
                                             const json = JSON.parse(result.response.jsonData);
-                                            console.log(json)
+                                            // console.log(json)
                                             callback(json);
                                             $('.divLoadingMemory').hide()
                                         } else if (result.status === "ERROR") {
@@ -1060,7 +1060,7 @@ var cluster_device_details = function(){
                                 }
 
                                 if (usageSelect.value === 'realtime') {
-                                    console.log('realtime')
+                                    // console.log('realtime')
                                     const currentDate = new Date();
                                     const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0));
                                     const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
@@ -1071,16 +1071,16 @@ var cluster_device_details = function(){
                                         "startDate": startDate,
                                         "endDate": endDate
                                     };
-                                    console.log(payload)
-                                    console.log(deviceDetailId)
+                                    // console.log(payload)
+                                    // console.log(deviceDetailId)
                                     fetchData(deviceDetailId, payload, function (data) {
                                         const totalMemory = data.total;
                                         const availableMemory = data.available;
                                         const memoryChart = initializeChart(totalMemory);
-                                        console.log(deviceDetailId)
-                                        console.log(totalMemory)
-                                        console.log(availableMemory)
-                                        console.log(memoryChart)
+                                        // console.log(deviceDetailId)
+                                        // console.log(totalMemory)
+                                        // console.log(availableMemory)
+                                        // console.log(memoryChart)
                                         updateChartAndInfo(memoryChart, totalMemory, availableMemory);
 
                                         intervalId = setInterval(function () {
