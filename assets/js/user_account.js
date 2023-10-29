@@ -349,7 +349,8 @@ var create = function(){
 
     $(".btn-confirm").unbind("click").on("click", function(){
         console.log('clicked')
-        var required = ["firstName", "lastName", "username", "password", "department", "user_roles", "email", "birthday"];
+        var required = ["password"];
+        // var required = ["firstName", "lastName", "username", "password", "department", "user_roles", "email", "birthday"];
         $(".errorRequired").remove()
 
         required.forEach(function(data){
@@ -366,46 +367,58 @@ var create = function(){
         console.log('Number of required fields: ' + requiredFields);
 
         if (requiredFields === 0) {
-            console.log("test")
-            var payload = {
-                    "id"            : "",
-                    "createdBy"     : "",
-                    "createdDate"   : "",
-                    "updatedBy"     : "",
-                    "updatedDate"   : "",
-                    "firstName"     : $(".firstName").val(),
-                    "middleName"    : $(".middleName").val(),
-                    "lastName"      : $(".lastName").val(),
-                    "suffix"        : $(".suffix").val(),
-                    "corpKey"       : "",
-                    "email"         : $(".email").val(),
-                    "phoneNumber"   : $(".contactNo").val(),
-                    "birthday"      : $(".birthday").val(),
-                    "username"      : $(".username").val(),
-                    "password"      : $(".password").val(),
-                    "departmentId"  : $(".department").val(),
-                    "managerId"     : $(".manager").val(),
-                    "uuid"          : "",
-                    "roleId"        : $(".user_roles").val()
-                }
-            console.log(payload);
-            __executeExternalPost('8088/user/create',JSON.stringify(payload)).done(function (result) {
-                console.log(result);
-                if (result.status != "ERROR") {
-                    $(".form-control").val('');
-                    $('#success').show();
-                    setTimeout(function () {
-                        $('#success').hide();
+            const password = $(".password").val();
+            if (validatePassword(password)) {
+                $(".password").removeClass("error_field");
+                // dito mo ishoot yung external post
+
+            } else {
+                $(".password").addClass("error_field");
+                $('<span class="errorRequired" style="font-style: italic; color: red; font-weight: bold; font-size: 11px;">* Password must be at least 8 characters long and include a combination of upper case, lower case, and special characters.</span>').insertAfter((".password"))
+            }
+            // var payload = {
+            //         "id"            : "",
+            //         "createdBy"     : "",
+            //         "createdDate"   : "",
+            //         "updatedBy"     : "",
+            //         "updatedDate"   : "",
+            //         "firstName"     : $(".firstName").val(),
+            //         "middleName"    : $(".middleName").val(),
+            //         "lastName"      : $(".lastName").val(),
+            //         "suffix"        : $(".suffix").val(),
+            //         "corpKey"       : "",
+            //         "email"         : $(".email").val(),
+            //         "phoneNumber"   : $(".contactNo").val(),
+            //         "birthday"      : $(".birthday").val(),
+            //         "username"      : $(".username").val(),
+            //         "password"      : $(".password").val(),
+            //         "departmentId"  : $(".department").val(),
+            //         "managerId"     : $(".manager").val(),
+            //         "uuid"          : "",
+            //         "roleId"        : $(".user_roles").val()
+            //     }
+            // console.log(payload);
+            // __executeExternalPost('8088/user/create',JSON.stringify(payload)).done(function (result) {
+            //     console.log(result);
+            //     if (result.status != "ERROR") {
+            //         $(".form-control").val('');
+            //         $('#success').show();
+            //         setTimeout(function () {
+            //             $('#success').hide();
                                                 
-                            setTimeout(function () {
-                                window.location.reload(true);
-                            }, 500);
-                    }, 2000);
-                }else{
-                    console.log(result.status);
-                    // alert(result.message)
-                }
-            })
+            //                 setTimeout(function () {
+            //                     window.location.reload(true);
+            //                 }, 500);
+            //         }, 2000);
+            //     }else{
+            //         console.log(result.status);
+            //         // alert(result.message)
+            //     }
+            // })
+        }
+        function validatePassword(password) {
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+            return passwordPattern.test(password);
         }
     })
 }

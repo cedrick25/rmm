@@ -590,7 +590,7 @@ var cluster_device_details = function(){
                                 intervalId = setInterval(function () {
                                     // console.log("Storage Realtime");
                                     fetchDataStorage(storage_id, newPayload);
-                                }, 2000); // Adjust the interval as needed (e.g., every 2 seconds)
+                                }, 60000); // Adjust the interval as needed (e.g., every 2 seconds)
                             } else {
                                 // For "Weekly" and "Monthly," fetch and display data once
                                 fetchDataStorage(storage_id, newPayload);
@@ -599,7 +599,7 @@ var cluster_device_details = function(){
                     }
                     function SystemCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
-                        const interval = 2000; // Update interval in milliseconds
+                        const interval = 60000; // Update interval in milliseconds
                         const CPU_payload = {
                             "startDate": getStartDate(period),
                             "endDate": getEndDate(period)
@@ -697,7 +697,7 @@ var cluster_device_details = function(){
                     }
                     function ProcessorCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
-                        const interval = 2000; // Update interval in milliseconds
+                        const interval = 60000; // Update interval in milliseconds
 
                         var CPU_payload = {
                             "startDate": getStartDate(period),
@@ -984,7 +984,7 @@ var cluster_device_details = function(){
                                 if (intervalId) clearInterval(intervalId);
 
                                 // Define Constants
-                                const REALTIME_INTERVAL = 2000; // 5 seconds
+                                const REALTIME_INTERVAL = 60000; // 5 seconds
                                 const API_URL = '/rmm-server/deviceDetail/history/';
 
                                 function fetchData(deviceDetailId, payload, callback) {
