@@ -20,6 +20,7 @@
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <strong>This apps is being monitored</strong>
+                                        <a href="prohibited_apps_create"> <button type="button" class="btn btn-info float-right prohibited_apps_create" style=""><span class="feather icon-plus-circle"></span>&nbsp;&nbsp;Create Prohibited App</button></a>
                                     </div>
                                     <div class="card-body">
 
@@ -32,7 +33,7 @@
                                         <div class="tab-content mt-3">
                                             <div class="tab-pane fade show active" id="apps">
                                                 <div id="prohibitedContainer" class="col-lg-6">
-                                                    <table id="servicesTable" class="table table-hover table-sm">
+                                                    <table id="prohibitedTable" class="table table-hover table-sm">
                                                         <thead>
                                                             <tr>
                                                                 <th>Application Name</th>
@@ -63,19 +64,55 @@
             prohibited();
 
             function prohibited() {
-                var appNames = ['Steam', 'Capcut', 'Photoshop', 'Netflix', 'Torrent'];
-                var processList = ['Steam.exe', 'Capcut.exe', 'Photoshop.exe', 'Netflix.exe', 'Torrent.exe'];
-                var $tableBody = $('#servicesTable tbody');
+                __executeExternalGet('/rmm-server/prohibited-apps/list').done(function(result) {
+                    console.log(result)
+                    if (result.status != "ERROR") {
+                        var content = `
+                        <table id="prohibitedTable" class="table table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>File name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        `;
+                        result.response.forEach(function(data) {
+                            content += `
+                                <tr>
+                                    <td>${data.name || 'N/A'}</td>
+                                    <td>${data.processName || 'N/A'}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" data-id="${data.id}">Delete</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        content += `
+                            </tbody>
+                        </table>
+                        `;
+                        $('#prohibitedContainer').html(content);
 
-                for (var i = 0; i < appNames.length; i++) {
-                    var $row = $('<tr>');
-                    var $appNameCell = $('<td>').text(appNames[i] || 'N/A');
-                    var $processNameCell = $('<td>').text(processList[i] || 'N/A');
+                        $('#prohibitedContainer').on('click', '.btn-danger', function() {
+                            var itemId = $(this).data('id');
+                            var rowToRemove = $(this).closest('tr');
+                            deleteProhibitedItem(itemId, rowToRemove);
+                        });
+                        function deleteProhibitedItem(itemId, rowToRemove) {
 
-                    $row.append($appNameCell);
-                    $row.append($processNameCell);
-                    $tableBody.append($row);
-                }
+                            __executeExternalPost('/rmm-server/prohibited-apps/remove/'+itemId).done(function(result) {
+                                console.log(result)
+                                rowToRemove.remove();
+                            })
+                        }
+                    } else {
+                        console.log("failed fetching Cluster Name");
+                    }
+                }).fail(function() {
+                    console.log("Error occurred while fetching data.");
+                });
             }
         });
     </script>

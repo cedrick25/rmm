@@ -61,6 +61,7 @@ $route['cluster_move_device'] = "routes/cluster_move_device";
 
 $route['apps_and_services'] = "routes/apps_and_services";
 $route['prohibited_apps'] = "routes/prohibited_apps";
+$route['prohibited_apps_create'] = "routes/prohibited_apps_create";
 
 $route['app_monitoring'] = "routes/app_monitoring";
 $route['app_monitoring_create'] = "routes/app_monitoring_create";

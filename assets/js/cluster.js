@@ -436,7 +436,7 @@ var cluster_device_details = function(){
                             content += '</div>';
                             content += '<div class="mem_info"></div>';
                             content += '</div>';
-                            // console.log('memory tab')
+                            console.log('memory tab')
                             // console.log(data.type)
                             // console.log(data.id)
                             generateMemoryChart(data.id);
@@ -558,7 +558,7 @@ var cluster_device_details = function(){
                             } else if (period === 'monthly') {
                                 return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                             } else { // realtime
-                                return currentDate.toISOString().split('T')[0] + " 00:00:00";
+                                return currentDate.toISOString().split('T')[0] + " 23:59:50";
                             }
                         }
 
@@ -590,7 +590,7 @@ var cluster_device_details = function(){
                                 intervalId = setInterval(function () {
                                     // console.log("Storage Realtime");
                                     fetchDataStorage(storage_id, newPayload);
-                                }, 60000); // Adjust the interval as needed (e.g., every 2 seconds)
+                                }, 5000); // Adjust the interval as needed (e.g., every 2 seconds)
                             } else {
                                 // For "Weekly" and "Monthly," fetch and display data once
                                 fetchDataStorage(storage_id, newPayload);
@@ -599,7 +599,7 @@ var cluster_device_details = function(){
                     }
                     function SystemCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
-                        const interval = 60000; // Update interval in milliseconds
+                        const interval = 5000; // Update interval in milliseconds
                         const CPU_payload = {
                             "startDate": getStartDate(period),
                             "endDate": getEndDate(period)
@@ -627,7 +627,7 @@ var cluster_device_details = function(){
                             } else if (period === 'monthly') {
                                 return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                             } else { // realtime
-                                return currentDate.toISOString().split('T')[0] + " 00:00:00";
+                                return currentDate.toISOString().split('T')[0] + " 23:59:50";
                             }
                         }
 
@@ -697,7 +697,7 @@ var cluster_device_details = function(){
                     }
                     function ProcessorCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
-                        const interval = 60000; // Update interval in milliseconds
+                        const interval = 5000; // Update interval in milliseconds
 
                         var CPU_payload = {
                             "startDate": getStartDate(period),
@@ -727,7 +727,7 @@ var cluster_device_details = function(){
                             } else if (period === 'monthly') {
                                 return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                             } else { // realtime
-                                return currentDate.toISOString().split('T')[0] + " 00:00:00";
+                                return currentDate.toISOString().split('T')[0] + " 23:59:50";
                             }
                         }
 
@@ -966,7 +966,7 @@ var cluster_device_details = function(){
                         $('.divLoadingMemory').show()
 
                         $(document).ready(() => {
-                            // console.log(deviceDetailId)
+                            console.log(deviceDetailId)
 
                             var memoryChart;  // Declare at the top level of your function
                             var chartContainer = $("#chartContainer");
@@ -984,13 +984,13 @@ var cluster_device_details = function(){
                                 if (intervalId) clearInterval(intervalId);
 
                                 // Define Constants
-                                const REALTIME_INTERVAL = 60000; // 5 seconds
+                                const REALTIME_INTERVAL = 5000; // 5 seconds
                                 const API_URL = '/rmm-server/deviceDetail/history/';
 
                                 function fetchData(deviceDetailId, payload, callback) {
                                     __executeExternalPost(API_URL + deviceDetailId, JSON.stringify(payload))
                                         .done(function (result) {
-                                            // console.log(result.response.type)
+                                            console.log(result.response.type)
                                             // console.log(result.response.id)
                                         if (result.status === "SUCCESS") {
                                             const json = JSON.parse(result.response.jsonData);
@@ -1060,9 +1060,9 @@ var cluster_device_details = function(){
                                 }
 
                                 if (usageSelect.value === 'realtime') {
-                                    // console.log('realtime')
+                                    console.log('realtime')
                                     const currentDate = new Date();
-                                    const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0));
+                                    const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 50));
                                     const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
                                     const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59));
                                     const endDate = endOfDay.toISOString().replace('T', ' ').split('.')[0];
@@ -1071,13 +1071,13 @@ var cluster_device_details = function(){
                                         "startDate": startDate,
                                         "endDate": endDate
                                     };
-                                    // console.log(payload)
-                                    // console.log(deviceDetailId)
+                                    console.log(payload)
+                                    console.log(deviceDetailId)
                                     fetchData(deviceDetailId, payload, function (data) {
                                         const totalMemory = data.total;
                                         const availableMemory = data.available;
                                         const memoryChart = initializeChart(totalMemory);
-                                        // console.log(deviceDetailId)
+                                        console.log(deviceDetailId)
                                         // console.log(totalMemory)
                                         // console.log(availableMemory)
                                         // console.log(memoryChart)

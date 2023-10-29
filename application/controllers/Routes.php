@@ -73,6 +73,11 @@ class routes extends CI_Controller {
 	{
 		$this->load->view('prohibited_apps');
 	}
+
+	public function prohibited_apps_create()
+	{
+		$this->load->view('prohibited_apps_create');
+	}
 	
 	// tracking start
 	public function tracking()
