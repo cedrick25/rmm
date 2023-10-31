@@ -102,6 +102,10 @@ class routes extends CI_Controller {
 	{
 		$this->load->view('app_monitoring_update');
 	}
+	public function licensing()
+	{
+		$this->load->view('licensing');
+	}
 	// app monitoring end
 	public function notification()
 	{

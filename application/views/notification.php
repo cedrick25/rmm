@@ -37,6 +37,7 @@
                                                 <table class="table table-hover card-table" id="allTables" width="100%">
                                                     <thead>
                                                         <tr>
+                                                            <th>Cluster</th>
                                                             <th>Device Name</th>
                                                             <th>Description</th>
                                                             <th>Received Date</th>

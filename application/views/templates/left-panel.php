@@ -42,6 +42,12 @@
                             <div>Default apps and Services</div>
                         </a>
                     </li>
+                    <li class="sidenav-item appNav" style="">
+                        <a href="/licensing" class="sidenav-link">
+                            <i class="sidenav-icon feather icon-settings"></i>
+                            <div>Licensing</div>
+                        </a>
+                    </li>
 
                     <!-- User Management -->
                     <!-- <li class="sidenav-divider mb-1"></li>

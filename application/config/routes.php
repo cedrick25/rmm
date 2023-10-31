@@ -70,6 +70,7 @@ $route['app_monitoring_update'] = "routes/app_monitoring_update";
 $route['notification'] = "routes/notification";
 $route['dashboard'] = "routes/dashboard";
 $route['chart'] = "routes/chart";
+$route['licensing'] = "routes/licensing";
 
 $route['user_account'] = "routes/user_account";
 $route['user_account_create'] = "routes/user_account_create";

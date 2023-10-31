@@ -4,12 +4,13 @@ var list = function(){
         if (result.status != "ERROR") {
             $('#divLoading').hide()
             result.response.forEach(function(data) {
-                // console.log(data);
+                console.log(data);
 
                 // Create a new table row with data attributes
                 var row = $('<tr data-cd="' + data.createdDate + '" data-id="' + data.id + '" data-devname="' + data.deviceName + '" data-notification="' + data.notification + '"></tr>');
 
                 // Add the deviceName and notification cells
+                row.append('<td>' + data.clusterId + '</td>');
                 row.append('<td>' + data.deviceName + '</td>');
                 row.append('<td>' + data.notification + '</td>');
                 row.append('<td>' + data.createdDate + '</td>');
