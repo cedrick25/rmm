@@ -1,6 +1,26 @@
 <?php $this->load->view('templates/header.php'); ?> 
 
 <body>
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this item?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="layout-wrapper layout-2">
         <div class="layout-inner">
             <?php $this->load->view('templates/left-panel.php'); ?>
@@ -58,62 +78,80 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
-    <script src="assets/js/apps_and_services.js"></script>
+    <!-- <script src="assets/js/apps_and_services.js"></script> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+
     <script type="text/javascript">
         $(document).ready(function() {
             prohibited();
 
             function prohibited() {
-                __executeExternalGet('/rmm-server/prohibited-apps/list').done(function(result) {
-                    console.log(result)
-                    if (result.status != "ERROR") {
-                        var content = `
-                        <table id="prohibitedTable" class="table table-hover table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>File name</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        `;
-                        result.response.forEach(function(data) {
-                            content += `
-                                <tr>
-                                    <td>${data.name || 'N/A'}</td>
-                                    <td>${data.processName || 'N/A'}</td>
-                                    <td>
-                                        <button class="btn btn-danger btn-sm" data-id="${data.id}">Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                        content += `
-                            </tbody>
-                        </table>
-                        `;
-                        $('#prohibitedContainer').html(content);
+    __executeExternalGet('/rmm-server/prohibited-apps/list').done(function(result) {
+        console.log(result);
+        if (result.status != "ERROR") {
+            var content = `
+            <table id="prohibitedTable" class="table table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>File name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
 
-                        $('#prohibitedContainer').on('click', '.btn-danger', function() {
-                            var itemId = $(this).data('id');
-                            var rowToRemove = $(this).closest('tr');
-                            deleteProhibitedItem(itemId, rowToRemove);
-                        });
-                        function deleteProhibitedItem(itemId, rowToRemove) {
+            result.response.forEach(function(data) {
+                content += `
+                    <tr>
+                        <td>${data.name || 'N/A'}</td>
+                        <td>${data.processName || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm delete-btn" data-id="${data.id}">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
 
-                            __executeExternalPost('/rmm-server/prohibited-apps/remove/'+itemId).done(function(result) {
-                                console.log(result)
-                                rowToRemove.remove();
-                            })
-                        }
-                    } else {
-                        console.log("failed fetching Cluster Name");
-                    }
-                }).fail(function() {
-                    console.log("Error occurred while fetching data.");
-                });
-            }
+            content += `
+                </tbody>
+            </table>
+            `;
+
+            $('#prohibitedContainer').html(content);
+
+            $('#prohibitedContainer').on('click', '.delete-btn', function() {
+                var itemId = $(this).data('id');
+                var rowToRemove = $(this).closest('tr');
+                confirmDelete(itemId, rowToRemove);
+            });
+        } else {
+            console.log("failed fetching Cluster Name");
+        }
+    }).fail(function() {
+        console.log("Error occurred while fetching data.");
+    });
+
+    function confirmDelete(itemId, rowToRemove) {
+        // Create a Bootstrap modal for confirmation
+        $('#confirmationModal').modal('show');
+
+        // Add a click event for the "Confirm" button in the modal
+        $('#confirmDeleteBtn').on('click', function() {
+            __executeExternalPost('/rmm-server/prohibited-apps/remove/' + itemId).done(function(result) {
+                console.log(result);
+                if (result.status === "SUCCESS") {
+                    rowToRemove.remove();
+                }
+                // Close the confirmation modal
+                $('#confirmationModal').modal('hide');
+            });
+        });
+    }
+}
         });
     </script>
 </body>
