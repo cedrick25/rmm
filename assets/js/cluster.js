@@ -201,20 +201,22 @@ var cluster_devices = function(){
                         "<td>"+data.serialNumber+"</td>"+
                         "<td class='actions'> <a href='cluster_device_details?deviceId="+data.id+"&deviceName="+data.manufacturer+"'><button class='btn btn-sm btn-info btn_view' type='submit'><i class='feather icon-eye'></i> View details</button></a> <button class='btn btn-sm btn-info update_device' type='submit' data-id='"+data.id+"' style=''> Update Device </button></td>")
                 });
+                var table = $('.table_head').DataTable({
+                    scrollX: true,
+                    responsive: true,
+                    paging: true,
+                });
 
                 $('#select-all').on('change', function () {
                     var isChecked = $(this).prop('checked');
                     $('.table_body .custom-control-input').prop('checked', isChecked);
                 });
-                // Handle individual checkbox change event
-                $('.table_body').on('change', '.custom-control-input', function () {
+
+                // Handle individual checkbox change event using delegated event handling
+                $('.table_head').on('change', '.custom-control-input', function () {
                     var allChecked = $('.table_body .custom-control-input:checked').length === $('.table_body .custom-control-input').length;
                     $('#select-all').prop('checked', allChecked);
-                });
-                var table = $('.table_head').DataTable({
-                    scrollX: true,
-                    responsive: true, // Enable responsive design if needed
-                    paging: true,
+                    updateMoveClusterButton();
                 });
 
                 $('.table_head').on('click', '.btn_update', function() {
@@ -224,14 +226,13 @@ var cluster_devices = function(){
 
                 $('.table_head').on('click', '.update_device', function() {
                     var id = $(this).data("id");
-                    // console.log(data_id)
                     window.location.href = '/cluster_device_update?device='+id;
                 });
-                $('.moveCluster').prop('disabled', true); // Disable the button initially
 
-                $('.custom-control-input').on('change', function() {
-                    var isChecked = $('.table_body .custom-control-input:checked').length > 0;
-                    $('.moveCluster').prop('disabled', !isChecked);
+                $('.moveCluster').prop('disabled', true);
+
+                $('.table_body').on('change', '.custom-control-input', function() {
+                    updateMoveClusterButton();
                 });
 
                 $('.moveCluster').on('click', function() {
@@ -247,6 +248,11 @@ var cluster_devices = function(){
                     var url = '/cluster_move_device?';
                     window.location.href = url;
                 });
+
+                function updateMoveClusterButton() {
+                    var isChecked = $('.table_body .custom-control-input:checked').length > 0;
+                    $('.moveCluster').prop('disabled', !isChecked);
+                }
             }
         })
     }
@@ -590,7 +596,7 @@ var cluster_device_details = function(){
                                 intervalId = setInterval(function () {
                                     // console.log("Storage Realtime");
                                     fetchDataStorage(storage_id, newPayload);
-                                }, 5000); // Adjust the interval as needed (e.g., every 2 seconds)
+                                }, 60000); // Adjust the interval as needed (e.g., every 1 min)
                             } else {
                                 // For "Weekly" and "Monthly," fetch and display data once
                                 fetchDataStorage(storage_id, newPayload);
@@ -599,7 +605,7 @@ var cluster_device_details = function(){
                     }
                     function SystemCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
-                        const interval = 5000; // Update interval in milliseconds
+                        const interval = 60000; // Update interval in minute
                         const CPU_payload = {
                             "startDate": getStartDate(period),
                             "endDate": getEndDate(period)
@@ -697,7 +703,7 @@ var cluster_device_details = function(){
                     }
                     function ProcessorCpuLoadTicks(deviceDetailId, period) {
                         const CPU_API_URL = '/rmm-server/deviceDetail/history/';
-                        const interval = 5000; // Update interval in milliseconds
+                        const interval = 60000; // Update interval in min
 
                         var CPU_payload = {
                             "startDate": getStartDate(period),
@@ -984,7 +990,7 @@ var cluster_device_details = function(){
                                 if (intervalId) clearInterval(intervalId);
 
                                 // Define Constants
-                                const REALTIME_INTERVAL = 5000; // 5 seconds
+                                const REALTIME_INTERVAL = 60000; // 1 min
                                 const API_URL = '/rmm-server/deviceDetail/history/';
 
                                 function fetchData(deviceDetailId, payload, callback) {
