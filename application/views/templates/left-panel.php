@@ -44,7 +44,7 @@
                     </li>
                     <li class="sidenav-item appNav" style="">
                         <a href="/licensing" class="sidenav-link">
-                            <i class="sidenav-icon feather icon-settings"></i>
+                            <i class="sidenav-icon lnr lnr-license"></i>
                             <div>Licensing</div>
                         </a>
                     </li>

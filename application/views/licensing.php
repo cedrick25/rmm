@@ -26,11 +26,11 @@
                                         <div class="json-data"><h5>License</h5>
                                             <dl class="row" style="margin-left:60px; margin-top: 10px; font-size:13px">
                                                 <dt class="col-sm-3"><span>System License Key</span></dt>
-                                                <dd class="col-sm-9">XXX-XXX-XXX</dd>
+                                                <dd class="col-sm-9 hoverable-text" id="licenseText">XXXX-XXXX-XXXXXXXXXXX-H20Z</dd>
                                                 <dt class="col-sm-3">System License Duration</dt>
                                                 <dd class="col-sm-9">Perpetual</dd>
                                                 <dt class="col-sm-3">Subscription License Key</dt>
-                                                <dd class="col-sm-9">XXX-XXX-XXX</dd>
+                                                <dd class="col-sm-9 hoverable-text" id="SubslicenseText">XXXX-XXXX-XXXXXXXXXXX-MV32</dd>
                                                 <dt class="col-sm-3">Susbcription License Duration</dt>
                                                 <dd class="col-sm-9">Sept. 6. 2023 - Sept. 6, 2024</dd>
                                             </dl>
@@ -46,62 +46,18 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
-    <script src="assets/js/apps_and_services.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            prohibited();
-
-            function prohibited() {
-                __executeExternalGet('/rmm-server/prohibited-apps/list').done(function(result) {
-                    console.log(result)
-                    if (result.status != "ERROR") {
-                        var content = `
-                        <table id="prohibitedTable" class="table table-hover table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>File name</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        `;
-                        result.response.forEach(function(data) {
-                            content += `
-                                <tr>
-                                    <td>${data.name || 'N/A'}</td>
-                                    <td>${data.processName || 'N/A'}</td>
-                                    <td>
-                                        <button class="btn btn-danger btn-sm" data-id="${data.id}">Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                        content += `
-                            </tbody>
-                        </table>
-                        `;
-                        $('#prohibitedContainer').html(content);
-
-                        $('#prohibitedContainer').on('click', '.btn-danger', function() {
-                            var itemId = $(this).data('id');
-                            var rowToRemove = $(this).closest('tr');
-                            deleteProhibitedItem(itemId, rowToRemove);
-                        });
-                        function deleteProhibitedItem(itemId, rowToRemove) {
-
-                            __executeExternalPost('/rmm-server/prohibited-apps/remove/'+itemId).done(function(result) {
-                                console.log(result)
-                                rowToRemove.remove();
-                            })
-                        }
-                    } else {
-                        console.log("failed fetching Cluster Name");
-                    }
-                }).fail(function() {
-                    console.log("Error occurred while fetching data.");
-                });
-            }
+            $("#licenseText").hover(function() {
+                $(this).text("A7DY-K3M2-U1GCH3L0F88-H20Z");
+            }, function() {
+                $(this).text("XXXX-XXXX-XXXXXXXXXXX-H20Z");
+            });
+            $("#SubslicenseText").hover(function() {
+                $(this).text("F66B-SBX4-C88H3L1G0FU-MV32");
+            }, function() {
+                $(this).text("XXXX-XXXX-XXXXXXXXXXX-MV32");
+            });
         });
     </script>
 </body>

@@ -2554,7 +2554,6 @@ input:checked + .slider:before {
 	font-size: 14px;
 }
 
-
 .json-data {
     border: 1px solid #dee2e6;
     border-radius: 4px;
@@ -2563,4 +2562,7 @@ input:checked + .slider:before {
     overflow: auto;
     max-height: 700px;
     overflow-y: auto;
+}
+.hoverable-text:hover {
+    color: #ff6600;
 }
