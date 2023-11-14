@@ -556,21 +556,27 @@ var cluster_device_details = function(){
 
                             return progressBar;
                         }
-
+                                   
                         function getStartDate(period) {
-                            let currentDate = new Date();
+                            const currentDate = new Date();
+                            const currentHour = currentDate.getHours();
+                            const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 50));
+                            const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
                             if (period === 'weekly') {
                                 return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
                             } else if (period === 'monthly') {
                                 return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                             } else { // realtime
-                                return currentDate.toISOString().split('T')[0] + " 23:59:50";
+                                return startDate;
                             }
                         }
 
                         function getEndDate(period) {
-                            let currentDate = new Date();
-                            return currentDate.toISOString().split('T')[0] + " 23:59:59";
+                            const currentDate = new Date();
+                            const currentHour = currentDate.getHours();
+                            const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 59));
+                            const endDate = endOfDay.toISOString().replace('T', ' ').split('.')[0];
+                            return endDate;
                         }
 
                         // Initial fetch based on the selected option
@@ -625,21 +631,27 @@ var cluster_device_details = function(){
                                     console.error("API Request Failed:", textStatus, jqXHR.responseText);
                                 });
                         }
-
+                        
                         function getStartDate(period) {
-                            let currentDate = new Date();
+                            const currentDate = new Date();
+                            const currentHour = currentDate.getHours();
+                            const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 50));
+                            const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
                             if (period === 'weekly') {
                                 return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
                             } else if (period === 'monthly') {
                                 return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                             } else { // realtime
-                                return currentDate.toISOString().split('T')[0] + " 23:59:50";
+                                return startDate;
                             }
                         }
 
                         function getEndDate(period) {
-                            let currentDate = new Date();
-                            return currentDate.toISOString().split('T')[0] + " 23:59:59";
+                            const currentDate = new Date();
+                            const currentHour = currentDate.getHours();
+                            const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 59));
+                            const endDate = endOfDay.toISOString().replace('T', ' ').split('.')[0];
+                            return endDate;
                         }
 
                         function generateCharts(SystemCpuLoadTicksDetails) {
@@ -727,19 +739,25 @@ var cluster_device_details = function(){
                         }
 
                         function getStartDate(period) {
-                            let currentDate = new Date();
+                            const currentDate = new Date();
+                            const currentHour = currentDate.getHours();
+                            const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 50));
+                            const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
                             if (period === 'weekly') {
                                 return new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] + " 00:00:00";
                             } else if (period === 'monthly') {
                                 return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] + " 00:00:00";
                             } else { // realtime
-                                return currentDate.toISOString().split('T')[0] + " 23:59:50";
+                                return startDate;
                             }
                         }
 
                         function getEndDate(period) {
-                            let currentDate = new Date();
-                            return currentDate.toISOString().split('T')[0] + " 23:59:59";
+                            const currentDate = new Date();
+                            const currentHour = currentDate.getHours();
+                            const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 59));
+                            const endDate = endOfDay.toISOString().replace('T', ' ').split('.')[0];
+                            return endDate;
                         }
                         function generateChartsProcessor(processorCpuLoadTicksDetails) {
                             $('#divLoadingCPU').hide()
@@ -972,8 +990,8 @@ var cluster_device_details = function(){
                         $('.divLoadingMemory').show()
 
                         $(document).ready(() => {
-                            console.log(deviceDetailId)
-
+                            var ddid = deviceDetailId
+                            console.log(ddid)
                             var memoryChart;  // Declare at the top level of your function
                             var chartContainer = $("#chartContainer");
                             chartContainer.css({ width: '100%', height: '' });
@@ -993,8 +1011,9 @@ var cluster_device_details = function(){
                                 const REALTIME_INTERVAL = 60000; // 1 min
                                 const API_URL = '/rmm-server/deviceDetail/history/';
 
-                                function fetchData(deviceDetailId, payload, callback) {
-                                    __executeExternalPost(API_URL + deviceDetailId, JSON.stringify(payload))
+                                function fetchData(ddid, payload, callback) {
+                                    console.log(ddid)
+                                    __executeExternalPost(API_URL + ddid, JSON.stringify(payload))
                                         .done(function (result) {
                                             console.log(result.response.type)
                                             // console.log(result.response.id)
@@ -1063,14 +1082,16 @@ var cluster_device_details = function(){
                                     content += `<p>Memory in Use: ${computeBytesToGB(memoryInUse)} GB</p>`;
                                     content += `<p>Available Memory: ${computeBytesToGB(availableMemory)} GB</p><br>`;
                                     $('.mem_info').html(content);
+                                    console.log("info")
                                 }
 
                                 if (usageSelect.value === 'realtime') {
                                     console.log('realtime')
                                     const currentDate = new Date();
-                                    const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 50));
+                                    const currentHour = currentDate.getHours();
+                                    const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 50));
                                     const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
-                                    const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59));
+                                    const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 59));
                                     const endDate = endOfDay.toISOString().replace('T', ' ').split('.')[0];
 
                                     const payload = {
@@ -1078,19 +1099,19 @@ var cluster_device_details = function(){
                                         "endDate": endDate
                                     };
                                     console.log(payload)
-                                    console.log(deviceDetailId)
-                                    fetchData(deviceDetailId, payload, function (data) {
+                                    console.log(ddid)
+                                    fetchData(ddid, payload, function (data) {
                                         const totalMemory = data.total;
                                         const availableMemory = data.available;
                                         const memoryChart = initializeChart(totalMemory);
-                                        console.log(deviceDetailId)
+                                        console.log(ddid)
                                         // console.log(totalMemory)
                                         // console.log(availableMemory)
                                         // console.log(memoryChart)
                                         updateChartAndInfo(memoryChart, totalMemory, availableMemory);
 
                                         intervalId = setInterval(function () {
-                                            fetchData(deviceDetailId, payload, function (data) {
+                                            fetchData(ddid, payload, function (data) {
                                                 updateChartAndInfo(memoryChart, data.total, data.available);
                                                 // console.log("Memory realtime")
                                             });
@@ -1108,7 +1129,7 @@ var cluster_device_details = function(){
                                         console.log(payload);
 
 
-                                        fetchData(deviceId, payload, function(data) {
+                                        fetchData(ddid, payload, function(data) {
                                             if (memoryChart && typeof memoryChart.destroy === 'function') {
                                                 memoryChart.destroy();
                                             }
@@ -1140,7 +1161,7 @@ var cluster_device_details = function(){
                                         };
                                         console.log(payload);
 
-                                        fetchData(deviceId, payload, function(data) {
+                                        fetchData(ddid, payload, function(data) {
                                             if (memoryChart && typeof memoryChart.destroy === 'function') {
                                                 memoryChart.destroy();
                                             }
