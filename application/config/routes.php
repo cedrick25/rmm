@@ -68,6 +68,7 @@ $route['app_monitoring_create'] = "routes/app_monitoring_create";
 $route['app_monitoring_update'] = "routes/app_monitoring_update";
 
 $route['notification'] = "routes/notification";
+$route['notif_settings'] = "routes/notif_settings";
 $route['dashboard'] = "routes/dashboard";
 $route['chart'] = "routes/chart";
 $route['licensing'] = "routes/licensing";

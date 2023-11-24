@@ -48,7 +48,12 @@
                             <div>Licensing</div>
                         </a>
                     </li>
-
+                    <li class="sidenav-item appNav" style="">
+                        <a href="/notif_settings" class="sidenav-link">
+                            <i class="sidenav-icon feather icon-settings"></i>
+                            <div>Notification Settings</div>
+                        </a>
+                    </li>
                     <!-- User Management -->
                     <!-- <li class="sidenav-divider mb-1"></li>
                     <li class="sidenav-header small font-weight-semibold">System Settings</li>

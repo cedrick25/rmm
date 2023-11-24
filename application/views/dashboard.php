@@ -26,7 +26,7 @@
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="">
-                                                    <h2 class="mb-2"> 256 </h2>
+                                                    <h2 class="mb-2 Devices"> 0 </h2>
                                                     <p class="text-muted mb-0">Number of <span class="badge badge-success">Devices</span> Registered</p>
                                                 </div>
                                                 <i class="fas fa-desktop text-success" style="font-size: 26px;"></i>
@@ -39,7 +39,7 @@
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="">
-                                                    <h2 class="mb-2">951 GB</h2>
+                                                    <h2 class="mb-2 Storage">0 GB</h2>
                                                     <p class="text-muted mb-0">Total <span class="badge badge-success">Storage</span>  of All Devices</p>
                                                 </div>
                                                 <i class="far fa-hdd text-success" style="font-size: 26px;"></i>
@@ -52,11 +52,27 @@
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="">
-                                                    <h2 class="mb-2">2 TB <small></small></h2>
+                                                    <h2 class="mb-2 RAM">0 TB</h2>
                                                     <p class="text-muted mb-0">Average <span class="badge badge-success">RAM</span> Usage of All Devices</p>
                                                 </div>
                                                 <i class="fas fa-memory text-success" style="font-size: 26px;"></i>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="">
+                                                    <h3 class="mb-2 Clusters">0</h3>
+
+                                                    <!-- <p class="text-muted mb-0">Total <span class="badge badge-success">Clusters</span> created</p> -->
+                                                </div>
+                                                <!-- <i class="fas fa-users text-success" style="font-size: 26px;"></i> -->
+                                            </div>
+                                            <!-- <h2 class="mb-2">List of Clusters</h2> -->
+                                            <canvas id="clusterBarGraph"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -67,8 +83,8 @@
         </div>
     </div>
 
-
-	<?php $this->load->view('templates/footer.php'); ?> 
+	<?php $this->load->view('templates/footer.php'); ?>
+    <script src="assets/js/chart.js"></script>
     <script src="assets/js/dashboard_main.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {

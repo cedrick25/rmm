@@ -111,6 +111,10 @@ class routes extends CI_Controller {
 	{
 		$this->load->view('notification');
 	}
+	public function notif_settings()
+	{
+		$this->load->view('notif_settings');
+	}
 	public function user_account()
 	{
 		$this->load->view('user_account');

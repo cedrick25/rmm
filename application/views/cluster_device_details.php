@@ -110,7 +110,8 @@
     </div>
 
     <?php $this->load->view('templates/footer.php'); ?> 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+    <script src="assets/js/chart.js"></script>
     <script src="assets/js/cluster.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
