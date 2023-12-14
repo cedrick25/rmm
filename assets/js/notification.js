@@ -4,7 +4,7 @@ var list = function(){
         if (result.status != "ERROR") {
             $('#divLoading').hide()
             result.response.forEach(function(data) {
-                console.log(data);
+                // console.log(data);
 
                 // Create a new table row with data attributes
                 var row = $('<tr data-cd="' + data.createdDate + '" data-id="' + data.id + '" data-devname="' + data.deviceName + '" data-notification="' + data.notification + '"></tr>');
@@ -41,8 +41,6 @@ var list = function(){
                         $('.createdDate').html(createdDate);
                         $('.readContainer').show();
 
-
-
                         var payload = {
                             "uuid": "1111",
                             "id": id,
@@ -78,7 +76,7 @@ var list = function(){
             $('#unreadTables').DataTable().destroy();
         }
 
-        __executeExternalGet('/rmm-server/notification/unread/list/1111').done(function (result) {
+        __executeExternalGet('/rmm-server/notification/unread/list/1111').done(function(result) {
             if (result.status != "ERROR") {
                 $('#divLoading').hide();
                 $('.table_body_unread').empty();
@@ -86,15 +84,15 @@ var list = function(){
                 var table = $('<table class="table table-hover card-table" id="unreadTables" width="100%"></table>');
                 table.append('<thead><tr><th>Device Name</th><th>Description</th><th>Received Date</th></tr></thead>');
                 table.append('<tbody class="table_body_unread"></tbody>');
-                table.find('thead').addClass('style', 'width: 100%;');
+                table.find('thead').addClass('style');  // Corrected line
 
                 $("#unread").html(`
                     <div style="padding: 25px;" id="tab-table-2" class="ps ps--active-y">
                         ${table.prop('outerHTML')}
                     </div>`);
-
                 // Add data to the table
                 result.response.forEach(function(data) {
+                console.log(data);
                     var row = $('<tr data-cd="' + data.createdDate + '" data-id="' + data.id + '" data-devname="' + data.deviceName + '" data-notification="' + data.notification + '"></tr>');
                     row.append('<td>' + data.deviceName + '</td>');
                     row.append('<td>' + data.notification + '</td>');
@@ -103,59 +101,62 @@ var list = function(){
                 });
 
                 // Initialize DataTable
-                var table = $('#unreadTables').DataTable({
-                    scrollX: true,
-                    responsive: true,
-                    paging: true,
-                    lengthChange: false,
-                    searching: false,
-                });
+                $(document).ready(function() {
+                    var table = $('#unreadTables').DataTable({
+                        scrollX: true,
+                        responsive: true,
+                        paging: true,
+                        lengthChange: false,
+                        searching: false,
+                    });
 
-                $('#unreadTables tbody').on('click', 'tr', function() {
-                    var id = $(this).data('id');
-                    if (id !== undefined) {
-                        var deviceName = $(this).data('devname');
-                        var notification = $(this).data('notification');
-                        var createdDate = $(this).data('cd');
-                        console.log('Clicked Row - ID: ' + id + ', Device Name: ' + deviceName + ', createdDate: ' + createdDate);
-                        $('.dev_name').html("Device Name - " + deviceName);
-                        $('.desc').html(notification);
-                        $('.createdDate').html(createdDate);
-                        $('.readContainer').show();
+                    // Ensure the DataTable is responsive
+                    table.columns.adjust().draw();
 
-                        var payload = {
-                            "uuid": "1111",
-                            "id": id,
-                        };
-                        console.log(payload);
+                    $('#unreadTables tbody').on('click', 'tr', function() {
+                        var id = $(this).data('id');
+                        if (id !== undefined) {
+                            var deviceName = $(this).data('devname');
+                            var notification = $(this).data('notification');
+                            var createdDate = $(this).data('cd');
+                            console.log('Clicked Row - ID: ' + id + ', Device Name: ' + deviceName + ', createdDate: ' + createdDate);
+                            $('.dev_name').html("Device Name - " + deviceName);
+                            $('.desc').html(notification);
+                            $('.createdDate').html(createdDate);
+                            $('.readContainer').show();
 
-                        // Store a reference to the row
-                        var clickedRow = $(this);
+                            var payload = {
+                                "uuid": "1111",
+                                "id": id,
+                            };
+                            console.log(payload);
 
-                        __executeExternalPost('/rmm-server/notification/markAsRead/' + 1111 + '/' + id, JSON.stringify(payload)).done(function(result) {
-                            console.log(result);
-                            if (result.status != "ERROR") {
-                                if (result.status === "SUCCESS") {
-                                    // Remove the clicked row
-                                    table.row(clickedRow).remove().draw();
-                                    __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
-                                        console.log(result);
-                                        $(".notificationCount").html(result.response)
-                                    })
+                            // Store a reference to the row
+                            var clickedRow = $(this);
+
+                            __executeExternalPost('/rmm-server/notification/markAsRead/' + 1111 + '/' + id, JSON.stringify(payload)).done(function(result) {
+                                console.log(result);
+                                if (result.status != "ERROR") {
+                                    if (result.status === "SUCCESS") {
+                                        // Remove the clicked row
+                                        table.row(clickedRow).remove().draw();
+                                        __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
+                                            console.log(result);
+                                            $(".notificationCount").html(result.response)
+                                        })
+                                    } else {
+                                        // Handle unsuccessful result
+                                    }
                                 } else {
-                                    // Handle unsuccessful result
+                                    console.log(result.status);
                                 }
-                            } else {
-                                console.log(result.status);
-                            }
-                        });
-                    }
-                });
+                            });
+                        }
+                    });
 
-                // Ensure the DataTable is responsive
-                table.columns.adjust().draw();
-                $('.close-container').on('click', function() {
-                    $(this).closest('.readContainer').hide();
+                    $('.close-container').on('click', function() {
+                        $(this).closest('.readContainer').hide();
+                    });
                 });
             }
         });

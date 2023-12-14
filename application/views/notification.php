@@ -87,6 +87,10 @@
     <script type="text/javascript">
         $(document).ready(function() {
             list()
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                // Trigger DataTables to recalculate the layout
+                $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
+            });
         });
     </script>
 </body>
