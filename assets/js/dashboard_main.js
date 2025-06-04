@@ -13,7 +13,7 @@ var dashboard = function (){
         console.log(result)        
 
         if (result.status != "ERROR") {
-        	$(".Storage").text((result.response || 0) ' GB')
+        	$(".Storage").text((result.response || 0) + ' GB')
         }
     })
 
