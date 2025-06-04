@@ -52,7 +52,7 @@ var list = function(){
                             if (result.status != "ERROR") {
                                 if (result.status === "SUCCESS") {
                                     
-                                    __executeExternalGet('/rmm-server/notification/unread/count/' $.cookie("uuid")).done(function(result) {
+                                    __executeExternalGet('/rmm-server/notification/unread/count/' + $.cookie("uuid")).done(function(result) {
                                         console.log(result);
                                         $(".notificationCount").html(result.response)
                                     })
