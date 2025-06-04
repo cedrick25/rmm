@@ -1,6 +1,6 @@
 var list = function(){
     $('#divLoading').show()
-    __executeExternalGet('/rmm-server/notification/list/1111').done(function (result) {
+    __executeExternalGet('/rmm-server/notification/list/' + $.cookie("uuid")).done(function (result) {
         if (result.status != "ERROR") {
             $('#divLoading').hide()
             result.response.forEach(function(data) {
@@ -42,17 +42,17 @@ var list = function(){
                         $('.readContainer').show();
 
                         var payload = {
-                            "uuid": "1111",
+                            "uuid": $.cookie("uuid"),
                             "id": id,
                         };
                         console.log(payload);
 
-                        __executeExternalPost('/rmm-server/notification/markAsRead/' + 1111 + '/' + id, JSON.stringify(payload)).done(function(result) {
+                        __executeExternalPost('/rmm-server/notification/markAsRead/' + $.cookie("uuid") + '/' + id, JSON.stringify(payload)).done(function(result) {
                             console.log(result);
                             if (result.status != "ERROR") {
                                 if (result.status === "SUCCESS") {
                                     
-                                    __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
+                                    __executeExternalGet('/rmm-server/notification/unread/count/' $.cookie("uuid")).done(function(result) {
                                         console.log(result);
                                         $(".notificationCount").html(result.response)
                                     })
@@ -76,7 +76,7 @@ var list = function(){
             $('#unreadTables').DataTable().destroy();
         }
 
-        __executeExternalGet('/rmm-server/notification/unread/list/1111').done(function(result) {
+        __executeExternalGet('/rmm-server/notification/unread/list/' + $.cookie("uuid")).done(function(result) {
             if (result.status != "ERROR") {
                 $('#divLoading').hide();
                 $('.table_body_unread').empty();
@@ -126,7 +126,7 @@ var list = function(){
                             $('.readContainer').show();
 
                             var payload = {
-                                "uuid": "1111",
+                                "uuid": $.cookie("uuid"),
                                 "id": id,
                             };
                             console.log(payload);
@@ -134,13 +134,13 @@ var list = function(){
                             // Store a reference to the row
                             var clickedRow = $(this);
 
-                            __executeExternalPost('/rmm-server/notification/markAsRead/' + 1111 + '/' + id, JSON.stringify(payload)).done(function(result) {
+                            __executeExternalPost('/rmm-server/notification/markAsRead/' + $.cookie("uuid") + '/' + id, JSON.stringify(payload)).done(function(result) {
                                 console.log(result);
                                 if (result.status != "ERROR") {
                                     if (result.status === "SUCCESS") {
                                         // Remove the clicked row
                                         table.row(clickedRow).remove().draw();
-                                        __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
+                                        __executeExternalGet('/rmm-server/notification/unread/count/' + $.cookie("uuid")).done(function(result) {
                                             console.log(result);
                                             $(".notificationCount").html(result.response)
                                         })
