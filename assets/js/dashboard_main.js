@@ -9,13 +9,13 @@ var dashboard = function (){
         }
     })
 
-    // __executeExternalGet('/rmm-server/dashboard/storage/count/all').done(function (result) {
-    //     console.log(result)        
+    __executeExternalGet('/rmm-server/dashboard/storage/count/all').done(function (result) {
+        console.log(result)        
 
-    //     if (result.status != "ERROR") {
-    //     	$(".Storage").text((result.response || 0) ' GB')
-    //     }
-    // })
+        if (result.status != "ERROR") {
+        	$(".Storage").text((result.response || 0) ' GB')
+        }
+    })
 
     __executeExternalGet('/rmm-server/dashboard/average/ram/all').done(function (result) {
         console.log(result)        
