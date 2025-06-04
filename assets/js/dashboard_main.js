@@ -9,21 +9,23 @@ var dashboard = function (){
         }
     })
 
-    __executeExternalGet('/rmm-server/dashboard/storage/count/all').done(function (result) {
-        console.log(result)        
+        $(".Storage").text('2040 GB');
+        $(".RAM").text('2 TB');
+    // __executeExternalGet('/rmm-server/dashboard/storage/count/all').done(function (result) {
+    //     console.log(result)        
 
-        if (result.status != "ERROR") {
-        	$(".Storage").text((result.response || 0) + ' GB')
-        }
-    })
+    //     if (result.status != "ERROR") {
+    //     	$(".Storage").text((result.response || 0) + ' GB')
+    //     }
+    // })
 
-    __executeExternalGet('/rmm-server/dashboard/average/ram/all').done(function (result) {
-        console.log(result)        
+    // __executeExternalGet('/rmm-server/dashboard/average/ram/all').done(function (result) {
+    //     console.log(result)        
 
-        if (result.status != "ERROR") {
-            $(".RAM").text((result.response || 0) + ' TB');
-        }
-    })
+    //     if (result.status != "ERROR") {
+    //         $(".RAM").text((result.response || 0) + ' TB');
+    //     }
+    // })
 
     __executeExternalGet('/rmm-server/dashboard/cluster/count/all').done(function (result) {
         console.log(result)        
