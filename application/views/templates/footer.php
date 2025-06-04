@@ -69,7 +69,7 @@
 
             // Poll the API for value changes
             setInterval(function() {
-                __executeExternalGet('/rmm-server/notification/unread/count/1111').done(function(result) {
+                __executeExternalGet('/rmm-server/notification/unread/count/' + $.cookie("uuid")).done(function(result) {
                     // console.log(result);
                     var newValue = result.response;
                     
