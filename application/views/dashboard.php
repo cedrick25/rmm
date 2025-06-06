@@ -27,7 +27,7 @@
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="">
                                                     <h2 class="mb-2 Devices"> 0 </h2>
-                                                    <p class="text-muted mb-0">Number of <span class="badge badge-success">Devices</span> Registered</p>
+                                                    <p class="text-muted mb-0">Number of Devices <span class="badge badge-success">Registered </span></p>
                                                 </div>
                                                 <i class="fas fa-desktop text-success" style="font-size: 26px;"></i>
                                             </div>
@@ -39,8 +39,47 @@
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="">
-                                                    <h2 class="mb-2 Storage">0 GB</h2>
-                                                    <p class="text-muted mb-0">Total <span class="badge badge-success">Storage</span>  of All Devices</p>
+                                                    <h2 class="mb-2 Storage_Total">0 TB</h2>
+                                                    <p class="text-muted mb-0">Traditional Storage (HDD /SSD) <span class="badge badge-success">Total</span></p>
+                                                </div>
+                                                <i class="far fa-hdd text-success" style="font-size: 26px;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="">
+                                                    <h2 class="mb-2 Storage_Used">0 TB</h2>
+                                                    <p class="text-muted mb-0">Traditional Storage (HDD /SSD) <span class="badge badge-success">Used</span></p>
+                                                </div>
+                                                <i class="far fa-hdd text-success" style="font-size: 26px;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="">
+                                                    <h2 class="mb-2 Storage_Available">0 TB</h2>
+                                                    <p class="text-muted mb-0">Traditional Storage (HDD /SSD) <span class="badge badge-success">Available</span></p>
+                                                </div>
+                                                <i class="far fa-hdd text-success" style="font-size: 26px;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="">
+                                                    <h2 class="mb-2 nvmeTotal">0 TB</h2>
+                                                    <p class="text-muted mb-0">NVME <span class="badge badge-success">Storage</span>  of All Devices</p>
                                                 </div>
                                                 <i class="far fa-hdd text-success" style="font-size: 26px;"></i>
                                             </div>
@@ -53,7 +92,7 @@
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="">
                                                     <h2 class="mb-2 RAM">0 TB</h2>
-                                                    <p class="text-muted mb-0">Average <span class="badge badge-success">RAM</span> Usage of All Devices</p>
+                                                    <p class="text-muted mb-0">Total <span class="badge badge-success">RAM</span> of All Devices</p>
                                                 </div>
                                                 <i class="fas fa-memory text-success" style="font-size: 26px;"></i>
                                             </div>
@@ -83,7 +122,7 @@
         </div>
     </div>
 
-	<?php $this->load->view('templates/footer.php'); ?>
+    <?php $this->load->view('templates/footer.php'); ?>
     <script src="assets/js/chart.js"></script>
     <script src="assets/js/dashboard_main.js"></script>
     <script type="text/javascript">

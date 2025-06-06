@@ -1,31 +1,32 @@
 var dashboard = function (){
-	console.log("attached events for dashboard");
+    console.log("attached events for dashboard");
     
     __executeExternalGet('/rmm-server/dashboard/device/count/all').done(function (result) {
         console.log(result)        
 
         if (result.status != "ERROR") {
-        	$(".Devices").text((result.response || 0))
+            $(".Devices").text((result.response || 0))
         }
     })
 
-        $(".Storage").text('2040 GB');
-        $(".RAM").text('2 TB');
-    // __executeExternalGet('/rmm-server/dashboard/storage/count/all').done(function (result) {
-    //     console.log(result)        
+    __executeExternalGet('/rmm-server/dashboard/storage/count/all').done(function (result) {
+        console.log(result)        
 
-    //     if (result.status != "ERROR") {
-    //     	$(".Storage").text((result.response || 0) + ' GB')
-    //     }
-    // })
+        if (result.status != "ERROR") {
+            $(".Storage_Total").text((result.response.total || 0).toFixed(2) + ' TB');
+            $(".Storage_Used").text((result.response.used || 0).toFixed(2) + ' TB');
+            $(".Storage_Available").text((result.response.available || 0).toFixed(2) + ' TB');
+            $(".nvmeTotal").text((result.response.nvmeTotal || 0).toFixed(2) + ' TB');
+        }
+    })
 
-    // __executeExternalGet('/rmm-server/dashboard/average/ram/all').done(function (result) {
-    //     console.log(result)        
+    __executeExternalGet('/rmm-server/dashboard/ram/all').done(function (result) {
+        console.log(result)        
 
-    //     if (result.status != "ERROR") {
-    //         $(".RAM").text((result.response || 0) + ' TB');
-    //     }
-    // })
+        if (result.status != "ERROR") {
+            $(".RAM").text((result.response || 0).toFixed(2) + ' TB');
+        }
+    })
 
     __executeExternalGet('/rmm-server/dashboard/cluster/count/all').done(function (result) {
         console.log(result)        
