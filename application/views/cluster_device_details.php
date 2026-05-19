@@ -112,7 +112,7 @@
     <?php $this->load->view('templates/footer.php'); ?> 
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="assets/js/chart.js"></script>
-    <script src="assets/js/cluster.js"></script>
+    <script src="assets/js/cluster.js?v=20260515-memory-loading-3"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             cluster_device_details();

@@ -433,7 +433,7 @@ var cluster_device_details = function(){
                                 content += '</select>';
                             content += '</form>';
 
-                            content += '<br><div class="alert alert-info divLoadingMemory" role="alert" style="font-weight: bolder; color: #3d80c5; display: ;" id="">';
+                            content += '<br><div class="alert alert-info divLoadingMemory" role="alert" style="font-weight: bolder; color: #3d80c5; display: none;" id="">';
                             content += '<i class="fas fa-spinner fa-pulse"></i> Loading...';
                             content += '</div>';
 
@@ -445,7 +445,7 @@ var cluster_device_details = function(){
                             console.log('memory tab')
                             // console.log(data.type)
                             // console.log(data.id)
-                            generateMemoryChart(data.id);
+                            generateMemoryChart(data.id, data.jsonData);
                         } else {
                             content += `<pre class="json-data">${JSON.stringify(data, null, 2)}</pre>`;
                             console.log('false');
@@ -986,7 +986,7 @@ var cluster_device_details = function(){
                         const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
                         return date.toLocaleDateString(undefined, options);
                     }
-                    function generateMemoryChart(deviceDetailId) {
+                    function generateMemoryChart(deviceDetailId, initialMemoryJson) {
                         $('.divLoadingMemory').show()
 
                         $(document).ready(() => {
@@ -999,7 +999,54 @@ var cluster_device_details = function(){
                             var usageSelect = document.querySelector('#usageSelect');
                             var intervalId;
                             var changeEvent = new Event('change');
-                            usageSelect.dispatchEvent(changeEvent);
+                            if (!usageSelect) {
+                                $('.divLoadingMemory').hide();
+                                $('.mem_info').html('<br><div class="alert alert-warning">Memory usage selector was not found.</div>');
+                                return;
+                            }
+
+                            function parseMemoryData(rawData) {
+                                if (!rawData) return null;
+
+                                var parsedData = rawData;
+                                if (typeof parsedData === 'string') {
+                                    parsedData = JSON.parse(parsedData);
+                                }
+                                if (typeof parsedData === 'string') {
+                                    parsedData = JSON.parse(parsedData);
+                                }
+
+                                return parsedData;
+                            }
+
+                            function showMemoryMessage(message) {
+                                $('.divLoadingMemory').hide();
+                                $('.mem_info').html('<br><div class="alert alert-warning">' + message + '</div>');
+                            }
+
+                            function getRealtimeMemoryPayload() {
+                                const endDateTime = new Date();
+                                const startDateTime = new Date(endDateTime.getFullYear(), endDateTime.getMonth(), endDateTime.getDate(), 0, 0, 0);
+
+                                return {
+                                    "startDate": formatDateTimeForApi(startDateTime),
+                                    "endDate": formatDateTimeForApi(endDateTime)
+                                };
+                            }
+
+                            function formatDateTimeForApi(date) {
+                                const pad = function(value) {
+                                    return String(value).padStart(2, '0');
+                                };
+
+                                return date.getFullYear() + '-' +
+                                    pad(date.getMonth() + 1) + '-' +
+                                    pad(date.getDate()) + ' ' +
+                                    pad(date.getHours()) + ':' +
+                                    pad(date.getMinutes()) + ':' +
+                                    pad(date.getSeconds());
+                            }
+
                             usageSelect.addEventListener('change', function() {
                                 var currentDate = new Date();
                                 var startDate, endDate;
@@ -1015,17 +1062,62 @@ var cluster_device_details = function(){
                                     console.log(ddid)
                                     __executeExternalPost(API_URL + ddid, JSON.stringify(payload))
                                         .done(function (result) {
-                                            console.log(result.response.type)
-                                            // console.log(result.response.id)
-                                        if (result.status === "SUCCESS") {
-                                            const json = JSON.parse(result.response.jsonData);
-                                            // console.log(json)
-                                            callback(json);
-                                            $('.divLoadingMemory').hide()
-                                        } else if (result.status === "ERROR") {
-                                            console.error('Error fetching data:', result);
+                                        try {
+                                            var response = Array.isArray(result.response) ? result.response[0] : result.response;
+                                            var jsonData = response && (response.jsonData || response.json_data);
+
+                                            if (result.status === "SUCCESS" && jsonData) {
+                                                const json = parseMemoryData(jsonData);
+                                                callback(json);
+                                                $('.divLoadingMemory').hide();
+                                                return;
+                                            }
+
+                                            const fallbackJson = parseMemoryData(initialMemoryJson);
+                                            if (fallbackJson) {
+                                                callback(fallbackJson);
+                                                $('.divLoadingMemory').hide();
+                                                return;
+                                            }
+
+                                            showMemoryMessage('No memory usage data is available for this device yet.');
+                                        } catch (e) {
+                                            console.error('Error parsing memory data:', e, result);
+                                            showMemoryMessage('Memory usage data could not be loaded.');
                                         }
                                     });
+                                }
+                                function fetchRealtimeMemory(callback) {
+                                    try {
+                                        const fallbackJson = parseMemoryData(initialMemoryJson);
+                                        if (fallbackJson) {
+                                            callback(fallbackJson);
+                                            $('.divLoadingMemory').hide();
+                                        }
+                                    } catch (e) {
+                                        console.error('Error parsing initial memory data:', e);
+                                    }
+
+                                    __executeExternalGet('/rmm-server/deviceDetail/' + deviceId)
+                                        .done(function(result) {
+                                            try {
+                                                if (result.status !== "SUCCESS" || !Array.isArray(result.response)) {
+                                                    return;
+                                                }
+
+                                                var memoryDetail = result.response.find(function(item) {
+                                                    return item.type === "MEMORY";
+                                                });
+
+                                                if (memoryDetail && memoryDetail.jsonData) {
+                                                    initialMemoryJson = memoryDetail.jsonData;
+                                                    callback(parseMemoryData(memoryDetail.jsonData));
+                                                    $('.divLoadingMemory').hide();
+                                                }
+                                            } catch (e) {
+                                                console.error('Error refreshing realtime memory data:', e, result);
+                                            }
+                                        });
                                 }
                                 function initializeChart(totalMemory) {
 
@@ -1064,6 +1156,11 @@ var cluster_device_details = function(){
                                     return memoryChart;
                                 }
                                 function updateChartAndInfo(memoryChart, totalMemory, availableMemory) {
+                                    if (!totalMemory || availableMemory === undefined || availableMemory === null) {
+                                        showMemoryMessage('Memory usage data is incomplete for this device.');
+                                        return;
+                                    }
+
                                     const memoryInUse = totalMemory - availableMemory;
 
                                     // Update Chart
@@ -1087,35 +1184,27 @@ var cluster_device_details = function(){
 
                                 if (usageSelect.value === 'realtime') {
                                     console.log('realtime')
-                                    const currentDate = new Date();
-                                    const currentHour = currentDate.getHours();
-                                    const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 50));
-                                    const startDate = startOfDay.toISOString().replace('T', ' ').split('.')[0];
-                                    const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentHour, 59, 59));
-                                    const endDate = endOfDay.toISOString().replace('T', ' ').split('.')[0];
-
-                                    const payload = {
-                                        "startDate": startDate,
-                                        "endDate": endDate
-                                    };
-                                    console.log(payload)
                                     console.log(ddid)
-                                    fetchData(ddid, payload, function (data) {
+                                    fetchRealtimeMemory(function (data) {
                                         const totalMemory = data.total;
                                         const availableMemory = data.available;
-                                        const memoryChart = initializeChart(totalMemory);
+                                        if (!memoryChart) {
+                                            memoryChart = initializeChart(totalMemory);
+                                        }
                                         console.log(ddid)
                                         // console.log(totalMemory)
                                         // console.log(availableMemory)
                                         // console.log(memoryChart)
                                         updateChartAndInfo(memoryChart, totalMemory, availableMemory);
 
-                                        intervalId = setInterval(function () {
-                                            fetchData(ddid, payload, function (data) {
-                                                updateChartAndInfo(memoryChart, data.total, data.available);
-                                                // console.log("Memory realtime")
-                                            });
-                                        }, REALTIME_INTERVAL);
+                                        if (!intervalId) {
+                                            intervalId = setInterval(function () {
+                                                fetchRealtimeMemory(function (data) {
+                                                    updateChartAndInfo(memoryChart, data.total, data.available);
+                                                    // console.log("Memory realtime")
+                                                });
+                                            }, REALTIME_INTERVAL);
+                                        }
                                     });
                                 }else {
                                     if (this.value === 'weekly') {
