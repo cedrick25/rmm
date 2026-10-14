@@ -13,6 +13,11 @@
         </div>
     </nav>
     
+    <script type="text/javascript">
+        window.paceOptions = {
+            ajax: { ignoreURLs: [/notification\/unread\/count/] }
+        };
+    </script>
     <script src="assets/js/pace.js"></script>
     <!-- <script src="assets/js/jquery-3.3.1.min.js"></script> -->
     <script src="assets/js/jquery-3.2.0.min.js"></script>
@@ -59,29 +64,74 @@
             width: '100%',
         });
         function getPreviousValue() {
-            return parseInt(localStorage.getItem('previousNotificationValue')) || 0;
+            return parseInt(localStorage.getItem('previousNotificationValue'), 10) || 0;
         }
 
-        $(document).ready(function() {
-            // Initial value when the page loads
-            var previousValue = getPreviousValue();
-            $(".notificationCount").html(previousValue);
+        var previousValue = getPreviousValue();
+        $(".notificationCount").html(previousValue);
 
-            // Poll the API for value changes
-            setInterval(function() {
-                __executeExternalGet('/rmm-server/notification/unread/count/' + $.cookie("uuid")).done(function(result) {
-                    // console.log(result);
-                    var newValue = result.response;
-                    
-                    if (newValue !== previousValue) {
-                        // Update the displayed value and save the new value
-                        $(".notificationCount").html(newValue);
-                        localStorage.setItem('previousNotificationValue', newValue);
-                        previousValue = newValue;
+        var notificationPoll = {
+            xhr: null,
+            timer: null,
+            failureDelay: 10000,
+            schedule: function(delay) {
+                var self = this;
+                clearTimeout(this.timer);
+                this.timer = setTimeout(function() {
+                    self.fetch();
+                }, delay);
+            },
+            fetch: function() {
+                var self = this;
+                var uuid = $.cookie("uuid");
+                if (document.hidden || !uuid || this.xhr) {
+                    return;
+                }
+                this.xhr = $.ajax({
+                    method: "GET",
+                    url: __getContext() + '/rmm-server/notification/unread/count/' + uuid,
+                    dataType: "json",
+                    timeout: 8000
+                }).done(function(result) {
+                    var newValue = result ? parseInt(result.response, 10) : NaN;
+                    if (result && result.status === "SUCCESS" && !isNaN(newValue)) {
+                        if (newValue !== previousValue) {
+                            $(".notificationCount").html(newValue);
+                            localStorage.setItem('previousNotificationValue', newValue);
+                            previousValue = newValue;
+                        }
+                        self.failureDelay = 10000;
+                        if (!document.hidden) {
+                            self.schedule(3000);
+                        }
+                    } else if (!document.hidden) {
+                        self.schedule(self.failureDelay);
+                        self.failureDelay = Math.min(self.failureDelay * 2, 30000);
                     }
+                }).fail(function(jqXHR, textStatus) {
+                    if (textStatus === "abort" || document.hidden) {
+                        return;
+                    }
+                    self.schedule(self.failureDelay);
+                    self.failureDelay = Math.min(self.failureDelay * 2, 30000);
+                }).always(function() {
+                    self.xhr = null;
                 });
-            }, 3000);
+            }
+        };
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                clearTimeout(notificationPoll.timer);
+                if (notificationPoll.xhr) {
+                    notificationPoll.xhr.abort();
+                }
+            } else {
+                notificationPoll.fetch();
+            }
         });
+
+        notificationPoll.fetch();
         
         $(".btn_logout").unbind('click').on('click', function(){
             console.log("logout");
