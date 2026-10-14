@@ -2,8 +2,9 @@
 
 // const hostname    = window.location.hostname;
 // const anyhost     = 'http://'+hostname+'';
-const anyhost     = 'http://192.168.1.37';
+// const anyhost     = 'http://192.168.1.37';
 // const anyhost     = 'http://localhost';
+const anyhost     = window.location.origin;
 // const rmm_server  = '8090';
 // const uam         = '8088';
 // const docrepo     = '8080';
